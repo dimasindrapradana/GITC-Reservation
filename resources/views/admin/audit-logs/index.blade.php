@@ -187,6 +187,7 @@
                             <td>
 
                                 @if($log->user)
+
                                     <div class="user-main">
                                         {{ $log->user->name }}
                                     </div>
@@ -196,17 +197,23 @@
                                             {{ $log->user->employee_number }}
                                         </div>
                                     @endif
+
                                 @else
+
                                     <span class="muted-text">
                                         System
                                     </span>
+
                                 @endif
 
                             </td>
 
                             <td>
+
                                 @php
                                     $actionClass = match ($log->action) {
+                                        'CREATE' => 'action-created',
+                                        'UPDATE' => 'action-updated',
                                         'APPROVE' => 'action-approved',
                                         'REJECT' => 'action-rejected',
                                         'CANCEL' => 'action-cancelled',
@@ -217,18 +224,23 @@
                                 <span class="action-badge {{ $actionClass }}">
                                     {{ $log->action }}
                                 </span>
+
                             </td>
 
                             <td>
+
                                 <span class="category-badge">
                                     {{ $log->module ?: '—' }}
                                 </span>
+
                             </td>
 
                             <td>
+
                                 <div class="description">
                                     {{ $log->description }}
                                 </div>
+
                             </td>
 
                             <td class="action-column">
@@ -247,12 +259,14 @@
                     @empty
 
                         <tr>
+
                             <td
                                 colspan="6"
                                 class="empty-state"
                             >
                                 No audit logs found.
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -502,8 +516,18 @@
         white-space: nowrap;
     }
 
+    .action-created {
+        background: #edf7ff;
+        color: #0369a1;
+    }
+
+    .action-updated {
+        background: #fff7e6;
+        color: #a16207;
+    }
+
     .action-approved {
-        background: #eaf5fb;
+        background: #eaf7ef;
         color: #15803d;
     }
 
@@ -589,6 +613,7 @@
         color: var(--text);
         font-size: 12px;
         font-weight: 600;
+        text-decoration: none;
     }
 
     .page-button:hover {
@@ -602,6 +627,7 @@
     }
 
     @media (max-width: 1100px) {
+
         .filter-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr));
         }
@@ -609,9 +635,11 @@
         .field-search {
             grid-column: 1 / -1;
         }
+
     }
 
     @media (max-width: 700px) {
+
         .filter-grid {
             grid-template-columns: 1fr;
         }
@@ -629,6 +657,7 @@
             width: 100%;
             justify-content: flex-end;
         }
+
     }
 
 </style>

@@ -22,13 +22,13 @@
     <div class="page-card-header">
         <div>
             <h2>Reservation Management</h2>
-            <p>Review and manage reservation requests.</p>
+            <p>Review and manage reservation requests for your assigned building.</p>
         </div>
     </div>
 
     <form
         method="GET"
-        action="{{ route('coordinator.reservations.index') }}"
+        action="{{ route('building-coordinator.reservations.index') }}"
         class="filter-form"
     >
 
@@ -47,33 +47,12 @@
             </div>
 
             <div class="form-group">
-                <label for="building">Building</label>
-
-                <select id="building" name="building">
-
-                    <option value="">
-                        All Buildings
-                    </option>
-
-                    @foreach ($buildings as $item)
-
-                        <option
-                            value="{{ $item->id }}"
-                            @selected($building == $item->id)
-                        >
-                            {{ $item->name }}
-                        </option>
-
-                    @endforeach
-
-                </select>
-            </div>
-
-            <div class="form-group">
                 <label for="status">Status</label>
 
-                <select id="status" name="status">
-
+                <select
+                    id="status"
+                    name="status"
+                >
                     <option value="">
                         All Statuses
                     </option>
@@ -105,20 +84,16 @@
                     >
                         Cancelled
                     </option>
-
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="resource_type">
-                    Resource Type
-                </label>
+                <label for="resource_type">Resource Type</label>
 
                 <select
                     id="resource_type"
                     name="resource_type"
                 >
-
                     <option value="">
                         All Resources
                     </option>
@@ -136,24 +111,16 @@
                     >
                         Media Training
                     </option>
-
-                    <option
-                        value="field"
-                        @selected($resourceType === 'field')
-                    >
-                        Field
-                    </option>
-
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="sort">
-                    Sort
-                </label>
+                <label for="sort">Sort</label>
 
-                <select id="sort" name="sort">
-
+                <select
+                    id="sort"
+                    name="sort"
+                >
                     <option
                         value="newest"
                         @selected($sort === 'newest')
@@ -162,12 +129,11 @@
                     </option>
 
                     <option
-                        value="oldest"
-                        @selected($sort === 'oldest')
+                        value="latest"
+                        @selected($sort === 'latest')
                     >
-                        Oldest
+                        Latest
                     </option>
-
                 </select>
             </div>
 
@@ -183,7 +149,7 @@
             </button>
 
             <a
-                href="{{ route('coordinator.reservations.index') }}"
+                href="{{ route('building-coordinator.reservations.index') }}"
                 class="button button-secondary"
             >
                 Reset
@@ -218,33 +184,19 @@
                 @forelse ($reservations as $reservation)
 
                     @php
-
                         if ($reservation->room) {
-
                             $resourceName = $reservation->room->name;
                             $resourceTypeLabel = 'Room';
                             $buildingName = $reservation->room->building?->name;
-
                         } elseif ($reservation->trainingRoom) {
-
                             $resourceName = $reservation->trainingRoom->name;
                             $resourceTypeLabel = 'Media Training';
                             $buildingName = $reservation->trainingRoom->building?->name;
-
-                        } elseif ($reservation->field) {
-
-                            $resourceName = $reservation->field->name;
-                            $resourceTypeLabel = 'Field';
-                            $buildingName = null;
-
                         } else {
-
                             $resourceName = 'Unknown Resource';
                             $resourceTypeLabel = '-';
                             $buildingName = null;
-
                         }
-
                     @endphp
 
                     <tr>
@@ -256,7 +208,6 @@
                         </td>
 
                         <td>
-
                             <div class="primary-text">
                                 {{ $reservation->user?->name ?? '-' }}
                             </div>
@@ -264,41 +215,32 @@
                             <div class="secondary-text">
                                 {{ $reservation->user?->employee_number ?? '-' }}
                             </div>
-
                         </td>
 
                         <td>
-
                             <div class="primary-text">
                                 {{ $resourceName }}
                             </div>
 
                             <div class="secondary-text">
-
                                 {{ $resourceTypeLabel }}
 
                                 @if ($buildingName)
                                     · {{ $buildingName }}
                                 @endif
-
                             </div>
-
                         </td>
 
                         <td>
-
                             <div class="primary-text">
                                 {{ $reservation->starts_at?->format('d M Y') }}
                             </div>
 
                             <div class="secondary-text">
-
                                 {{ $reservation->starts_at?->format('H:i') }}
                                 -
                                 {{ $reservation->ends_at?->format('H:i') }}
-
                             </div>
-
                         </td>
 
                         <td>
@@ -338,11 +280,9 @@
                         </td>
 
                         <td>
-
                             <div class="secondary-text">
                                 {{ $reservation->created_at?->format('d M Y H:i') }}
                             </div>
-
                         </td>
 
                         <td>
@@ -350,7 +290,7 @@
                             @if ($reservation->status === 'PENDING')
 
                                 <a
-                                    href="{{ route('coordinator.reservations.show', $reservation) }}"
+                                    href="{{ route('building-coordinator.reservations.show', $reservation) }}"
                                     class="button take-action button-small"
                                 >
                                     TAKE ACTION!
@@ -359,7 +299,7 @@
                             @else
 
                                 <a
-                                    href="{{ route('coordinator.reservations.show', $reservation) }}"
+                                    href="{{ route('building-coordinator.reservations.show', $reservation) }}"
                                     class="button button-secondary button-small"
                                 >
                                     Detail
@@ -374,15 +314,11 @@
                 @empty
 
                     <tr>
-
                         <td colspan="7">
-
                             <div class="empty-state">
                                 No reservations found.
                             </div>
-
                         </td>
-
                     </tr>
 
                 @endforelse
@@ -398,7 +334,6 @@
         <div class="pagination-row">
 
             <div class="pagination-info">
-
                 Showing
                 {{ $reservations->firstItem() ?? 0 }}
                 to
@@ -406,20 +341,11 @@
                 of
                 {{ $reservations->total() }}
                 results
-
             </div>
 
             <div class="pagination-links">
 
-                @foreach (
-                    $reservations->getUrlRange(
-                        max(1, $reservations->currentPage() - 2),
-                        min(
-                            $reservations->lastPage(),
-                            $reservations->currentPage() + 2
-                        )
-                    ) as $page => $url
-                )
+                @foreach ($reservations->getUrlRange(1, $reservations->lastPage()) as $page => $url)
 
                     <a
                         href="{{ $url }}"
@@ -477,7 +403,7 @@
 
     .filter-grid {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
     }
 
@@ -735,10 +661,10 @@
         color: #b42318;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1100px) {
 
         .filter-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
     }

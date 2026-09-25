@@ -30,7 +30,17 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        $user = $request->user();
+
+        if ($user?->role?->name === 'Coordinator') {
+            return redirect()->route('coordinator.dashboard');
+        }
+
+        if ($user?->role?->name === 'Building Coordinator') {
+            return redirect()->route('building-coordinator.dashboard');
+        }
+
+        return redirect()->route('dashboard');
     }
 
     public function logout(Request $request): RedirectResponse

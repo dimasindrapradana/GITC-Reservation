@@ -18,17 +18,19 @@
 @endif
 
 <div class="page-header">
+
     <div>
         <h2>Reservation Detail</h2>
         <p>Review reservation information and take the required action.</p>
     </div>
 
     <a
-        href="{{ route('coordinator.reservations.index') }}"
+        href="{{ route('building-coordinator.reservations.index') }}"
         class="button button-secondary"
     >
         Back to Reservations
     </a>
+
 </div>
 
 <div class="detail-grid">
@@ -36,30 +38,41 @@
     <div class="detail-card">
 
         <div class="detail-card-header">
+
             <h3>Reservation Information</h3>
 
             @if ($reservation->status === 'PENDING')
+
                 <span class="status-badge status-pending">
                     Pending
                 </span>
+
             @elseif ($reservation->status === 'APPROVED')
+
                 <span class="status-badge status-approved">
                     Approved
                 </span>
+
             @elseif ($reservation->status === 'REJECTED')
+
                 <span class="status-badge status-rejected">
                     Rejected
                 </span>
+
             @elseif ($reservation->status === 'CANCELLED')
+
                 <span class="status-badge status-cancelled">
                     Cancelled
                 </span>
+
             @endif
+
         </div>
 
         <div class="detail-list">
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Reservation Number
                 </span>
@@ -67,9 +80,11 @@
                 <span class="detail-value">
                     {{ $reservation->reservation_number }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Requester
                 </span>
@@ -77,9 +92,11 @@
                 <span class="detail-value">
                     {{ $reservation->user?->name ?? '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Employee Number
                 </span>
@@ -87,39 +104,47 @@
                 <span class="detail-value">
                     {{ $reservation->user?->employee_number ?? '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Total Person
                 </span>
 
                 <span class="detail-value">
-                    {{ $reservation->total_person }}
+                    {{ $reservation->total_person ?? '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Event Name
                 </span>
 
                 <span class="detail-value">
-                    {{ $reservation->event_name }}
+                    {{ $reservation->event_name ?: '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Booker Name
                 </span>
 
                 <span class="detail-value">
-                    {{ $reservation->booker_name }}
+                    {{ $reservation->booker_name ?: '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Instructor
                 </span>
@@ -127,9 +152,11 @@
                 <span class="detail-value">
                     {{ $reservation->instructor ?: '-' }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Start
                 </span>
@@ -137,9 +164,11 @@
                 <span class="detail-value">
                     {{ $reservation->starts_at?->format('d M Y, H:i') }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     End
                 </span>
@@ -147,66 +176,79 @@
                 <span class="detail-value">
                     {{ $reservation->ends_at?->format('d M Y, H:i') }}
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Resource Type
                 </span>
 
                 <span class="detail-value">
+
                     @if ($reservation->room)
+
                         Room
+
                     @elseif ($reservation->trainingRoom)
+
                         Media Training
-                    @elseif ($reservation->field)
-                        Field
+
                     @else
+
                         -
+
                     @endif
+
                 </span>
+
             </div>
 
             <div class="detail-item">
+
                 <span class="detail-label">
                     Resource
                 </span>
 
                 <span class="detail-value">
+
                     @if ($reservation->room)
+
                         {{ $reservation->room->name }}
 
                         @if ($reservation->room->building)
+
                             <span class="detail-subvalue">
                                 {{ $reservation->room->building->name }}
                             </span>
+
                         @endif
 
                     @elseif ($reservation->trainingRoom)
+
                         {{ $reservation->trainingRoom->name }}
 
                         @if ($reservation->trainingRoom->building)
+
                             <span class="detail-subvalue">
                                 {{ $reservation->trainingRoom->building->name }}
                             </span>
-                        @endif
 
-                    @elseif ($reservation->field)
-                        {{ $reservation->field->name }}
-
-                        @if ($reservation->field->building)
-                            <span class="detail-subvalue">
-                                {{ $reservation->field->building->name }}
-                            </span>
                         @endif
 
                     @else
+
                         -
+
                     @endif
+
                 </span>
+
             </div>
 
             <div class="detail-item detail-item-full">
+
                 <span class="detail-label">
                     Additional Info
                 </span>
@@ -214,10 +256,13 @@
                 <span class="detail-value detail-description">
                     {{ $reservation->description ?: '-' }}
                 </span>
+
             </div>
 
             @if ($reservation->status === 'REJECTED')
+
                 <div class="detail-item detail-item-full">
+
                     <span class="detail-label">
                         Rejection Reason
                     </span>
@@ -225,7 +270,9 @@
                     <span class="detail-value detail-description">
                         {{ $reservation->rejection_reason ?: '-' }}
                     </span>
+
                 </div>
+
             @endif
 
         </div>
@@ -239,15 +286,20 @@
             <div id="normal-action-mode">
 
                 <div class="action-card-header">
+
                     <h3>Reservation Action</h3>
-                    <p>Choose an action for this pending reservation.</p>
+
+                    <p>
+                        Choose an action for this pending reservation.
+                    </p>
+
                 </div>
 
                 <div class="action-buttons">
 
                     <form
                         method="POST"
-                        action="{{ route('coordinator.reservations.approve', $reservation) }}"
+                        action="{{ route('building-coordinator.reservations.approve', $reservation) }}"
                     >
                         @csrf
 
@@ -257,10 +309,11 @@
                         >
                             Approve
                         </button>
+
                     </form>
 
                     <a
-                        href="{{ route('coordinator.reservations.edit', $reservation) }}"
+                        href="{{ route('building-coordinator.reservations.edit', $reservation) }}"
                         class="button button-dark button-full"
                     >
                         Edit Reservation
@@ -284,17 +337,23 @@
             >
 
                 <div class="action-card-header">
+
                     <h3>Reject Reservation</h3>
-                    <p>Provide a reason before rejecting this reservation.</p>
+
+                    <p>
+                        Provide a reason before rejecting this reservation.
+                    </p>
+
                 </div>
 
                 <form
                     method="POST"
-                    action="{{ route('coordinator.reservations.reject', $reservation) }}"
+                    action="{{ route('building-coordinator.reservations.reject', $reservation) }}"
                 >
                     @csrf
 
                     <div class="form-group">
+
                         <label for="rejection_reason">
                             Rejection Reason
                         </label>
@@ -309,10 +368,13 @@
                         ></textarea>
 
                         @error('rejection_reason')
+
                             <div class="field-error">
                                 {{ $message }}
                             </div>
+
                         @enderror
+
                     </div>
 
                     <div class="action-buttons">
@@ -345,14 +407,19 @@
         <div class="action-card">
 
             <div class="action-card-header">
+
                 <h3>Reservation Action</h3>
-                <p>This reservation is currently approved.</p>
+
+                <p>
+                    This reservation is currently approved.
+                </p>
+
             </div>
 
             <div class="action-buttons">
 
                 <a
-                    href="{{ route('coordinator.reservations.edit', $reservation) }}"
+                    href="{{ route('building-coordinator.reservations.edit', $reservation) }}"
                     class="button button-dark button-full"
                 >
                     Edit Reservation
@@ -360,7 +427,7 @@
 
                 <form
                     method="POST"
-                    action="{{ route('coordinator.reservations.cancel', $reservation) }}"
+                    action="{{ route('building-coordinator.reservations.cancel', $reservation) }}"
                     onsubmit="return confirm('Are you sure you want to cancel this reservation?');"
                 >
                     @csrf
@@ -371,6 +438,7 @@
                     >
                         Cancel Reservation
                     </button>
+
                 </form>
 
             </div>
@@ -420,10 +488,6 @@
         text-decoration: none;
         cursor: pointer;
         box-sizing: border-box;
-        transition:
-            background-color 0.15s ease,
-            border-color 0.15s ease,
-            color 0.15s ease;
     }
 
     .button-primary {
@@ -438,14 +502,14 @@
     }
 
     .button-dark {
-        background: #243b53;
-        border-color: #243b53;
+        background: #334155;
+        border-color: #334155;
         color: #ffffff;
     }
 
     .button-dark:hover {
-        background: #102a43;
-        border-color: #102a43;
+        background: #1e293b;
+        border-color: #1e293b;
     }
 
     .button-secondary {
@@ -633,8 +697,8 @@
     }
 
     .status-approved {
-        background: #edf8f1;
-        color: #176b36;
+        background: #eaf7ee;
+        color: #15803d;
     }
 
     .status-rejected {
@@ -668,12 +732,15 @@
     }
 
     @media (max-width: 900px) {
+
         .detail-grid {
             grid-template-columns: 1fr;
         }
+
     }
 
     @media (max-width: 768px) {
+
         .page-header {
             flex-direction: column;
         }
@@ -689,6 +756,7 @@
         .detail-item:last-child {
             border-bottom: none !important;
         }
+
     }
 
 </style>
@@ -697,11 +765,21 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const showRejectForm = document.getElementById('show-reject-form');
-        const cancelReject = document.getElementById('cancel-reject');
-        const normalActionMode = document.getElementById('normal-action-mode');
-        const rejectActionMode = document.getElementById('reject-action-mode');
-        const rejectionReason = document.getElementById('rejection_reason');
+
+        const showRejectForm =
+            document.getElementById('show-reject-form');
+
+        const cancelReject =
+            document.getElementById('cancel-reject');
+
+        const normalActionMode =
+            document.getElementById('normal-action-mode');
+
+        const rejectActionMode =
+            document.getElementById('reject-action-mode');
+
+        const rejectionReason =
+            document.getElementById('rejection_reason');
 
         if (
             !showRejectForm ||
@@ -713,22 +791,27 @@
         }
 
         showRejectForm.addEventListener('click', function () {
+
             normalActionMode.style.display = 'none';
             rejectActionMode.style.display = 'block';
 
             if (rejectionReason) {
                 rejectionReason.focus();
             }
+
         });
 
         cancelReject.addEventListener('click', function () {
+
             rejectActionMode.style.display = 'none';
             normalActionMode.style.display = 'block';
 
             if (rejectionReason) {
                 rejectionReason.value = '';
             }
+
         });
+
     });
 </script>
 @endpush

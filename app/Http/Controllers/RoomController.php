@@ -27,8 +27,8 @@ class RoomController extends Controller
         $sort = $request->string('sort')
             ->toString();
 
-        if (!in_array($sort, ['asc', 'desc'], true)) {
-            $sort = 'desc';
+        if (!in_array($sort, ['newest', 'oldest'], true)) {
+            $sort = 'newest';
         }
 
         $rooms = Room::query()
@@ -86,14 +86,22 @@ class RoomController extends Controller
 
             })
 
-            ->orderBy(
-                'created_at',
-                $sort
-            )
-            ->orderBy(
-                'name',
-                'asc'
-            )
+            ->when($sort === 'oldest', function ($query) {
+
+                $query
+                    ->orderBy('created_at', 'asc')
+                    ->orderBy('id', 'asc');
+
+            })
+
+            ->when($sort === 'newest', function ($query) {
+
+                $query
+                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc');
+
+            })
+
             ->paginate(10)
             ->withQueryString();
 

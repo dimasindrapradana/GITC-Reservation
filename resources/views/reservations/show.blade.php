@@ -133,8 +133,8 @@
     }
 
     .status-approved {
-        background: #eaf5fb;
-        color: #006fae;
+        background: #eaf7ee;
+        color: #15803d;
     }
 
     .status-rejected {
@@ -289,13 +289,43 @@
 
             <div class="detail-row">
                 <div class="detail-label">
+                    Event Name
+                </div>
+
+                <div class="detail-value">
+                    {{ $reservation->event_name ?: '-' }}
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    Booker Name
+                </div>
+
+                <div class="detail-value">
+                    {{ $reservation->booker_name ?: '-' }}
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    Total Person
+                </div>
+
+                <div class="detail-value">
+                    {{ $reservation->total_person }}
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
                     Schedule
                 </div>
 
                 <div class="detail-value">
                     {{ $reservation->starts_at->format('d M Y, H:i') }}
                     -
-                    {{ $reservation->ends_at->format('H:i') }}
+                    {{ $reservation->ends_at->format('d M Y, H:i') }}
                 </div>
             </div>
 
@@ -311,7 +341,7 @@
 
             <div class="detail-row">
                 <div class="detail-label">
-                    Description
+                    Additional Info
                 </div>
 
                 <div class="detail-value">
@@ -377,7 +407,7 @@
                 $capacity = $reservation->room->capacity;
             } elseif ($reservation->trainingRoom) {
                 $resourceName = $reservation->trainingRoom->name;
-                $resourceType = 'Training Room';
+                $resourceType = 'Media Training';
                 $resourceLocation = $reservation->trainingRoom->building->name ?? '-';
                 $capacity = $reservation->trainingRoom->capacity;
             } elseif ($reservation->field) {
@@ -424,6 +454,7 @@
                 </div>
 
                 @if ($reservation->room)
+
                     <div class="meta-item">
                         <span class="meta-label">
                             LCD
@@ -443,9 +474,11 @@
                             {{ $reservation->room->whiteboard_count }}
                         </span>
                     </div>
+
                 @endif
 
                 @if ($reservation->trainingRoom)
+
                     <div class="meta-item">
                         <span class="meta-label">
                             Simulation Type
@@ -455,6 +488,7 @@
                             {{ $reservation->trainingRoom->simulation_type }}
                         </span>
                     </div>
+
                 @endif
 
             </div>

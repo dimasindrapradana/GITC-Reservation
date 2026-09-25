@@ -18,6 +18,9 @@ class Reservation extends Model
         'field_id',
         'starts_at',
         'ends_at',
+        'total_person',
+        'event_name',
+        'booker_name',
         'instructor',
         'description',
         'status',
@@ -29,6 +32,7 @@ class Reservation extends Model
         return [
             'starts_at' => 'datetime',
             'ends_at' => 'datetime',
+            'total_person' => 'integer',
         ];
     }
 

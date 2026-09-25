@@ -574,6 +574,10 @@
 
         <div class="sidebar-content">
 
+            @php
+                $userRole = auth()->user()->role->name;
+            @endphp
+
             {{-- Main --}}
             <div class="menu-section">
 
@@ -581,7 +585,7 @@
                     Main
                 </div>
 
-                @if(auth()->user()->role->name === 'Admin')
+                @if($userRole === 'Admin')
 
                     <a
                         href="{{ route('admin.dashboard') }}"
@@ -591,11 +595,21 @@
                         <span>Dashboard</span>
                     </a>
 
-                @elseif(auth()->user()->role->name === 'Coordinator')
+                @elseif($userRole === 'Coordinator')
 
                     <a
                         href="{{ route('coordinator.dashboard') }}"
                         class="menu-link {{ request()->routeIs('coordinator.dashboard') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">⌂</span>
+                        <span>Dashboard</span>
+                    </a>
+
+                @elseif($userRole === 'Building Coordinator')
+
+                    <a
+                        href="{{ route('building-coordinator.dashboard') }}"
+                        class="menu-link {{ request()->routeIs('building-coordinator.dashboard') ? 'active' : '' }}"
                     >
                         <span class="menu-icon">⌂</span>
                         <span>Dashboard</span>
@@ -606,7 +620,7 @@
             </div>
 
             {{-- News --}}
-            @if(auth()->user()->role->name === 'Admin')
+            @if($userRole === 'Admin')
 
                 <div class="menu-section">
 
@@ -627,7 +641,7 @@
             @endif
 
             {{-- Reservation --}}
-            @if(auth()->user()->role->name === 'Admin')
+            @if($userRole === 'Admin')
 
                 <div class="menu-section">
 
@@ -645,7 +659,7 @@
 
                 </div>
 
-            @elseif(auth()->user()->role->name === 'Coordinator')
+            @elseif($userRole === 'Coordinator')
 
                 <div class="menu-section">
 
@@ -663,10 +677,28 @@
 
                 </div>
 
+            @elseif($userRole === 'Building Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Reservation
+                    </div>
+
+                    <a
+                        href="{{ route('building-coordinator.reservations.index') }}"
+                        class="menu-link {{ request()->routeIs('building-coordinator.reservations.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">◫</span>
+                        <span>Reservations</span>
+                    </a>
+
+                </div>
+
             @endif
 
             {{-- Reports --}}
-            @if(auth()->user()->role->name === 'Coordinator')
+            @if($userRole === 'Coordinator')
 
                 <div class="menu-section">
 
@@ -684,10 +716,28 @@
 
                 </div>
 
+            @elseif($userRole === 'Building Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Reports
+                    </div>
+
+                    <a
+                        href="{{ route('building-coordinator.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">▥</span>
+                        <span>Reservation Report</span>
+                    </a>
+
+                </div>
+
             @endif
 
             {{-- Master Data --}}
-            @if(auth()->user()->role->name === 'Admin')
+            @if($userRole === 'Admin')
 
                 <div class="menu-section">
 
@@ -732,7 +782,7 @@
             @endif
 
             {{-- System --}}
-            @if(auth()->user()->role->name === 'Admin')
+            @if($userRole === 'Admin')
 
                 <div class="menu-section">
 
@@ -740,9 +790,9 @@
                         System
                     </div>
 
-                    <a
-                        href="#"
-                        class="menu-link"
+                   <a
+                        href="{{ route('users.index') }}"
+                        class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
                     >
                         <span class="menu-icon">♙</span>
                         <span>Users</span>

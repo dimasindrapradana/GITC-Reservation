@@ -16,7 +16,7 @@
 
             <form
                 method="GET"
-                action="{{ route('coordinator.reports.reservations') }}"
+                action="{{ route('building-coordinator.reports.reservations') }}"
                 class="filter-form"
             >
 
@@ -186,7 +186,7 @@
                     </button>
 
                     <a
-                        href="{{ route('coordinator.reports.reservations') }}"
+                        href="{{ route('building-coordinator.reports.reservations') }}"
                         class="button button-secondary"
                     >
                         Reset
@@ -194,7 +194,7 @@
 
                     <a
                         href="{{ route(
-                            'coordinator.reports.reservations.export',
+                            'building-coordinator.reports.reservations.export',
                             request()->query()
                         ) }}"
                         class="button button-export"
@@ -375,9 +375,9 @@
 
                                 <a
                                     href="{{ route(
-                                    'coordinator.reports.reservations.show',
-                                    $reservation
-                                ) }}"
+                                        'building-coordinator.reports.reservations.show',
+                                        $reservation
+                                    ) }}"
                                     class="button button-detail"
                                 >
                                     View Detail

@@ -1,25 +1,25 @@
 @extends('layouts.admin')
 
-@section('title', 'Training Rooms')
-@section('page_title', 'Training Rooms')
+@section('title', 'Users')
+@section('page_title', 'Users')
 
 @section('content')
 
 <div class="page-header">
 
     <div>
-        <h2>Media Training</h2>
+        <h2>Users</h2>
 
         <p class="page-description">
-            Manage Media Training and their availability.
+            Manage user accounts and access roles.
         </p>
     </div>
 
     <a
-        href="{{ route('training-rooms.create') }}"
+        href="{{ route('users.create') }}"
         class="btn btn-primary"
     >
-        Add Media Training
+        Add User
     </a>
 
 </div>
@@ -45,19 +45,17 @@
     <div class="card-header">
 
         <div>
-            <h3>Media Training List</h3>
+            <h3>User List</h3>
 
             <p>
-                All registered Media Training.
+                All registered users.
             </p>
         </div>
 
     </div>
 
-    {{-- Search & Filter --}}
-
     <form
-        action="{{ route('training-rooms.index') }}"
+        action="{{ route('users.index') }}"
         method="GET"
         class="filter-form"
     >
@@ -74,107 +72,40 @@
                 name="search"
                 value="{{ $search }}"
                 class="filter-control search-control"
-                placeholder="Search training room or building..."
+                placeholder="Search name, username, email..."
             >
 
         </div>
 
         <div class="filter-group">
 
-            <label for="building">
-                Building
+            <label for="role">
+                Role
             </label>
 
             <select
-                id="building"
-                name="building"
+                id="role"
+                name="role"
                 class="filter-control"
             >
 
                 <option
                     value=""
-                    @selected($building === '')
+                    @selected($role === '')
                 >
-                    All Buildings
+                    All Roles
                 </option>
 
-                @foreach ($buildings as $item)
+                @foreach ($roles as $item)
 
                     <option
-                        value="{{ $item->id }}"
-                        @selected((string) $building === (string) $item->id)
+                        value="{{ $item->name }}"
+                        @selected($role === $item->name)
                     >
                         {{ $item->name }}
                     </option>
 
                 @endforeach
-
-            </select>
-
-        </div>
-
-        <div class="filter-group">
-
-            <label for="filter">
-                Status
-            </label>
-
-            <select
-                id="filter"
-                name="filter"
-                class="filter-control"
-            >
-
-                <option
-                    value=""
-                    @selected($filter === '')
-                >
-                    All Media Training
-                </option>
-
-                <option
-                    value="available"
-                    @selected($filter === 'available')
-                >
-                    Available
-                </option>
-
-                <option
-                    value="maintenance"
-                    @selected($filter === 'maintenance')
-                >
-                    Maintenance
-                </option>
-
-            </select>
-
-        </div>
-
-        <div class="filter-group">
-
-            <label for="sort">
-                Sort By
-            </label>
-
-            <select
-                id="sort"
-                name="sort"
-                class="filter-control"
-            >
-
-                <option
-                    value="newest"
-                    @selected($sort === 'newest')
-                >
-                    Newest
-                </option>
-
-                <option
-                    value="oldest"
-                    @selected($sort === 'oldest')
-                >
-                    Oldest
-                </option>
 
             </select>
 
@@ -190,7 +121,7 @@
             </button>
 
             <a
-                href="{{ route('training-rooms.index') }}"
+                href="{{ route('users.index') }}"
                 class="btn btn-secondary"
             >
                 Reset
@@ -209,12 +140,12 @@
                 <tr>
 
                     <th>No.</th>
-                    <th>Media Training</th>
+                    <th>Employee Number</th>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
                     <th>Building</th>
-                    <th>Capacity</th>
-                    <th>Simulation Type</th>
-                    <th>Status</th>
-                    <th>Reservations</th>
                     <th>Actions</th>
 
                 </tr>
@@ -223,46 +154,66 @@
 
             <tbody>
 
-                @forelse ($trainingRooms as $trainingRoom)
+                @forelse ($users as $user)
 
                     <tr>
 
                         <td>
-                            {{ $trainingRooms->firstItem() + $loop->index }}
+                            {{ $users->firstItem() + $loop->index }}
+                        </td>
+
+                        <td>
+                            {{ $user->employee_number }}
                         </td>
 
                         <td>
 
                             <strong>
-                                {{ $trainingRoom->name }}
+                                {{ $user->name }}
                             </strong>
 
                         </td>
 
                         <td>
-                            {{ $trainingRoom->building->name }}
+                            {{ $user->username }}
                         </td>
 
                         <td>
-                            {{ $trainingRoom->capacity }}
-                        </td>
-
-                        <td>
-                            {{ $trainingRoom->simulation_type }}
+                            {{ $user->email }}
                         </td>
 
                         <td>
 
-                            <span
-                                class="status-badge status-{{ strtolower($trainingRoom->status) }}"
-                            >
-                                {{ $trainingRoom->status }}
+                            <span class="role-badge">
+                                {{ $user->role?->name ?? '-' }}
                             </span>
 
                         </td>
 
                         <td>
-                            {{ $trainingRoom->reservations_count }}
+
+                            @if ($user->role?->name === 'Building Coordinator')
+
+                                @if ($user->buildings->isNotEmpty())
+
+                                    {{ $user->buildings->pluck('name')->join(', ') }}
+
+                                @else
+
+                                    <span class="muted">
+                                        Not assigned
+                                    </span>
+
+                                @endif
+
+                            @else
+
+                                <span class="muted">
+                                    —
+                                </span>
+
+                            @endif
+
                         </td>
 
                         <td>
@@ -270,36 +221,33 @@
                             <div class="action-group">
 
                                 <a
-                                    href="{{ route('training-rooms.show', $trainingRoom) }}"
-                                    class="action-link detail"
-                                >
-                                    Detail
-                                </a>
-
-                                <a
-                                    href="{{ route('training-rooms.edit', $trainingRoom) }}"
+                                    href="{{ route('users.edit', $user) }}"
                                     class="action-link edit"
                                 >
                                     Edit
                                 </a>
 
-                                <form
-                                    action="{{ route('training-rooms.destroy', $trainingRoom) }}"
-                                    method="POST"
-                                    onsubmit="return confirm('Are you sure you want to delete this training room?');"
-                                >
+                                @if ($user->id !== auth()->id())
 
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button
-                                        type="submit"
-                                        class="action-link delete"
+                                    <form
+                                        action="{{ route('users.destroy', $user) }}"
+                                        method="POST"
+                                        onsubmit="return confirm('Are you sure you want to delete this user?');"
                                     >
-                                        Delete
-                                    </button>
 
-                                </form>
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="action-link delete"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                @endif
 
                             </div>
 
@@ -315,7 +263,7 @@
                             colspan="8"
                             class="empty-table"
                         >
-                            No Media Training available.
+                            No users available.
                         </td>
 
                     </tr>
@@ -328,18 +276,18 @@
 
     </div>
 
-    @if ($trainingRooms->hasPages())
+    @if ($users->hasPages())
 
         <div class="pagination-wrapper">
 
             <div class="pagination-info">
 
                 Showing
-                {{ $trainingRooms->firstItem() }}
+                {{ $users->firstItem() }}
                 to
-                {{ $trainingRooms->lastItem() }}
+                {{ $users->lastItem() }}
                 of
-                {{ $trainingRooms->total() }}
+                {{ $users->total() }}
                 results
 
             </div>
@@ -348,11 +296,11 @@
 
                 @for (
                     $page = 1;
-                    $page <= $trainingRooms->lastPage();
+                    $page <= $users->lastPage();
                     $page++
                 )
 
-                    @if ($page === $trainingRooms->currentPage())
+                    @if ($page === $users->currentPage())
 
                         <span class="pagination-page active">
                             {{ $page }}
@@ -361,7 +309,7 @@
                     @else
 
                         <a
-                            href="{{ $trainingRooms->url($page) }}"
+                            href="{{ $users->url($page) }}"
                             class="pagination-page"
                         >
                             {{ $page }}
@@ -429,8 +377,6 @@
         font-size: 13px;
     }
 
-    /* Search & Filter */
-
     .filter-form {
         display: flex;
         align-items: flex-end;
@@ -453,7 +399,7 @@
     }
 
     .filter-group {
-        width: 170px;
+        width: 200px;
     }
 
     .search-group label,
@@ -494,8 +440,6 @@
         min-height: 38px;
     }
 
-    /* Table */
-
     .table-wrapper {
         overflow-x: auto;
     }
@@ -535,27 +479,20 @@
         font-weight: 700;
     }
 
-    /* Status */
-
-    .status-badge {
+    .role-badge {
         display: inline-flex;
+        align-items: center;
         padding: 6px 10px;
         border-radius: 20px;
+        background: #eaf5fb;
+        color: #006fae;
         font-size: 10px;
         font-weight: 700;
     }
 
-    .status-available {
-        background: #eaf5fb;
-        color: #006fae;
+    .muted {
+        color: #9aabb9;
     }
-
-    .status-maintenance {
-        background: #fff3d6;
-        color: #8a6200;
-    }
-
-    /* Actions */
 
     .action-group {
         display: flex;
@@ -582,12 +519,6 @@
         cursor: pointer;
     }
 
-    .action-link.detail {
-        border-color: #c9dfe9;
-        background: #f2f9fc;
-        color: #006fae;
-    }
-
     .action-link.edit {
         border-color: #d0dce5;
         background: #ffffff;
@@ -604,15 +535,11 @@
         filter: brightness(.97);
     }
 
-    /* Empty */
-
     .empty-table {
         padding: 50px 20px !important;
         color: #668096 !important;
         text-align: center;
     }
-
-    /* Pagination */
 
     .pagination-wrapper {
         display: flex;
@@ -665,8 +592,6 @@
         color: #ffffff;
     }
 
-    /* Buttons */
-
     .btn {
         display: inline-flex;
         align-items: center;
@@ -704,8 +629,6 @@
         color: #006fae;
     }
 
-    /* Alerts */
-
     .alert {
         margin-bottom: 20px;
         padding: 14px 16px;
@@ -724,8 +647,6 @@
         background: #fff7f7;
         color: #9b2c2c;
     }
-
-    /* Responsive */
 
     @media (max-width: 1100px) {
 

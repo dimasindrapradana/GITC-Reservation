@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\BuildingCoordinatorDashboardController;
+use App\Http\Controllers\BuildingCoordinatorReportController;
+use App\Http\Controllers\BuildingCoordinatorReservationController;
 use App\Http\Controllers\CoordinatorDashboardController;
 use App\Http\Controllers\CoordinatorReportController;
 use App\Http\Controllers\CoordinatorReservationController;
@@ -13,6 +16,7 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\TrainingRoomController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -64,6 +68,13 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
         '/admin',
         [DashboardController::class, 'index']
     )->name('admin.dashboard');
+
+    Route::resource(
+        'users',
+        UserController::class
+    )->except([
+        'show',
+    ]);
 
     Route::resource(
         'buildings',
@@ -186,6 +197,71 @@ Route::middleware(['auth', 'role:Admin'])->group(function () {
 
 });
 
+Route::middleware([
+    'auth',
+    'building.coordinator',
+])
+    ->prefix('building-coordinator')
+    ->name('building-coordinator.')
+    ->group(function () {
+
+        Route::get(
+            '/dashboard',
+            [BuildingCoordinatorDashboardController::class, 'index']
+        )->name('dashboard');
+
+        Route::get(
+            '/reservations',
+            [BuildingCoordinatorReservationController::class, 'index']
+        )->name('reservations.index');
+
+        Route::get(
+            '/reservations/{reservation}/edit',
+            [BuildingCoordinatorReservationController::class, 'edit']
+        )->name('reservations.edit');
+
+        Route::get(
+            '/reservations/{reservation}',
+            [BuildingCoordinatorReservationController::class, 'show']
+        )->name('reservations.show');
+
+        Route::put(
+            '/reservations/{reservation}',
+            [BuildingCoordinatorReservationController::class, 'update']
+        )->name('reservations.update');
+
+        Route::post(
+            '/reservations/{reservation}/approve',
+            [BuildingCoordinatorReservationController::class, 'approve']
+        )->name('reservations.approve');
+
+        Route::post(
+            '/reservations/{reservation}/reject',
+            [BuildingCoordinatorReservationController::class, 'reject']
+        )->name('reservations.reject');
+
+        Route::post(
+            '/reservations/{reservation}/cancel',
+            [BuildingCoordinatorReservationController::class, 'cancel']
+        )->name('reservations.cancel');
+
+        Route::get(
+            '/reports/reservations',
+            [BuildingCoordinatorReportController::class, 'reservationReport']
+        )->name('reports.reservations');
+
+        Route::get(
+            '/reports/reservations/export',
+            [BuildingCoordinatorReportController::class, 'exportReservationReport']
+        )->name('reports.reservations.export');
+
+        Route::get(
+            '/reports/reservations/{reservation}',
+            [BuildingCoordinatorReportController::class, 'showReservationReport']
+        )->name('reports.reservations.show');
+
+    });
+
 Route::middleware(['auth', 'role:Coordinator'])
     ->prefix('coordinator')
     ->name('coordinator.')
@@ -202,9 +278,19 @@ Route::middleware(['auth', 'role:Coordinator'])
         )->name('reservations.index');
 
         Route::get(
+            '/reservations/{reservation}/edit',
+            [CoordinatorReservationController::class, 'edit']
+        )->name('reservations.edit');
+
+        Route::get(
             '/reservations/{reservation}',
             [CoordinatorReservationController::class, 'show']
         )->name('reservations.show');
+
+        Route::put(
+            '/reservations/{reservation}',
+            [CoordinatorReservationController::class, 'update']
+        )->name('reservations.update');
 
         Route::post(
             '/reservations/{reservation}/approve',
@@ -230,4 +316,10 @@ Route::middleware(['auth', 'role:Coordinator'])
             '/reports/reservations/export',
             [CoordinatorReportController::class, 'exportReservationReport']
         )->name('reports.reservations.export');
+
+        Route::get(
+            '/reports/reservations/{reservation}',
+            [CoordinatorReportController::class, 'showReservationReport']
+        )->name('reports.reservations.show');
+
     });

@@ -35,7 +35,14 @@ return new class extends Migration
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
 
+            $table->unsignedInteger('total_person');
+
+            $table->string('event_name');
+
+            $table->string('booker_name');
+
             $table->text('instructor')->nullable();
+
             $table->text('description');
 
             $table->string('status', 20)->default('PENDING');

@@ -173,31 +173,17 @@
                     name="sort"
                 >
                     <option
-                        value="schedule_desc"
-                        @selected($sort === 'schedule_desc')
-                    >
-                        Latest Schedule
-                    </option>
-
-                    <option
-                        value="schedule_asc"
-                        @selected($sort === 'schedule_asc')
-                    >
-                        Earliest Schedule
-                    </option>
-
-                    <option
                         value="created_desc"
                         @selected($sort === 'created_desc')
                     >
-                        Newest Created
+                        Newest
                     </option>
 
                     <option
                         value="created_asc"
                         @selected($sort === 'created_asc')
                     >
-                        Oldest Created
+                        Oldest
                     </option>
                 </select>
             </div>

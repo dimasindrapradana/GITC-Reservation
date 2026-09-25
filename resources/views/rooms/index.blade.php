@@ -54,8 +54,6 @@
 
     </div>
 
-    {{-- Search & Filter --}}
-
     <form
         action="{{ route('rooms.index') }}"
         method="GET"
@@ -163,17 +161,17 @@
             >
 
                 <option
-                    value="desc"
-                    @selected($sort === 'desc')
+                    value="newest"
+                    @selected($sort === 'newest')
                 >
-                    Newest First
+                    Newest
                 </option>
 
                 <option
-                    value="asc"
-                    @selected($sort === 'asc')
+                    value="oldest"
+                    @selected($sort === 'oldest')
                 >
-                    Oldest First
+                    Oldest
                 </option>
 
             </select>
@@ -434,8 +432,6 @@
         font-size: 13px;
     }
 
-    /* Search & Filter */
-
     .filter-form {
         display: flex;
         align-items: flex-end;
@@ -499,8 +495,6 @@
         min-height: 38px;
     }
 
-    /* Table */
-
     .table-wrapper {
         overflow-x: auto;
     }
@@ -540,8 +534,6 @@
         font-weight: 700;
     }
 
-    /* Status */
-
     .status-badge {
         display: inline-flex;
         padding: 6px 10px;
@@ -559,8 +551,6 @@
         background: #fff3d6;
         color: #8a6200;
     }
-
-    /* Actions */
 
     .action-group {
         display: flex;
@@ -609,15 +599,11 @@
         filter: brightness(.97);
     }
 
-    /* Empty */
-
     .empty-table {
         padding: 50px 20px !important;
         color: #668096 !important;
         text-align: center;
     }
-
-    /* Pagination */
 
     .pagination-wrapper {
         display: flex;
@@ -670,8 +656,6 @@
         color: #ffffff;
     }
 
-    /* Buttons */
-
     .btn {
         display: inline-flex;
         align-items: center;
@@ -709,8 +693,6 @@
         color: #006fae;
     }
 
-    /* Alerts */
-
     .alert {
         margin-bottom: 20px;
         padding: 14px 16px;
@@ -729,8 +711,6 @@
         background: #fff7f7;
         color: #9b2c2c;
     }
-
-    /* Responsive */
 
     @media (max-width: 1100px) {
 

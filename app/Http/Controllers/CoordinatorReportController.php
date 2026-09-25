@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CoordinatorReservationReportExport;
 use App\Models\Building;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\CoordinatorReservationReportExport;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class CoordinatorReportController extends Controller
 {
@@ -73,12 +73,38 @@ class CoordinatorReportController extends Controller
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query
-                        ->where('reservation_number', 'like', '%' . $search . '%')
-                        ->orWhere('instructor', 'like', '%' . $search . '%')
-                        ->orWhere('description', 'like', '%' . $search . '%')
+                        ->where(
+                            'reservation_number',
+                            'like',
+                            '%' . $search . '%'
+                        )
+                        ->orWhere(
+                            'event_name',
+                            'like',
+                            '%' . $search . '%'
+                        )
+                        ->orWhere(
+                            'booker_name',
+                            'like',
+                            '%' . $search . '%'
+                        )
+                        ->orWhere(
+                            'instructor',
+                            'like',
+                            '%' . $search . '%'
+                        )
+                        ->orWhere(
+                            'description',
+                            'like',
+                            '%' . $search . '%'
+                        )
                         ->orWhereHas('user', function ($query) use ($search) {
                             $query
-                                ->where('name', 'like', '%' . $search . '%')
+                                ->where(
+                                    'name',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
                                 ->orWhere(
                                     'employee_number',
                                     'like',
@@ -129,6 +155,7 @@ class CoordinatorReportController extends Controller
 
         $reservations = $query
             ->orderBy('starts_at', 'asc')
+            ->orderBy('id', 'asc')
             ->paginate(10)
             ->withQueryString();
 
@@ -151,6 +178,26 @@ class CoordinatorReportController extends Controller
             'rejected' => $rejected,
             'cancelled' => $cancelled,
         ]);
+    }
+
+    public function showReservationReport(
+        Reservation $reservation
+    ): View {
+        $reservation->load([
+            'user',
+            'room.building',
+            'room.images',
+            'trainingRoom.building',
+            'trainingRoom.images',
+            'field.images',
+        ]);
+
+        return view(
+            'coordinator.reports.reservation-detail',
+            [
+                'reservation' => $reservation,
+            ]
+        );
     }
 
     public function exportReservationReport(

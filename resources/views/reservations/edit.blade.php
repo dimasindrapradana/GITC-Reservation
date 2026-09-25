@@ -93,6 +93,35 @@
         ->unique('id')
         ->sortBy('name')
         ->values();
+
+    $oldStartsAt = old(
+        'starts_at',
+        $reservation->starts_at
+            ? $reservation->starts_at->format('Y-m-d\TH:i')
+            : ''
+    );
+
+    $oldEndsAt = old(
+        'ends_at',
+        $reservation->ends_at
+            ? $reservation->ends_at->format('Y-m-d\TH:i')
+            : ''
+    );
+
+    $oldStartDate = '';
+    $oldStartTime = '';
+    $oldEndDate = '';
+    $oldEndTime = '';
+
+    if ($oldStartsAt) {
+        $oldStartDate = substr($oldStartsAt, 0, 10);
+        $oldStartTime = substr($oldStartsAt, 11, 5);
+    }
+
+    if ($oldEndsAt) {
+        $oldEndDate = substr($oldEndsAt, 0, 10);
+        $oldEndTime = substr($oldEndsAt, 11, 5);
+    }
 @endphp
 
 <style>
@@ -377,13 +406,6 @@
         display: block;
     }
 
-    .maintenance-note {
-        margin-top: 7px;
-        color: #8a6200;
-        font-size: 11px;
-        line-height: 1.5;
-    }
-
     .form-footer {
         display: flex;
         align-items: center;
@@ -466,7 +488,6 @@
         .form-footer {
             padding: 14px 18px;
         }
-
     }
 
     @media (max-width: 480px) {
@@ -479,7 +500,6 @@
         .button {
             width: 100%;
         }
-
     }
 </style>
 
@@ -799,7 +819,6 @@
                                 id="room_id"
                                 class="form-select resource-select"
                                 data-resource-type="room"
-                                data-placeholder="Select room"
                             >
 
                                 <option value="">
@@ -910,7 +929,6 @@
                                 id="training_room_id"
                                 class="form-select resource-select"
                                 data-resource-type="training_room"
-                                data-placeholder="Select Media Training"
                             >
 
                                 <option value="">
@@ -1040,68 +1058,98 @@
                     <div class="form-group">
 
                         <label
-                            for="starts_at"
+                            for="start_date"
                             class="form-label"
                         >
-                            Start Date & Time
+                            Start Date
                             <span class="required">*</span>
                         </label>
 
                         <input
-                            type="datetime-local"
-                            name="starts_at"
-                            id="starts_at"
+                            type="date"
+                            id="start_date"
                             class="form-input"
-                            value="{{ old(
-                                'starts_at',
-                                $reservation->starts_at
-                                    ->format('Y-m-d\TH:i')
-                            ) }}"
+                            value="{{ $oldStartDate }}"
                             required
                         >
-
-                        @error('starts_at')
-
-                            <div class="field-error">
-                                {{ $message }}
-                            </div>
-
-                        @enderror
 
                     </div>
 
                     <div class="form-group">
 
                         <label
-                            for="ends_at"
+                            for="start_time"
                             class="form-label"
                         >
-                            End Date & Time
+                            Start Time
                             <span class="required">*</span>
                         </label>
 
                         <input
-                            type="datetime-local"
-                            name="ends_at"
-                            id="ends_at"
+                            type="time"
+                            id="start_time"
                             class="form-input"
-                            value="{{ old(
-                                'ends_at',
-                                $reservation->ends_at
-                                    ->format('Y-m-d\TH:i')
-                            ) }}"
+                            value="{{ $oldStartTime }}"
+                            step="60"
                             required
                         >
 
-                        @error('ends_at')
+                    </div>
 
-                            <div class="field-error">
-                                {{ $message }}
-                            </div>
+                    <div class="form-group">
 
-                        @enderror
+                        <label
+                            for="end_date"
+                            class="form-label"
+                        >
+                            End Date
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="date"
+                            id="end_date"
+                            class="form-input"
+                            value="{{ $oldEndDate }}"
+                            required
+                        >
 
                     </div>
+
+                    <div class="form-group">
+
+                        <label
+                            for="end_time"
+                            class="form-label"
+                        >
+                            End Time
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="time"
+                            id="end_time"
+                            class="form-input"
+                            value="{{ $oldEndTime }}"
+                            step="60"
+                            required
+                        >
+
+                    </div>
+
+                    <input
+                        type="hidden"
+                        name="starts_at"
+                        id="starts_at"
+                        value="{{ $oldStartsAt }}"
+                    >
+
+                    <input
+                        type="hidden"
+                        name="ends_at"
+                        id="ends_at"
+                        value="{{ $oldEndsAt }}"
+                    >
 
                     <div class="form-group full">
 
@@ -1117,19 +1165,136 @@
 
                 </div>
 
+                @error('starts_at')
+
+                    <div class="field-error">
+                        {{ $message }}
+                    </div>
+
+                @enderror
+
+                @error('ends_at')
+
+                    <div class="field-error">
+                        {{ $message }}
+                    </div>
+
+                @enderror
+
             </div>
 
-            {{-- Additional Details --}}
+            {{-- Reservation Details --}}
 
             <div class="form-section">
 
                 <h3 class="section-title">
-                    Additional Details
+                    Reservation Details
                 </h3>
 
                 <div class="form-grid">
 
-                    <div class="form-group full">
+                    <div class="form-group">
+
+                        <label
+                            for="event_name"
+                            class="form-label"
+                        >
+                            Event Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="event_name"
+                            id="event_name"
+                            class="form-input"
+                            value="{{ old(
+                                'event_name',
+                                $reservation->event_name
+                            ) }}"
+                            placeholder="Enter event name"
+                            required
+                        >
+
+                        @error('event_name')
+
+                            <div class="field-error">
+                                {{ $message }}
+                            </div>
+
+                        @enderror
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label
+                            for="booker_name"
+                            class="form-label"
+                        >
+                            Booker Name
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="text"
+                            name="booker_name"
+                            id="booker_name"
+                            class="form-input"
+                            value="{{ old(
+                                'booker_name',
+                                $reservation->booker_name
+                            ) }}"
+                            placeholder="Enter booker name"
+                            required
+                        >
+
+                        @error('booker_name')
+
+                            <div class="field-error">
+                                {{ $message }}
+                            </div>
+
+                        @enderror
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label
+                            for="total_person"
+                            class="form-label"
+                        >
+                            Total Person
+                            <span class="required">*</span>
+                        </label>
+
+                        <input
+                            type="number"
+                            name="total_person"
+                            id="total_person"
+                            class="form-input"
+                            value="{{ old(
+                                'total_person',
+                                $reservation->total_person
+                            ) }}"
+                            min="1"
+                            step="1"
+                            placeholder="Enter total person"
+                            required
+                        >
+
+                        @error('total_person')
+
+                            <div class="field-error">
+                                {{ $message }}
+                            </div>
+
+                        @enderror
+
+                    </div>
+
+                    <div class="form-group">
 
                         <label
                             for="instructor"
@@ -1170,7 +1335,7 @@
                             for="description"
                             class="form-label"
                         >
-                            Description
+                            Additional Info
                             <span class="required">*</span>
                         </label>
 
@@ -1178,7 +1343,7 @@
                             name="description"
                             id="description"
                             class="form-textarea"
-                            placeholder="Enter reservation details"
+                            placeholder="Enter additional information"
                             required
                         >{{ old(
                             'description',
@@ -1233,6 +1398,24 @@
         const resourceType =
             document.getElementById('resource_type');
 
+        const startDate =
+            document.getElementById('start_date');
+
+        const startTime =
+            document.getElementById('start_time');
+
+        const endDate =
+            document.getElementById('end_date');
+
+        const endTime =
+            document.getElementById('end_time');
+
+        const startsAt =
+            document.getElementById('starts_at');
+
+        const endsAt =
+            document.getElementById('ends_at');
+
         const resourceOptions = {
             room:
                 document.getElementById('room-resource'),
@@ -1277,14 +1460,64 @@
                 ),
         };
 
+        function updateScheduleValues() {
+
+            if (
+                startDate.value
+                && startTime.value
+            ) {
+                startsAt.value =
+                    startDate.value
+                    + 'T'
+                    + startTime.value;
+            } else {
+                startsAt.value = '';
+            }
+
+            if (
+                endDate.value
+                && endTime.value
+            ) {
+                endsAt.value =
+                    endDate.value
+                    + 'T'
+                    + endTime.value;
+            } else {
+                endsAt.value = '';
+            }
+        }
+
+        [
+            startDate,
+            startTime,
+            endDate,
+            endTime
+        ].forEach(
+            function (input) {
+
+                input.addEventListener(
+                    'change',
+                    updateScheduleValues
+                );
+
+                input.addEventListener(
+                    'input',
+                    updateScheduleValues
+                );
+
+            }
+        );
+
         function getResourceSelect(type) {
 
             return Array.from(resourceSelects).find(
                 function (select) {
+
                     return (
                         select.dataset.resourceType
                         === type
                     );
+
                 }
             );
 
@@ -1294,10 +1527,12 @@
 
             return Array.from(buildingSelects).find(
                 function (select) {
+
                     return (
                         select.dataset.resourceType
                         === type
                     );
+
                 }
             );
 
@@ -1395,7 +1630,6 @@
                         === selectedType;
 
                     select.disabled = !active;
-
                     select.required = active;
 
                     if (!active) {
@@ -1412,8 +1646,7 @@
                         select.dataset.resourceType
                         === selectedType;
 
-                    select.disabled =
-                        !active;
+                    select.disabled = !active;
 
                     if (!active) {
                         select.value = '';
@@ -1547,12 +1780,35 @@
 
                 clearClientErrors();
 
+                updateScheduleValues();
+
                 const selectedType =
                     resourceType.value;
 
                 if (!selectedType) {
                     event.preventDefault();
                     resourceType.focus();
+                    return;
+                }
+
+                if (
+                    !startDate.value
+                    || !startTime.value
+                    || !endDate.value
+                    || !endTime.value
+                ) {
+                    event.preventDefault();
+
+                    if (!startDate.value) {
+                        startDate.focus();
+                    } else if (!startTime.value) {
+                        startTime.focus();
+                    } else if (!endDate.value) {
+                        endDate.focus();
+                    } else {
+                        endTime.focus();
+                    }
+
                     return;
                 }
 
@@ -1587,7 +1843,6 @@
                         buildingSelect?.focus();
 
                         return;
-
                     }
 
                 }
@@ -1618,13 +1873,13 @@
                     activeSelect?.focus();
 
                     return;
-
                 }
 
             }
         );
 
         updateResourceSelection();
+        updateScheduleValues();
 
         const initialType =
             resourceType.value;

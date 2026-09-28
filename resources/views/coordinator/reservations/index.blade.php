@@ -5,6 +5,19 @@
 
 @section('content')
 
+@php
+    $isFieldCoordinator =
+        auth()->user()?->role?->name === 'Field Coordinator';
+
+    $indexRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.index'
+        : 'coordinator.reservations.index';
+
+    $showRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.show'
+        : 'coordinator.reservations.show';
+@endphp
+
 @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -21,14 +34,25 @@
 
     <div class="page-card-header">
         <div>
-            <h2>Reservation Management</h2>
-            <p>Review and manage reservation requests.</p>
+            <h2>
+                {{ $isFieldCoordinator
+                    ? 'Field Reservation Management'
+                    : 'Reservation Management'
+                }}
+            </h2>
+
+            <p>
+                {{ $isFieldCoordinator
+                    ? 'Review and manage field reservation requests.'
+                    : 'Review and manage reservation requests.'
+                }}
+            </p>
         </div>
     </div>
 
     <form
         method="GET"
-        action="{{ route('coordinator.reservations.index') }}"
+        action="{{ route($indexRoute) }}"
         class="filter-form"
     >
 
@@ -46,28 +70,32 @@
                 >
             </div>
 
-            <div class="form-group">
-                <label for="building">Building</label>
+            @if (!$isFieldCoordinator)
 
-                <select id="building" name="building">
+                <div class="form-group">
+                    <label for="building">Building</label>
 
-                    <option value="">
-                        All Buildings
-                    </option>
+                    <select id="building" name="building">
 
-                    @foreach ($buildings as $item)
-
-                        <option
-                            value="{{ $item->id }}"
-                            @selected($building == $item->id)
-                        >
-                            {{ $item->name }}
+                        <option value="">
+                            All Buildings
                         </option>
 
-                    @endforeach
+                        @foreach ($buildings as $item)
 
-                </select>
-            </div>
+                            <option
+                                value="{{ $item->id }}"
+                                @selected($building == $item->id)
+                            >
+                                {{ $item->name }}
+                            </option>
+
+                        @endforeach
+
+                    </select>
+                </div>
+
+            @endif
 
             <div class="form-group">
                 <label for="status">Status</label>
@@ -114,37 +142,52 @@
                     Resource Type
                 </label>
 
-                <select
-                    id="resource_type"
-                    name="resource_type"
-                >
+                @if ($isFieldCoordinator)
 
-                    <option value="">
-                        All Resources
-                    </option>
-
-                    <option
-                        value="room"
-                        @selected($resourceType === 'room')
+                    <select
+                        id="resource_type"
+                        name="resource_type"
                     >
-                        Room
-                    </option>
+                        <option value="field" selected>
+                            Field
+                        </option>
+                    </select>
 
-                    <option
-                        value="training_room"
-                        @selected($resourceType === 'training_room')
+                @else
+
+                    <select
+                        id="resource_type"
+                        name="resource_type"
                     >
-                        Media Training
-                    </option>
 
-                    <option
-                        value="field"
-                        @selected($resourceType === 'field')
-                    >
-                        Field
-                    </option>
+                        <option value="">
+                            All Resources
+                        </option>
 
-                </select>
+                        <option
+                            value="room"
+                            @selected($resourceType === 'room')
+                        >
+                            Room
+                        </option>
+
+                        <option
+                            value="training_room"
+                            @selected($resourceType === 'training_room')
+                        >
+                            Media Training
+                        </option>
+
+                        <option
+                            value="field"
+                            @selected($resourceType === 'field')
+                        >
+                            Field
+                        </option>
+
+                    </select>
+
+                @endif
             </div>
 
             <div class="form-group">
@@ -183,7 +226,7 @@
             </button>
 
             <a
-                href="{{ route('coordinator.reservations.index') }}"
+                href="{{ route($indexRoute) }}"
                 class="button button-secondary"
             >
                 Reset
@@ -350,7 +393,7 @@
                             @if ($reservation->status === 'PENDING')
 
                                 <a
-                                    href="{{ route('coordinator.reservations.show', $reservation) }}"
+                                    href="{{ route($showRoute, $reservation) }}"
                                     class="button take-action button-small"
                                 >
                                     TAKE ACTION!
@@ -359,7 +402,7 @@
                             @else
 
                                 <a
-                                    href="{{ route('coordinator.reservations.show', $reservation) }}"
+                                    href="{{ route($showRoute, $reservation) }}"
                                     class="button button-secondary button-small"
                                 >
                                     Detail

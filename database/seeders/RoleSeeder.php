@@ -14,6 +14,7 @@ class RoleSeeder extends Seeder
             'Coordinator',
             'Admin',
             'Building Coordinator',
+            'Field Coordinator',
         ];
 
         foreach ($roles as $role) {

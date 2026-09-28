@@ -193,7 +193,10 @@
                         <option
                             value="{{ $role->id }}"
                             data-role-name="{{ $role->name }}"
-                            @selected((string) old('role_id') === (string) $role->id)
+                            @selected(
+                                (string) old('role_id') ===
+                                (string) $role->id
+                            )
                         >
                             {{ $role->name }}
                         </option>

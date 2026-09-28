@@ -5,6 +5,31 @@
 
 @section('content')
 
+@php
+    $isFieldCoordinator =
+        auth()->user()?->role?->name === 'Field Coordinator';
+
+    $indexRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.index'
+        : 'coordinator.reservations.index';
+
+    $approveRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.approve'
+        : 'coordinator.reservations.approve';
+
+    $editRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.edit'
+        : 'coordinator.reservations.edit';
+
+    $rejectRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.reject'
+        : 'coordinator.reservations.reject';
+
+    $cancelRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.cancel'
+        : 'coordinator.reservations.cancel';
+@endphp
+
 @if (session('success'))
     <div class="alert alert-success">
         {{ session('success') }}
@@ -24,7 +49,7 @@
     </div>
 
     <a
-        href="{{ route('coordinator.reservations.index') }}"
+        href="{{ route($indexRoute) }}"
         class="button button-secondary"
     >
         Back to Reservations
@@ -174,6 +199,7 @@
 
                 <span class="detail-value">
                     @if ($reservation->room)
+
                         {{ $reservation->room->name }}
 
                         @if ($reservation->room->building)
@@ -183,6 +209,7 @@
                         @endif
 
                     @elseif ($reservation->trainingRoom)
+
                         {{ $reservation->trainingRoom->name }}
 
                         @if ($reservation->trainingRoom->building)
@@ -192,6 +219,7 @@
                         @endif
 
                     @elseif ($reservation->field)
+
                         {{ $reservation->field->name }}
 
                         @if ($reservation->field->building)
@@ -217,6 +245,7 @@
             </div>
 
             @if ($reservation->status === 'REJECTED')
+
                 <div class="detail-item detail-item-full">
                     <span class="detail-label">
                         Rejection Reason
@@ -226,6 +255,7 @@
                         {{ $reservation->rejection_reason ?: '-' }}
                     </span>
                 </div>
+
             @endif
 
         </div>
@@ -247,7 +277,7 @@
 
                     <form
                         method="POST"
-                        action="{{ route('coordinator.reservations.approve', $reservation) }}"
+                        action="{{ route($approveRoute, $reservation) }}"
                     >
                         @csrf
 
@@ -260,7 +290,7 @@
                     </form>
 
                     <a
-                        href="{{ route('coordinator.reservations.edit', $reservation) }}"
+                        href="{{ route($editRoute, $reservation) }}"
                         class="button button-dark button-full"
                     >
                         Edit Reservation
@@ -290,7 +320,7 @@
 
                 <form
                     method="POST"
-                    action="{{ route('coordinator.reservations.reject', $reservation) }}"
+                    action="{{ route($rejectRoute, $reservation) }}"
                 >
                     @csrf
 
@@ -352,7 +382,7 @@
             <div class="action-buttons">
 
                 <a
-                    href="{{ route('coordinator.reservations.edit', $reservation) }}"
+                    href="{{ route($editRoute, $reservation) }}"
                     class="button button-dark button-full"
                 >
                     Edit Reservation
@@ -360,7 +390,7 @@
 
                 <form
                     method="POST"
-                    action="{{ route('coordinator.reservations.cancel', $reservation) }}"
+                    action="{{ route($cancelRoute, $reservation) }}"
                     onsubmit="return confirm('Are you sure you want to cancel this reservation?');"
                 >
                     @csrf

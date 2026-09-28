@@ -32,12 +32,20 @@ class AuthController extends Controller
 
         $user = $request->user();
 
+        if ($user?->role?->name === 'Training Officer') {
+            return redirect()->route('training-officer.home');
+        }
+
         if ($user?->role?->name === 'Coordinator') {
             return redirect()->route('coordinator.dashboard');
         }
 
         if ($user?->role?->name === 'Building Coordinator') {
             return redirect()->route('building-coordinator.dashboard');
+        }
+
+        if ($user?->role?->name === 'Field Coordinator') {
+            return redirect()->route('field-coordinator.reservations.index');
         }
 
         return redirect()->route('dashboard');

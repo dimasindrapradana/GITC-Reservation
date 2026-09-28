@@ -5,9 +5,34 @@
 
 @section('content')
 
+    @php
+        $isFieldCoordinator =
+            auth()->user()?->role?->name === 'Field Coordinator';
+
+        $reportRoute = $isFieldCoordinator
+            ? 'field-coordinator.reports.reservations'
+            : 'coordinator.reports.reservations';
+
+        $exportRoute = $isFieldCoordinator
+            ? 'field-coordinator.reports.reservations.export'
+            : 'coordinator.reports.reservations.export';
+
+        $detailRoute = $isFieldCoordinator
+            ? 'field-coordinator.reports.reservations.show'
+            : 'coordinator.reports.reservations.show';
+    @endphp
+
     <div class="content-header">
-        <h2>Reservation Report</h2>
-        <p>Review reservation activity by month and export filtered data.</p>
+        <h2>
+            {{ $isFieldCoordinator ? 'Field Reservation Report' : 'Reservation Report' }}
+        </h2>
+
+        <p>
+            {{ $isFieldCoordinator
+                ? 'Review field reservation activity by month and export filtered data.'
+                : 'Review reservation activity by month and export filtered data.'
+            }}
+        </p>
     </div>
 
     <div class="card">
@@ -16,7 +41,7 @@
 
             <form
                 method="GET"
-                action="{{ route('coordinator.reports.reservations') }}"
+                action="{{ route($reportRoute) }}"
                 class="filter-form"
             >
 
@@ -99,66 +124,86 @@
                             Resource Type
                         </label>
 
-                        <select
-                            id="resource_type"
-                            name="resource_type"
-                        >
+                        @if($isFieldCoordinator)
 
-                            <option value="">
-                                All Resources
-                            </option>
-
-                            <option
-                                value="room"
-                                {{ $resourceType === 'room' ? 'selected' : '' }}
+                            <select
+                                id="resource_type"
+                                name="resource_type"
                             >
-                                Room
-                            </option>
+                                <option value="field" selected>
+                                    Field
+                                </option>
+                            </select>
 
-                            <option
-                                value="training_room"
-                                {{ $resourceType === 'training_room' ? 'selected' : '' }}
+                        @else
+
+                            <select
+                                id="resource_type"
+                                name="resource_type"
                             >
-                                Media Training
-                            </option>
 
-                            <option
-                                value="field"
-                                {{ $resourceType === 'field' ? 'selected' : '' }}
-                            >
-                                Field
-                            </option>
-
-                        </select>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="building">
-                            Building
-                        </label>
-
-                        <select
-                            id="building"
-                            name="building"
-                        >
-
-                            <option value="">
-                                All Buildings
-                            </option>
-
-                            @foreach($buildings as $buildingOption)
-
-                                <option
-                                    value="{{ $buildingOption->id }}"
-                                    {{ $building === (string) $buildingOption->id ? 'selected' : '' }}
-                                >
-                                    {{ $buildingOption->name }}
+                                <option value="">
+                                    All Resources
                                 </option>
 
-                            @endforeach
+                                <option
+                                    value="room"
+                                    {{ $resourceType === 'room' ? 'selected' : '' }}
+                                >
+                                    Room
+                                </option>
 
-                        </select>
+                                <option
+                                    value="training_room"
+                                    {{ $resourceType === 'training_room' ? 'selected' : '' }}
+                                >
+                                    Media Training
+                                </option>
+
+                                <option
+                                    value="field"
+                                    {{ $resourceType === 'field' ? 'selected' : '' }}
+                                >
+                                    Field
+                                </option>
+
+                            </select>
+
+                        @endif
+
                     </div>
+
+                    @unless($isFieldCoordinator)
+
+                        <div class="field-group">
+                            <label for="building">
+                                Building
+                            </label>
+
+                            <select
+                                id="building"
+                                name="building"
+                            >
+
+                                <option value="">
+                                    All Buildings
+                                </option>
+
+                                @foreach($buildings as $buildingOption)
+
+                                    <option
+                                        value="{{ $buildingOption->id }}"
+                                        {{ $building === (string) $buildingOption->id ? 'selected' : '' }}
+                                    >
+                                        {{ $buildingOption->name }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+                        </div>
+
+                    @endunless
 
                     <div class="field-group field-search">
                         <label for="search">
@@ -186,7 +231,7 @@
                     </button>
 
                     <a
-                        href="{{ route('coordinator.reports.reservations') }}"
+                        href="{{ route($reportRoute) }}"
                         class="button button-secondary"
                     >
                         Reset
@@ -194,7 +239,7 @@
 
                     <a
                         href="{{ route(
-                            'coordinator.reports.reservations.export',
+                            $exportRoute,
                             request()->query()
                         ) }}"
                         class="button button-export"
@@ -325,9 +370,11 @@
                                 </div>
 
                                 @if($reservation->user?->employee_number)
+
                                     <div class="user-sub">
                                         {{ $reservation->user->employee_number }}
                                     </div>
+
                                 @endif
                             </td>
 
@@ -375,9 +422,9 @@
 
                                 <a
                                     href="{{ route(
-                                    'coordinator.reports.reservations.show',
-                                    $reservation
-                                ) }}"
+                                        $detailRoute,
+                                        $reservation
+                                    ) }}"
                                     class="button button-detail"
                                 >
                                     View Detail
@@ -423,7 +470,10 @@
                 <div class="pagination">
 
                     @foreach($reservations->getUrlRange(
-                        max(1, $reservations->currentPage() - 2),
+                        max(
+                            1,
+                            $reservations->currentPage() - 2
+                        ),
                         min(
                             $reservations->lastPage(),
                             $reservations->currentPage() + 2

@@ -615,6 +615,16 @@
                         <span>Dashboard</span>
                     </a>
 
+                @elseif($userRole === 'Field Coordinator')
+
+                    <a
+                        href="{{ route('dashboard') }}"
+                        class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">⌂</span>
+                        <span>Dashboard</span>
+                    </a>
+
                 @endif
 
             </div>
@@ -695,6 +705,24 @@
 
                 </div>
 
+            @elseif($userRole === 'Field Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Reservation
+                    </div>
+
+                    <a
+                        href="{{ route('field-coordinator.reservations.index') }}"
+                        class="menu-link {{ request()->routeIs('field-coordinator.reservations.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">◫</span>
+                        <span>Reservations</span>
+                    </a>
+
+                </div>
+
             @endif
 
             {{-- Reports --}}
@@ -727,6 +755,24 @@
                     <a
                         href="{{ route('building-coordinator.reports.reservations') }}"
                         class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">▥</span>
+                        <span>Reservation Report</span>
+                    </a>
+
+                </div>
+
+            @elseif($userRole === 'Field Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Reports
+                    </div>
+
+                    <a
+                        href="{{ route('field-coordinator.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('field-coordinator.reports.*') ? 'active' : '' }}"
                     >
                         <span class="menu-icon">▥</span>
                         <span>Reservation Report</span>
@@ -790,7 +836,7 @@
                         System
                     </div>
 
-                   <a
+                    <a
                         href="{{ route('users.index') }}"
                         class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
                     >

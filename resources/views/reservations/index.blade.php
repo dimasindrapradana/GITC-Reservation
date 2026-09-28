@@ -3,6 +3,11 @@
 @section('title', 'Reservations')
 
 @section('content')
+    @php
+        $isFieldCoordinator =
+            auth()->user()?->role?->name === 'Field Coordinator';
+    @endphp
+
     <div class="page-header">
         <div>
             <h1>Reservations</h1>
@@ -60,29 +65,31 @@
                 >
             </div>
 
-            <div class="filter-group">
-                <label for="building">
-                    Building
-                </label>
+            @if (!$isFieldCoordinator)
+                <div class="filter-group">
+                    <label for="building">
+                        Building
+                    </label>
 
-                <select
-                    id="building"
-                    name="building"
-                >
-                    <option value="">
-                        All Buildings
-                    </option>
-
-                    @foreach ($buildings as $item)
-                        <option
-                            value="{{ $item->id }}"
-                            @selected((string) $building === (string) $item->id)
-                        >
-                            {{ $item->name }}
+                    <select
+                        id="building"
+                        name="building"
+                    >
+                        <option value="">
+                            All Buildings
                         </option>
-                    @endforeach
-                </select>
-            </div>
+
+                        @foreach ($buildings as $item)
+                            <option
+                                value="{{ $item->id }}"
+                                @selected((string) $building === (string) $item->id)
+                            >
+                                {{ $item->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
 
             <div class="filter-group">
                 <label for="status">
@@ -127,41 +134,61 @@
                 </select>
             </div>
 
-            <div class="filter-group">
-                <label for="resource_type">
-                    Resource Type
-                </label>
+            @if ($isFieldCoordinator)
+                <div class="filter-group">
+                    <label for="resource_type">
+                        Resource Type
+                    </label>
 
-                <select
-                    id="resource_type"
-                    name="resource_type"
-                >
-                    <option value="">
-                        All Resources
-                    </option>
-
-                    <option
-                        value="room"
-                        @selected($resourceType === 'room')
+                    <select
+                        id="resource_type"
+                        name="resource_type"
                     >
-                        Rooms
-                    </option>
+                        <option
+                            value="field"
+                            selected
+                        >
+                            Fields
+                        </option>
+                    </select>
+                </div>
+            @else
+                <div class="filter-group">
+                    <label for="resource_type">
+                        Resource Type
+                    </label>
 
-                    <option
-                        value="training_room"
-                        @selected($resourceType === 'training_room')
+                    <select
+                        id="resource_type"
+                        name="resource_type"
                     >
-                        Media Training
-                    </option>
+                        <option value="">
+                            All Resources
+                        </option>
 
-                    <option
-                        value="field"
-                        @selected($resourceType === 'field')
-                    >
-                        Fields
-                    </option>
-                </select>
-            </div>
+                        <option
+                            value="room"
+                            @selected($resourceType === 'room')
+                        >
+                            Rooms
+                        </option>
+
+                        <option
+                            value="training_room"
+                            @selected($resourceType === 'training_room')
+                        >
+                            Media Training
+                        </option>
+
+                        <option
+                            value="field"
+                            @selected($resourceType === 'field')
+                        >
+                            Fields
+                        </option>
+                    </select>
+                </div>
+            @endif
 
             <div class="filter-group">
                 <label for="sort">

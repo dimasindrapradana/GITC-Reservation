@@ -6,6 +6,21 @@
 @section('content')
 
 @php
+    $isFieldCoordinator =
+        auth()->user()?->role?->name === 'Field Coordinator';
+
+    $indexRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.index'
+        : 'coordinator.reservations.index';
+
+    $showRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.show'
+        : 'coordinator.reservations.show';
+
+    $updateRoute = $isFieldCoordinator
+        ? 'field-coordinator.reservations.update'
+        : 'coordinator.reservations.update';
+
     $currentResourceType = match (true) {
         $reservation->room_id !== null => 'room',
         $reservation->training_room_id !== null => 'training_room',
@@ -40,14 +55,14 @@
         <div class="edit-header-actions">
 
             <a
-                href="{{ route('coordinator.reservations.show', $reservation) }}"
+                href="{{ route($showRoute, $reservation) }}"
                 class="edit-header-button edit-header-button-dark"
             >
                 View Details
             </a>
 
             <a
-                href="{{ route('coordinator.reservations.show', $reservation) }}"
+                href="{{ route($showRoute, $reservation) }}"
                 class="edit-header-button edit-header-button-light"
             >
                 Back
@@ -77,7 +92,7 @@
 
     <form
         method="POST"
-        action="{{ route('coordinator.reservations.update', $reservation) }}"
+        action="{{ route($updateRoute, $reservation) }}"
         id="reservation-edit-form"
     >
 
@@ -122,9 +137,11 @@
                             </div>
 
                             @if ($reservation->user?->employee_number)
+
                                 <div class="edit-muted">
                                     {{ $reservation->user->employee_number }}
                                 </div>
+
                             @endif
 
                         </div>
@@ -142,200 +159,311 @@
             <div class="edit-section-header">
                 <div>
                     <h3>Reserved Resource</h3>
-                    <p>Select the building, resource type, and resource.</p>
+
+                    <p>
+                        {{ $isFieldCoordinator
+                            ? 'Select the field for this reservation.'
+                            : 'Select the building, resource type, and resource.'
+                        }}
+                    </p>
                 </div>
             </div>
 
             <div class="edit-section-body">
 
-                <div class="edit-grid edit-grid-3">
+                @if ($isFieldCoordinator)
 
-                    <div class="edit-field">
+                    <div class="edit-grid edit-grid-1">
 
-                        <label
-                            for="building_id"
-                            class="edit-label"
-                        >
-                            Building
-                            <span class="edit-required">*</span>
-                        </label>
+                        <div class="edit-field">
 
-                        <select
-                            id="building_id"
-                            class="edit-select"
-                            @disabled($currentResourceType === 'field')
-                        >
-
-                            <option value="">
-                                Select Building
-                            </option>
-
-                            @foreach ($rooms->pluck('building')->filter()->unique('id')->sortBy('name') as $building)
-                                <option
-                                    value="{{ $building->id }}"
-                                    @selected((string) $currentBuildingId === (string) $building->id)
-                                >
-                                    {{ $building->name }}
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                        @if ($currentResourceType === 'field')
-                            <div class="edit-help">
-                                Building selection is not required for fields.
-                            </div>
-                        @endif
-
-                    </div>
-
-                    <div class="edit-field">
-
-                        <label
-                            for="resource_type"
-                            class="edit-label"
-                        >
-                            Resource Type
-                            <span class="edit-required">*</span>
-                        </label>
-
-                        <select
-                            id="resource_type"
-                            name="resource_type"
-                            class="edit-select"
-                            required
-                        >
-
-                            <option
-                                value="room"
-                                @selected($currentResourceType === 'room')
+                            <label
+                                for="resource_type"
+                                class="edit-label"
                             >
-                                Room
-                            </option>
+                                Resource Type
+                            </label>
 
-                            <option
-                                value="training_room"
-                                @selected($currentResourceType === 'training_room')
-                            >
-                                Media Training
-                            </option>
-
-                            <option
-                                value="field"
-                                @selected($currentResourceType === 'field')
-                            >
+                            <div class="edit-readonly">
                                 Field
-                            </option>
+                            </div>
 
-                        </select>
+                            <input
+                                type="hidden"
+                                name="resource_type"
+                                value="field"
+                            >
 
-                    </div>
-
-                    <div class="edit-field">
-
-                        <label
-                            for="resource_id"
-                            class="edit-label"
-                        >
-                            Resource
-                            <span class="edit-required">*</span>
-                        </label>
-
-                        <select
-                            id="resource_id"
-                            name="resource_id"
-                            class="edit-select"
-                            required
-                        >
-
-                            <option value="">
-                                Select Resource
-                            </option>
-
-                            @foreach ($rooms as $room)
-
-                                <option
-                                    value="{{ $room->id }}"
-                                    data-resource-type="room"
-                                    data-building-id="{{ $room->building_id }}"
-                                    data-status="{{ $room->status }}"
-                                    @selected(
-                                        $currentResourceType === 'room'
-                                        && (int) $currentResourceId === (int) $room->id
-                                    )
-                                >
-                                    {{ $room->name }}
-                                    @if ($room->building)
-                                        — {{ $room->building->name }}
-                                    @endif
-                                    @if ($room->status !== 'AVAILABLE')
-                                        — {{ $room->status }}
-                                    @endif
-                                </option>
-
-                            @endforeach
-
-                            @foreach ($trainingRooms as $trainingRoom)
-
-                                <option
-                                    value="{{ $trainingRoom->id }}"
-                                    data-resource-type="training_room"
-                                    data-building-id="{{ $trainingRoom->building_id }}"
-                                    data-status="{{ $trainingRoom->status }}"
-                                    @selected(
-                                        $currentResourceType === 'training_room'
-                                        && (int) $currentResourceId === (int) $trainingRoom->id
-                                    )
-                                >
-                                    {{ $trainingRoom->name }}
-                                    @if ($trainingRoom->building)
-                                        — {{ $trainingRoom->building->name }}
-                                    @endif
-                                    @if ($trainingRoom->status !== 'AVAILABLE')
-                                        — {{ $trainingRoom->status }}
-                                    @endif
-                                </option>
-
-                            @endforeach
-
-                            @foreach ($fields as $field)
-
-                                <option
-                                    value="{{ $field->id }}"
-                                    data-resource-type="field"
-                                    data-building-id=""
-                                    data-status="{{ $field->status }}"
-                                    @selected(
-                                        $currentResourceType === 'field'
-                                        && (int) $currentResourceId === (int) $field->id
-                                    )
-                                >
-                                    {{ $field->name }}
-                                    @if ($field->status !== 'AVAILABLE')
-                                        — {{ $field->status }}
-                                    @endif
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                        <div
-                            id="resource-help"
-                            class="edit-help"
-                        >
-                            Select a building and resource type first.
                         </div>
 
-                        @error('resource_id')
-                            <div class="edit-error">
-                                {{ $message }}
+                        <div class="edit-field">
+
+                            <label
+                                for="resource_id"
+                                class="edit-label"
+                            >
+                                Field
+                                <span class="edit-required">*</span>
+                            </label>
+
+                            <select
+                                id="resource_id"
+                                name="resource_id"
+                                class="edit-select"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Field
+                                </option>
+
+                                @foreach ($fields as $field)
+
+                                    <option
+                                        value="{{ $field->id }}"
+                                        data-resource-type="field"
+                                        data-building-id=""
+                                        data-status="{{ $field->status }}"
+                                        @selected(
+                                            $currentResourceType === 'field'
+                                            && (int) $currentResourceId === (int) $field->id
+                                        )
+                                    >
+                                        {{ $field->name }}
+
+                                        @if ($field->status !== 'AVAILABLE')
+                                            — {{ $field->status }}
+                                        @endif
+
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div
+                                id="resource-help"
+                                class="edit-help"
+                            >
+                                Only available fields are shown.
                             </div>
-                        @enderror
+
+                            @error('resource_id')
+                                <div class="edit-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
 
                     </div>
 
-                </div>
+                @else
+
+                    <div class="edit-grid edit-grid-3">
+
+                        <div class="edit-field">
+
+                            <label
+                                for="building_id"
+                                class="edit-label"
+                            >
+                                Building
+                                <span class="edit-required">*</span>
+                            </label>
+
+                            <select
+                                id="building_id"
+                                class="edit-select"
+                                @disabled($currentResourceType === 'field')
+                            >
+
+                                <option value="">
+                                    Select Building
+                                </option>
+
+                                @foreach ($rooms->pluck('building')->filter()->unique('id')->sortBy('name') as $building)
+
+                                    <option
+                                        value="{{ $building->id }}"
+                                        @selected(
+                                            (string) $currentBuildingId === (string) $building->id
+                                        )
+                                    >
+                                        {{ $building->name }}
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            @if ($currentResourceType === 'field')
+
+                                <div class="edit-help">
+                                    Building selection is not required for fields.
+                                </div>
+
+                            @endif
+
+                        </div>
+
+                        <div class="edit-field">
+
+                            <label
+                                for="resource_type"
+                                class="edit-label"
+                            >
+                                Resource Type
+                                <span class="edit-required">*</span>
+                            </label>
+
+                            <select
+                                id="resource_type"
+                                name="resource_type"
+                                class="edit-select"
+                                required
+                            >
+
+                                <option
+                                    value="room"
+                                    @selected($currentResourceType === 'room')
+                                >
+                                    Room
+                                </option>
+
+                                <option
+                                    value="training_room"
+                                    @selected($currentResourceType === 'training_room')
+                                >
+                                    Media Training
+                                </option>
+
+                                <option
+                                    value="field"
+                                    @selected($currentResourceType === 'field')
+                                >
+                                    Field
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="edit-field">
+
+                            <label
+                                for="resource_id"
+                                class="edit-label"
+                            >
+                                Resource
+                                <span class="edit-required">*</span>
+                            </label>
+
+                            <select
+                                id="resource_id"
+                                name="resource_id"
+                                class="edit-select"
+                                required
+                            >
+
+                                <option value="">
+                                    Select Resource
+                                </option>
+
+                                @foreach ($rooms as $room)
+
+                                    <option
+                                        value="{{ $room->id }}"
+                                        data-resource-type="room"
+                                        data-building-id="{{ $room->building_id }}"
+                                        data-status="{{ $room->status }}"
+                                        @selected(
+                                            $currentResourceType === 'room'
+                                            && (int) $currentResourceId === (int) $room->id
+                                        )
+                                    >
+                                        {{ $room->name }}
+
+                                        @if ($room->building)
+                                            — {{ $room->building->name }}
+                                        @endif
+
+                                        @if ($room->status !== 'AVAILABLE')
+                                            — {{ $room->status }}
+                                        @endif
+
+                                    </option>
+
+                                @endforeach
+
+                                @foreach ($trainingRooms as $trainingRoom)
+
+                                    <option
+                                        value="{{ $trainingRoom->id }}"
+                                        data-resource-type="training_room"
+                                        data-building-id="{{ $trainingRoom->building_id }}"
+                                        data-status="{{ $trainingRoom->status }}"
+                                        @selected(
+                                            $currentResourceType === 'training_room'
+                                            && (int) $currentResourceId === (int) $trainingRoom->id
+                                        )
+                                    >
+                                        {{ $trainingRoom->name }}
+
+                                        @if ($trainingRoom->building)
+                                            — {{ $trainingRoom->building->name }}
+                                        @endif
+
+                                        @if ($trainingRoom->status !== 'AVAILABLE')
+                                            — {{ $trainingRoom->status }}
+                                        @endif
+
+                                    </option>
+
+                                @endforeach
+
+                                @foreach ($fields as $field)
+
+                                    <option
+                                        value="{{ $field->id }}"
+                                        data-resource-type="field"
+                                        data-building-id=""
+                                        data-status="{{ $field->status }}"
+                                        @selected(
+                                            $currentResourceType === 'field'
+                                            && (int) $currentResourceId === (int) $field->id
+                                        )
+                                    >
+                                        {{ $field->name }}
+
+                                        @if ($field->status !== 'AVAILABLE')
+                                            — {{ $field->status }}
+                                        @endif
+
+                                    </option>
+
+                                @endforeach
+
+                            </select>
+
+                            <div
+                                id="resource-help"
+                                class="edit-help"
+                            >
+                                Select a building and resource type first.
+                            </div>
+
+                            @error('resource_id')
+                                <div class="edit-error">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
+                        </div>
+
+                    </div>
+
+                @endif
 
             </div>
 
@@ -618,7 +746,7 @@
         <div class="edit-form-actions">
 
             <a
-                href="{{ route('coordinator.reservations.show', $reservation) }}"
+                href="{{ route($showRoute, $reservation) }}"
                 class="edit-button edit-button-secondary"
             >
                 Cancel
@@ -776,6 +904,10 @@
     .edit-grid {
         display: grid;
         gap: 18px;
+    }
+
+    .edit-grid-1 {
+        grid-template-columns: 1fr;
     }
 
     .edit-grid-2 {
@@ -1037,12 +1169,20 @@
         const startsAt = document.getElementById('starts_at');
         const endsAt = document.getElementById('ends_at');
 
-        const currentResourceId = @json((string) $currentResourceId);
-        const currentResourceType = @json($currentResourceType);
+        const isFieldCoordinator =
+            @json($isFieldCoordinator);
+
+        const currentResourceId =
+            @json((string) $currentResourceId);
+
+        const currentResourceType =
+            @json($currentResourceType);
 
         function updateScheduleFields() {
 
             if (
+                startDate &&
+                startTime &&
                 startDate.value !== ''
                 && startTime.value !== ''
             ) {
@@ -1053,6 +1193,8 @@
             }
 
             if (
+                endDate &&
+                endTime &&
                 endDate.value !== ''
                 && endTime.value !== ''
             ) {
@@ -1061,9 +1203,88 @@
                     + 'T'
                     + endTime.value;
             }
+
         }
 
         function filterResources() {
+
+            if (!resourceSelect) {
+                return;
+            }
+
+            if (isFieldCoordinator) {
+
+                Array.from(resourceSelect.options).forEach(function (option) {
+
+                    if (option.value === '') {
+                        option.hidden = false;
+                        return;
+                    }
+
+                    const optionType =
+                        option.dataset.resourceType || '';
+
+                    const optionStatus =
+                        option.dataset.status || '';
+
+                    const isCurrent =
+                        option.value === currentResourceId
+                        && optionType === 'field';
+
+                    const visible =
+                        optionType === 'field'
+                        && (
+                            optionStatus === 'AVAILABLE'
+                            || isCurrent
+                        );
+
+                    option.hidden = !visible;
+
+                });
+
+                const selectedOption =
+                    resourceSelect.options[
+                        resourceSelect.selectedIndex
+                    ];
+
+                if (
+                    !selectedOption
+                    || selectedOption.hidden
+                ) {
+                    resourceSelect.value = '';
+                }
+
+                if (resourceHelp) {
+
+                    const visibleCount =
+                        Array.from(resourceSelect.options)
+                            .filter(function (option) {
+                                return (
+                                    option.value !== ''
+                                    && !option.hidden
+                                );
+                            })
+                            .length;
+
+                    if (visibleCount === 0) {
+
+                        resourceHelp.textContent =
+                            'No available fields are currently available.';
+
+                    } else {
+
+                        resourceHelp.textContent =
+                            'Only available fields are shown.';
+                    }
+
+                }
+
+                return;
+            }
+
+            if (!buildingSelect || !resourceTypeSelect) {
+                return;
+            }
 
             const selectedBuilding =
                 buildingSelect.value;
@@ -1120,11 +1341,13 @@
                 option.hidden = !visible;
 
                 if (visible) {
+
                     visibleCount++;
 
                     if (isCurrent) {
                         currentVisible = true;
                     }
+
                 }
 
             });
@@ -1155,14 +1378,20 @@
             if (visibleCount === 0) {
 
                 if (selectedType === 'field') {
+
                     resourceHelp.textContent =
                         'No available fields are currently available.';
+
                 } else if (selectedBuilding === '') {
+
                     resourceHelp.textContent =
                         'Select a building to view available resources.';
+
                 } else {
+
                     resourceHelp.textContent =
                         'No available resources found for the selected building.';
+
                 }
 
             } else if (currentVisible) {
@@ -1178,52 +1407,70 @@
 
         }
 
-        resourceTypeSelect.addEventListener(
-            'change',
-            function () {
+        if (
+            !isFieldCoordinator
+            && resourceTypeSelect
+            && buildingSelect
+        ) {
 
-                if (resourceTypeSelect.value === 'field') {
+            resourceTypeSelect.addEventListener(
+                'change',
+                function () {
 
-                    buildingSelect.value = '';
+                    if (resourceTypeSelect.value === 'field') {
+                        buildingSelect.value = '';
+                    }
+
+                    filterResources();
 
                 }
+            );
 
-                filterResources();
+            buildingSelect.addEventListener(
+                'change',
+                filterResources
+            );
 
-            }
-        );
+        }
 
-        buildingSelect.addEventListener(
-            'change',
-            filterResources
-        );
+        if (startDate) {
+            startDate.addEventListener(
+                'change',
+                updateScheduleFields
+            );
+        }
 
-        startDate.addEventListener(
-            'change',
-            updateScheduleFields
-        );
+        if (startTime) {
+            startTime.addEventListener(
+                'change',
+                updateScheduleFields
+            );
+        }
 
-        startTime.addEventListener(
-            'change',
-            updateScheduleFields
-        );
+        if (endDate) {
+            endDate.addEventListener(
+                'change',
+                updateScheduleFields
+            );
+        }
 
-        endDate.addEventListener(
-            'change',
-            updateScheduleFields
-        );
+        if (endTime) {
+            endTime.addEventListener(
+                'change',
+                updateScheduleFields
+            );
+        }
 
-        endTime.addEventListener(
-            'change',
-            updateScheduleFields
-        );
+        if (form) {
 
-        form.addEventListener(
-            'submit',
-            function () {
-                updateScheduleFields();
-            }
-        );
+            form.addEventListener(
+                'submit',
+                function () {
+                    updateScheduleFields();
+                }
+            );
+
+        }
 
         updateScheduleFields();
         filterResources();

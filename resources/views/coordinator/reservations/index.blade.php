@@ -59,7 +59,9 @@
         <div class="filter-grid">
 
             <div class="form-group">
-                <label for="search">Search</label>
+                <label for="search">
+                    Search
+                </label>
 
                 <input
                     type="text"
@@ -73,35 +75,40 @@
             @if (!$isFieldCoordinator)
 
                 <div class="form-group">
-                    <label for="building">Building</label>
+                    <label for="building">
+                        Building
+                    </label>
 
-                    <select id="building" name="building">
-
+                    <select
+                        id="building"
+                        name="building"
+                    >
                         <option value="">
                             All Buildings
                         </option>
 
                         @foreach ($buildings as $item)
-
                             <option
                                 value="{{ $item->id }}"
-                                @selected($building == $item->id)
+                                @selected((string) $building === (string) $item->id)
                             >
                                 {{ $item->name }}
                             </option>
-
                         @endforeach
-
                     </select>
                 </div>
 
             @endif
 
             <div class="form-group">
-                <label for="status">Status</label>
+                <label for="status">
+                    Status
+                </label>
 
-                <select id="status" name="status">
-
+                <select
+                    id="status"
+                    name="status"
+                >
                     <option value="">
                         All Statuses
                     </option>
@@ -133,7 +140,6 @@
                     >
                         Cancelled
                     </option>
-
                 </select>
             </div>
 
@@ -159,7 +165,6 @@
                         id="resource_type"
                         name="resource_type"
                     >
-
                         <option value="">
                             All Resources
                         </option>
@@ -184,10 +189,35 @@
                         >
                             Field
                         </option>
-
                     </select>
 
                 @endif
+            </div>
+
+            <div class="form-group">
+                <label for="date_from">
+                    Date From
+                </label>
+
+                <input
+                    type="date"
+                    id="date_from"
+                    name="date_from"
+                    value="{{ $dateFrom }}"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="date_to">
+                    Date To
+                </label>
+
+                <input
+                    type="date"
+                    id="date_to"
+                    name="date_to"
+                    value="{{ $dateTo }}"
+                >
             </div>
 
             <div class="form-group">
@@ -195,8 +225,10 @@
                     Sort
                 </label>
 
-                <select id="sort" name="sort">
-
+                <select
+                    id="sort"
+                    name="sort"
+                >
                     <option
                         value="newest"
                         @selected($sort === 'newest')
@@ -210,7 +242,6 @@
                     >
                         Oldest
                     </option>
-
                 </select>
             </div>
 
@@ -520,7 +551,7 @@
 
     .filter-grid {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 16px;
     }
 
@@ -602,18 +633,20 @@
         font-size: 12px;
     }
 
-    .take-action {
+   .take-action {
         background: #f59e0b;
-        border-color: #f59e0b;
+        border: 1px solid #f59e0b;
         color: #ffffff;
         font-weight: 700;
-        padding: 6px 8px;
+        padding: 6px 10px;
         font-size: 10px;
+        border-radius: 7px;
     }
 
     .take-action:hover {
         background: #d97706;
         border-color: #d97706;
+        color: #ffffff;
     }
 
     .table-card {

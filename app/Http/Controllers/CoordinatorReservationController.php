@@ -34,6 +34,12 @@ class CoordinatorReservationController extends Controller
         $resourceType = $request->string('resource_type')
             ->toString();
 
+        $dateFrom = $request->string('date_from')
+            ->toString();
+
+        $dateTo = $request->string('date_to')
+            ->toString();
+
         $sort = $request->string('sort')
             ->toString();
 
@@ -51,6 +57,45 @@ class CoordinatorReservationController extends Controller
             $building = '';
         }
 
+        /*
+         * Validate date filters.
+         */
+        if ($dateFrom !== '') {
+            try {
+                Carbon::createFromFormat('Y-m-d', $dateFrom);
+            } catch (\Throwable $e) {
+                $dateFrom = '';
+            }
+        }
+
+        if ($dateTo !== '') {
+            try {
+                Carbon::createFromFormat('Y-m-d', $dateTo);
+            } catch (\Throwable $e) {
+                $dateTo = '';
+            }
+        }
+
+        /*
+         * If Date From is later than Date To,
+         * reset Date To so the query remains valid.
+         */
+        if ($dateFrom !== '' && $dateTo !== '') {
+            $fromDate = Carbon::createFromFormat(
+                'Y-m-d',
+                $dateFrom
+            );
+
+            $toDate = Carbon::createFromFormat(
+                'Y-m-d',
+                $dateTo
+            );
+
+            if ($fromDate->gt($toDate)) {
+                $dateTo = '';
+            }
+        }
+
         $reservations = Reservation::query()
             ->with([
                 'user',
@@ -58,34 +103,44 @@ class CoordinatorReservationController extends Controller
                 'trainingRoom.building',
                 'field',
             ])
+
+            /*
+             * Search
+             */
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
+
                     $query
                         ->where(
                             'reservation_number',
                             'like',
                             '%' . $search . '%'
                         )
+
                         ->orWhere(
                             'instructor',
                             'like',
                             '%' . $search . '%'
                         )
+
                         ->orWhere(
                             'description',
                             'like',
                             '%' . $search . '%'
                         )
+
                         ->orWhere(
                             'event_name',
                             'like',
                             '%' . $search . '%'
                         )
+
                         ->orWhere(
                             'booker_name',
                             'like',
                             '%' . $search . '%'
                         )
+
                         ->orWhereHas('user', function ($query) use ($search) {
                             $query
                                 ->where(
@@ -99,6 +154,7 @@ class CoordinatorReservationController extends Controller
                                     '%' . $search . '%'
                                 );
                         })
+
                         ->orWhereHas('room', function ($query) use ($search) {
                             $query->where(
                                 'name',
@@ -106,6 +162,7 @@ class CoordinatorReservationController extends Controller
                                 '%' . $search . '%'
                             );
                         })
+
                         ->orWhereHas('trainingRoom', function ($query) use ($search) {
                             $query->where(
                                 'name',
@@ -113,6 +170,7 @@ class CoordinatorReservationController extends Controller
                                 '%' . $search . '%'
                             );
                         })
+
                         ->orWhereHas('field', function ($query) use ($search) {
                             $query->where(
                                 'name',
@@ -120,12 +178,19 @@ class CoordinatorReservationController extends Controller
                                 '%' . $search . '%'
                             );
                         });
+
                 });
             })
+
+            /*
+             * Building filter
+             */
             ->when(
                 !$isFieldCoordinator && $building !== '',
                 function ($query) use ($building) {
+
                     $query->where(function ($query) use ($building) {
+
                         $query
                             ->whereHas('room', function ($query) use ($building) {
                                 $query->where(
@@ -133,69 +198,166 @@ class CoordinatorReservationController extends Controller
                                     $building
                                 );
                             })
+
                             ->orWhereHas('trainingRoom', function ($query) use ($building) {
                                 $query->where(
                                     'building_id',
                                     $building
                                 );
                             });
+
                     });
                 }
             )
+
+            /*
+             * Status filter
+             */
             ->when($status !== '', function ($query) use ($status) {
+
                 $query->where(
                     'status',
                     $status
                 );
+
             })
+
+            /*
+             * Resource type filter
+             */
             ->when(
                 $resourceType === 'room',
                 function ($query) {
-                    $query->whereNotNull('room_id');
+
+                    $query->whereNotNull(
+                        'room_id'
+                    );
+
                 }
             )
+
             ->when(
                 $resourceType === 'training_room',
                 function ($query) {
-                    $query->whereNotNull('training_room_id');
+
+                    $query->whereNotNull(
+                        'training_room_id'
+                    );
+
                 }
             )
+
             ->when(
                 $resourceType === 'field',
                 function ($query) {
-                    $query->whereNotNull('field_id');
+
+                    $query->whereNotNull(
+                        'field_id'
+                    );
+
+                }
+            )
+
+            /*
+             * Date From filter
+             *
+             * Reservation starts on or after this date.
+             */
+            ->when(
+                $dateFrom !== '',
+                function ($query) use ($dateFrom) {
+
+                    $query->where(
+                        'starts_at',
+                        '>=',
+                        Carbon::createFromFormat(
+                            'Y-m-d',
+                            $dateFrom
+                        )->startOfDay()
+                    );
+
+                }
+            )
+
+            /*
+             * Date To filter
+             *
+             * Reservation starts on or before this date.
+             */
+            ->when(
+                $dateTo !== '',
+                function ($query) use ($dateTo) {
+
+                    $query->where(
+                        'starts_at',
+                        '<=',
+                        Carbon::createFromFormat(
+                            'Y-m-d',
+                            $dateTo
+                        )->endOfDay()
+                    );
+
                 }
             );
 
+        /*
+         * Sorting
+         */
         if ($sort === 'oldest') {
+
             $reservations
-                ->orderBy('created_at', 'asc')
-                ->orderBy('id', 'asc');
+                ->orderBy(
+                    'created_at',
+                    'asc'
+                )
+                ->orderBy(
+                    'id',
+                    'asc'
+                );
+
         } else {
+
             $reservations
-                ->orderBy('created_at', 'desc')
-                ->orderBy('id', 'desc');
+                ->orderBy(
+                    'created_at',
+                    'desc'
+                )
+                ->orderBy(
+                    'id',
+                    'desc'
+                );
         }
 
+        /*
+         * Pagination
+         */
         $reservations = $reservations
             ->paginate(10)
             ->withQueryString();
 
+        /*
+         * Building list
+         */
         $buildings = $isFieldCoordinator
             ? collect()
             : Building::query()
                 ->orderBy('name')
                 ->get();
 
-        return view('coordinator.reservations.index', [
-            'reservations' => $reservations,
-            'buildings' => $buildings,
-            'search' => $search,
-            'building' => $building,
-            'status' => $status,
-            'resourceType' => $resourceType,
-            'sort' => $sort,
-        ]);
+        return view(
+            'coordinator.reservations.index',
+            [
+                'reservations' => $reservations,
+                'buildings' => $buildings,
+                'search' => $search,
+                'building' => $building,
+                'status' => $status,
+                'resourceType' => $resourceType,
+                'dateFrom' => $dateFrom,
+                'dateTo' => $dateTo,
+                'sort' => $sort,
+            ]
+        );
     }
 
     public function show(Reservation $reservation): View
@@ -238,7 +400,9 @@ class CoordinatorReservationController extends Controller
         ]);
 
         if ($this->isFieldCoordinator()) {
+
             $rooms = collect();
+
             $trainingRooms = collect();
 
             $fields = Field::query()
@@ -255,7 +419,9 @@ class CoordinatorReservationController extends Controller
                 })
                 ->orderBy('name')
                 ->get();
+
         } else {
+
             $rooms = Room::query()
                 ->with('building')
                 ->where(function ($query) use ($reservation) {
@@ -418,6 +584,7 @@ class CoordinatorReservationController extends Controller
         }
 
         $resourceType = $validated['resource_type'];
+
         $resourceId = (int) $validated['resource_id'];
 
         $resource = match ($resourceType) {
@@ -684,6 +851,7 @@ class CoordinatorReservationController extends Controller
                 $reservation->starts_at
             )
             ->where(function ($query) use ($reservation) {
+
                 $query
                     ->when(
                         $reservation->room_id !== null,
@@ -706,6 +874,7 @@ class CoordinatorReservationController extends Controller
                             $reservation->field_id
                         )
                     );
+
             })
             ->exists();
 
@@ -717,6 +886,7 @@ class CoordinatorReservationController extends Controller
         }
 
         DB::transaction(function () use ($reservation) {
+
             $oldValue = [
                 'status' => $reservation->status,
             ];
@@ -779,6 +949,7 @@ class CoordinatorReservationController extends Controller
             $reservation,
             $validated
         ) {
+
             $oldValue = [
                 'status' => $reservation->status,
                 'rejection_reason' => $reservation->rejection_reason,
@@ -834,6 +1005,7 @@ class CoordinatorReservationController extends Controller
         }
 
         DB::transaction(function () use ($reservation) {
+
             $oldValue = [
                 'status' => $reservation->status,
             ];
@@ -886,6 +1058,7 @@ class CoordinatorReservationController extends Controller
         }
 
         DB::transaction(function () use ($reservation) {
+
             $oldValue = [
                 'status' => $reservation->status,
             ];

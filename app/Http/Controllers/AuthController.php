@@ -32,21 +32,76 @@ class AuthController extends Controller
 
         $user = $request->user();
 
-        if ($user?->role?->name === 'Training Officer') {
-            return redirect()->route('training-officer.home');
+        /*
+        |--------------------------------------------------------------------------
+        | Training Officer Classroom
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user?->role?->name === 'Training Officer Classroom') {
+            return redirect()->route(
+                'training-officer.classroom.home'
+            );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Training Officer
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user?->role?->name === 'Training Officer') {
+            return redirect()->route(
+                'training-officer.home'
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Coordinator
+        |--------------------------------------------------------------------------
+        */
 
         if ($user?->role?->name === 'Coordinator') {
-            return redirect()->route('coordinator.dashboard');
+            return redirect()->route(
+                'coordinator.dashboard'
+            );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Building Coordinator
+        |--------------------------------------------------------------------------
+        */
 
         if ($user?->role?->name === 'Building Coordinator') {
-            return redirect()->route('building-coordinator.dashboard');
+            return redirect()->route(
+                'building-coordinator.dashboard'
+            );
         }
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Field Coordinator
+        |--------------------------------------------------------------------------
+        */
+
         if ($user?->role?->name === 'Field Coordinator') {
-            return redirect()->route('field-coordinator.reservations.index');
+            return redirect()->route(
+                'field-coordinator.reservations.index'
+            );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Default
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()->route('dashboard');
     }
@@ -58,6 +113,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('landing');
     }
 }

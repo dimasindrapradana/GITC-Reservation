@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\CoordinatorReservationReportExport;
+use App\Exports\AdminReservationReportExport;
 use App\Models\Building;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
@@ -10,38 +10,46 @@ use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class CoordinatorReportController extends Controller
+class AdminReportController extends Controller
 {
+    /**
+     * Reservation report for Admin.
+     */
     public function reservationReport(Request $request): View
     {
-        $isFieldCoordinator =
-            auth()->user()?->role?->name === 'Field Coordinator';
-
+        /*
+         * Month can be:
+         * - "all"
+         * - 1 to 12
+         */
         $month = $request->input(
             'month',
             'all'
         );
 
+        if ($month !== 'all') {
+            $month = (int) $month;
+
+            if ($month < 1 || $month > 12) {
+                $month = 'all';
+            }
+        }
+
+        /*
+         * Year.
+         */
         $year = $request->integer(
             'year',
             now()->year
         );
 
-        if (
-            $month !== 'all'
-            && (
-                !is_numeric($month)
-                || (int) $month < 1
-                || (int) $month > 12
-            )
-        ) {
-            $month = 'all';
-        }
-
         if ($year < 2020 || $year > 2100) {
             $year = now()->year;
         }
 
+        /*
+         * Other filters.
+         */
         $status = $request->string('status')
             ->toString();
 
@@ -56,13 +64,8 @@ class CoordinatorReportController extends Controller
             ->toString();
 
         /*
-         * Field Coordinator can only access Field reservations.
+         * Base reservation query.
          */
-        if ($isFieldCoordinator) {
-            $resourceType = 'field';
-            $building = '';
-        }
-
         $query = Reservation::query()
             ->with([
                 'user',
@@ -70,16 +73,32 @@ class CoordinatorReportController extends Controller
                 'trainingRoom.building',
                 'field',
             ])
-            ->whereYear('starts_at', $year)
+
+            /*
+             * Always filter by selected year.
+             */
+            ->whereYear(
+                'starts_at',
+                $year
+            )
+
+            /*
+             * Only filter month when
+             * a specific month is selected.
+             */
             ->when(
                 $month !== 'all',
                 function ($query) use ($month) {
                     $query->whereMonth(
                         'starts_at',
-                        (int) $month
+                        $month
                     );
                 }
             )
+
+            /*
+             * Status filter.
+             */
             ->when(
                 $status !== '',
                 function ($query) use ($status) {
@@ -89,12 +108,19 @@ class CoordinatorReportController extends Controller
                     );
                 }
             )
+
+            /*
+             * Resource type filter.
+             */
             ->when(
                 $resourceType === 'room',
                 function ($query) {
-                    $query->whereNotNull('room_id');
+                    $query->whereNotNull(
+                        'room_id'
+                    );
                 }
             )
+
             ->when(
                 $resourceType === 'training_room',
                 function ($query) {
@@ -103,12 +129,19 @@ class CoordinatorReportController extends Controller
                     );
                 }
             )
+
             ->when(
                 $resourceType === 'field',
                 function ($query) {
-                    $query->whereNotNull('field_id');
+                    $query->whereNotNull(
+                        'field_id'
+                    );
                 }
             )
+
+            /*
+             * Building filter.
+             */
             ->when(
                 $building !== '',
                 function ($query) use ($building) {
@@ -135,36 +168,46 @@ class CoordinatorReportController extends Controller
                     });
                 }
             )
+
+            /*
+             * Search filter.
+             */
             ->when(
                 $search !== '',
                 function ($query) use ($search) {
                     $query->where(function ($query) use ($search) {
+
                         $query
                             ->where(
                                 'reservation_number',
                                 'like',
                                 '%' . $search . '%'
                             )
+
                             ->orWhere(
                                 'event_name',
                                 'like',
                                 '%' . $search . '%'
                             )
+
                             ->orWhere(
                                 'booker_name',
                                 'like',
                                 '%' . $search . '%'
                             )
+
                             ->orWhere(
                                 'instructor',
                                 'like',
                                 '%' . $search . '%'
                             )
+
                             ->orWhere(
                                 'description',
                                 'like',
                                 '%' . $search . '%'
                             )
+
                             ->orWhereHas(
                                 'user',
                                 function ($query) use ($search) {
@@ -181,6 +224,7 @@ class CoordinatorReportController extends Controller
                                         );
                                 }
                             )
+
                             ->orWhereHas(
                                 'room',
                                 function ($query) use ($search) {
@@ -191,6 +235,7 @@ class CoordinatorReportController extends Controller
                                     );
                                 }
                             )
+
                             ->orWhereHas(
                                 'trainingRoom',
                                 function ($query) use ($search) {
@@ -201,6 +246,7 @@ class CoordinatorReportController extends Controller
                                     );
                                 }
                             )
+
                             ->orWhereHas(
                                 'field',
                                 function ($query) use ($search) {
@@ -215,39 +261,64 @@ class CoordinatorReportController extends Controller
                 }
             );
 
+        /*
+         * Summary statistics.
+         */
         $total = (clone $query)
             ->count();
 
         $pending = (clone $query)
-            ->where('status', 'PENDING')
+            ->where(
+                'status',
+                'PENDING'
+            )
             ->count();
 
         $approved = (clone $query)
-            ->where('status', 'APPROVED')
+            ->where(
+                'status',
+                'APPROVED'
+            )
             ->count();
 
         $rejected = (clone $query)
-            ->where('status', 'REJECTED')
+            ->where(
+                'status',
+                'REJECTED'
+            )
             ->count();
 
         $cancelled = (clone $query)
-            ->where('status', 'CANCELLED')
+            ->where(
+                'status',
+                'CANCELLED'
+            )
             ->count();
 
+        /*
+         * Reservation list.
+         */
         $reservations = $query
-            ->orderBy('starts_at', 'asc')
-            ->orderBy('id', 'asc')
+            ->orderBy(
+                'starts_at',
+                'asc'
+            )
+            ->orderBy(
+                'id',
+                'asc'
+            )
             ->paginate(10)
             ->withQueryString();
 
-        $buildings = $isFieldCoordinator
-            ? collect()
-            : Building::query()
-                ->orderBy('name')
-                ->get();
+        /*
+         * Buildings for filter.
+         */
+        $buildings = Building::query()
+            ->orderBy('name')
+            ->get();
 
         return view(
-            'coordinator.reports.reservations',
+            'admin.reports.reservations',
             [
                 'reservations' => $reservations,
                 'buildings' => $buildings,
@@ -262,27 +333,16 @@ class CoordinatorReportController extends Controller
                 'approved' => $approved,
                 'rejected' => $rejected,
                 'cancelled' => $cancelled,
-                'isFieldCoordinator' => $isFieldCoordinator,
             ]
         );
     }
 
+    /**
+     * Show reservation report detail.
+     */
     public function showReservationReport(
         Reservation $reservation
     ): View {
-        $isFieldCoordinator =
-            auth()->user()?->role?->name === 'Field Coordinator';
-
-        if (
-            $isFieldCoordinator
-            && $reservation->field_id === null
-        ) {
-            abort(
-                403,
-                'Field Coordinators can only view field reservation reports.'
-            );
-        }
-
         $reservation->load([
             'user',
             'room.building',
@@ -293,45 +353,60 @@ class CoordinatorReportController extends Controller
         ]);
 
         return view(
-            'coordinator.reports.reservation-detail',
+            'admin.reports.reservation-detail',
             [
                 'reservation' => $reservation,
-                'isFieldCoordinator' => $isFieldCoordinator,
             ]
         );
     }
 
+    /**
+     * Export reservation report.
+     */
     public function exportReservationReport(
         Request $request
     ): BinaryFileResponse {
-        $isFieldCoordinator =
-            auth()->user()?->role?->name === 'Field Coordinator';
-
+        /*
+         * IMPORTANT:
+         * Month can be "all" or 1-12.
+         *
+         * Do not use:
+         * $request->integer('month')
+         *
+         * because "all" must remain a string.
+         */
         $month = $request->input(
             'month',
             'all'
         );
 
+        /*
+         * Convert only specific month values
+         * into integers.
+         */
+        if ($month !== 'all') {
+            $month = (int) $month;
+
+            if ($month < 1 || $month > 12) {
+                $month = 'all';
+            }
+        }
+
+        /*
+         * Year.
+         */
         $year = $request->integer(
             'year',
             now()->year
         );
 
-        if (
-            $month !== 'all'
-            && (
-                !is_numeric($month)
-                || (int) $month < 1
-                || (int) $month > 12
-            )
-        ) {
-            $month = 'all';
-        }
-
         if ($year < 2020 || $year > 2100) {
             $year = now()->year;
         }
 
+        /*
+         * Other filters.
+         */
         $status = $request->string('status')
             ->toString();
 
@@ -346,36 +421,34 @@ class CoordinatorReportController extends Controller
             ->toString();
 
         /*
-         * Field Coordinator can only export Field reservations.
+         * Filename period.
          */
-        if ($isFieldCoordinator) {
-            $resourceType = 'field';
-            $building = '';
-        }
-
-        $export = new CoordinatorReservationReportExport(
-            month: $month,
-            year: $year,
-            status: $status,
-            resourceType: $resourceType,
-            building: $building,
-            search: $search,
-        );
-
-        $period = $month === 'all'
-            ? (string) $year
-            : $year . '_' . str_pad(
+        $periodName = $month === 'all'
+            ? 'All_Months'
+            : str_pad(
                 (string) $month,
                 2,
                 '0',
                 STR_PAD_LEFT
             );
 
+        /*
+         * Export using exactly the
+         * same filters as the report page.
+         */
         return Excel::download(
-            $export,
+            new AdminReservationReportExport(
+                month: $month,
+                year: $year,
+                status: $status,
+                resourceType: $resourceType,
+                building: $building,
+                search: $search,
+            ),
             'GITC_Reservation_Report_' .
-                ($isFieldCoordinator ? 'Field_' : '') .
-                $period .
+                $year .
+                '_' .
+                $periodName .
                 '.xlsx'
         );
     }

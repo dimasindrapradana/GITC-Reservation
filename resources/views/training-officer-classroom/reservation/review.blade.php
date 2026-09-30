@@ -1,4 +1,4 @@
-@extends('layouts.training-officer')
+@extends('layouts.training-officer-classroom')
 
 @section('title', 'Review Reservation')
 
@@ -18,9 +18,12 @@
 
     .reservation-eyebrow {
         margin: 0 0 7px;
+
         color: var(--gitc-teal);
+
         font-size: 11px;
         font-weight: 800;
+
         letter-spacing: 0.12em;
         text-transform: uppercase;
     }
@@ -29,38 +32,53 @@
         display: flex;
         align-items: flex-end;
         justify-content: space-between;
+
         gap: 24px;
     }
 
     .reservation-title {
         margin: 0;
+
         color: var(--gitc-navy);
+
         font-size: 30px;
         font-weight: 800;
+
         letter-spacing: -0.025em;
     }
 
     .reservation-description {
         margin: 8px 0 0;
+
         color: var(--gitc-muted);
+
         font-size: 14px;
         line-height: 1.6;
     }
 
     .reservation-back-button {
         flex-shrink: 0;
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-height: 42px;
+
         padding: 0 16px;
+
         border: 1px solid var(--gitc-border);
         border-radius: 9px;
+
         background: white;
+
         color: var(--gitc-navy);
+
         font-size: 13px;
         font-weight: 700;
+
         text-decoration: none;
+
         transition:
             border-color 0.18s ease,
             background 0.18s ease,
@@ -70,10 +88,14 @@
 
     .reservation-back-button:hover {
         border-color: #b8cbe0;
+
         background: #f8fbff;
+
         color: var(--gitc-blue);
+
         transform: translateY(-1px);
     }
+
 
     /* =========================================================
        NOTICE
@@ -82,20 +104,29 @@
     .reservation-notice {
         display: flex;
         align-items: flex-start;
+
         gap: 12px;
+
         margin-bottom: 22px;
+
         padding: 15px 17px;
+
         border: 1px solid #cfe4e1;
         border-radius: 11px;
+
         background: #f3faf9;
+
         color: var(--gitc-text);
     }
 
     .reservation-notice-icon {
         flex-shrink: 0;
+
         width: 20px;
         height: 20px;
+
         margin-top: 1px;
+
         color: var(--gitc-teal);
     }
 
@@ -105,17 +136,22 @@
 
     .reservation-notice-title {
         margin: 0;
+
         color: var(--gitc-navy);
+
         font-size: 13px;
         font-weight: 800;
     }
 
     .reservation-notice-text {
         margin: 5px 0 0;
+
         color: var(--gitc-muted);
+
         font-size: 12px;
         line-height: 1.6;
     }
+
 
     /* =========================================================
        MAIN CARD
@@ -123,49 +159,74 @@
 
     .reservation-card {
         overflow: hidden;
+
         border: 1px solid var(--gitc-border);
         border-radius: 14px;
+
         background: white;
-        box-shadow: 0 6px 18px rgba(15, 39, 71, 0.035);
+
+        box-shadow:
+            0 6px 18px rgba(15, 39, 71, 0.035);
     }
 
     .reservation-card-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         gap: 20px;
+
         padding: 20px 22px;
+
         border-bottom: 1px solid var(--gitc-border);
-        background: linear-gradient(90deg, #f8fbff 0%, #ffffff 75%);
+
+        background:
+            linear-gradient(
+                90deg,
+                #f8fbff 0%,
+                #ffffff 75%
+            );
     }
 
     .reservation-card-title {
         margin: 0;
+
         color: var(--gitc-navy);
+
         font-size: 17px;
         font-weight: 800;
     }
 
     .reservation-card-description {
         margin: 5px 0 0;
+
         color: var(--gitc-muted);
+
         font-size: 12px;
         line-height: 1.6;
     }
 
     .reservation-count {
         flex-shrink: 0;
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-height: 30px;
+
         padding: 0 11px;
+
         border-radius: 999px;
+
         background: var(--gitc-blue-light);
+
         color: var(--gitc-blue);
+
         font-size: 10px;
         font-weight: 800;
     }
+
 
     /* =========================================================
        RESERVATION ITEM
@@ -187,7 +248,9 @@
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
+
         gap: 18px;
+
         margin-bottom: 18px;
     }
 
@@ -197,34 +260,48 @@
 
     .reservation-item-number {
         margin: 0 0 5px;
+
         color: var(--gitc-teal);
+
         font-size: 10px;
         font-weight: 800;
+
         letter-spacing: 0.08em;
         text-transform: uppercase;
     }
 
     .reservation-item-title {
         margin: 0;
+
         color: var(--gitc-navy);
+
         font-size: 18px;
         font-weight: 800;
+
         line-height: 1.4;
     }
 
     .reservation-resource-type {
         flex-shrink: 0;
+
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-height: 25px;
+
         padding: 0 9px;
+
         border-radius: 999px;
+
         background: var(--gitc-blue-light);
+
         color: var(--gitc-blue);
+
         font-size: 9px;
         font-weight: 800;
     }
+
 
     /* =========================================================
        DETAILS GRID
@@ -232,35 +309,50 @@
 
     .reservation-details {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
         gap: 1px;
+
         overflow: hidden;
+
         border: 1px solid var(--gitc-border);
         border-radius: 10px;
+
         background: var(--gitc-border);
     }
 
     .reservation-detail {
         min-width: 0;
+
         padding: 14px 15px;
+
         background: white;
     }
 
     .reservation-detail-label {
         margin: 0 0 5px;
+
         color: var(--gitc-muted);
+
         font-size: 10px;
         font-weight: 700;
+
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
 
     .reservation-detail-value {
         margin: 0;
+
         overflow-wrap: anywhere;
+
         color: var(--gitc-text);
+
         font-size: 13px;
         font-weight: 700;
+
         line-height: 1.5;
     }
 
@@ -268,35 +360,47 @@
         color: var(--gitc-navy);
     }
 
+
     /* =========================================================
        DESCRIPTION
     ========================================================= */
 
     .reservation-description-block {
         margin-top: 14px;
+
         padding: 15px;
+
         border: 1px solid var(--gitc-border);
         border-radius: 10px;
+
         background: #fbfcfd;
     }
 
     .reservation-description-label {
         margin: 0 0 6px;
+
         color: var(--gitc-muted);
+
         font-size: 10px;
         font-weight: 700;
+
         text-transform: uppercase;
         letter-spacing: 0.04em;
     }
 
     .reservation-description-value {
         margin: 0;
+
         color: var(--gitc-text);
+
         font-size: 12px;
         line-height: 1.7;
+
         white-space: pre-line;
+
         overflow-wrap: anywhere;
     }
+
 
     /* =========================================================
        ITEM EDIT ACTION
@@ -304,7 +408,9 @@
 
     .reservation-item-actions {
         display: flex;
+
         justify-content: flex-end;
+
         margin-top: 14px;
     }
 
@@ -312,15 +418,23 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-height: 36px;
+
         padding: 0 13px;
+
         border: 1px solid var(--gitc-border);
         border-radius: 8px;
+
         background: white;
+
         color: var(--gitc-navy);
+
         font-size: 11px;
         font-weight: 800;
+
         text-decoration: none;
+
         transition:
             border-color 0.18s ease,
             background 0.18s ease,
@@ -330,16 +444,21 @@
 
     .reservation-edit-button:hover {
         border-color: #b8cbe0;
+
         background: #f8fbff;
+
         color: var(--gitc-blue);
+
         transform: translateY(-1px);
     }
 
     .reservation-edit-button svg {
         width: 14px;
         height: 14px;
+
         margin-right: 6px;
     }
+
 
     /* =========================================================
        BOTTOM ACTIONS
@@ -365,13 +484,20 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
+
         min-height: 44px;
+
         padding: 0 18px;
+
         border-radius: 9px;
+
         font-size: 12px;
         font-weight: 800;
+
         text-decoration: none;
+
         cursor: pointer;
+
         transition:
             background 0.18s ease,
             border-color 0.18s ease,
@@ -382,37 +508,54 @@
 
     .reservation-back-action {
         border: 1px solid var(--gitc-border);
+
         background: white;
+
         color: var(--gitc-navy);
     }
 
     .reservation-back-action:hover {
         border-color: #b8cbe0;
+
         background: #f8fbff;
+
         color: var(--gitc-blue);
+
         transform: translateY(-1px);
     }
 
     .reservation-submit-action {
         border: 1px solid var(--gitc-navy);
+
         background: var(--gitc-navy);
+
         color: white;
-        box-shadow: 0 5px 12px rgba(15, 39, 71, 0.10);
+
+        box-shadow:
+            0 5px 12px rgba(15, 39, 71, 0.10);
     }
 
     .reservation-submit-action:hover {
         border-color: var(--gitc-navy-dark);
+
         background: var(--gitc-navy-dark);
+
+        color: white;
+
         transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(15, 39, 71, 0.15);
+
+        box-shadow:
+            0 8px 18px rgba(15, 39, 71, 0.15);
     }
 
     .reservation-submit-action svg,
     .reservation-back-action svg {
         width: 16px;
         height: 16px;
+
         margin-right: 7px;
     }
+
 
     /* =========================================================
        EMPTY STATE
@@ -420,38 +563,49 @@
 
     .reservation-empty {
         padding: 50px 24px;
+
         text-align: center;
     }
 
     .reservation-empty-icon {
         width: 44px;
         height: 44px;
+
         margin: 0 auto 13px;
+
         color: #94a3b8;
     }
 
     .reservation-empty-title {
         margin: 0;
+
         color: var(--gitc-navy);
+
         font-size: 16px;
         font-weight: 800;
     }
 
     .reservation-empty-text {
         max-width: 420px;
+
         margin: 7px auto 0;
+
         color: var(--gitc-muted);
+
         font-size: 12px;
         line-height: 1.6;
     }
+
 
     /* =========================================================
        RESPONSIVE
     ========================================================= */
 
     @media (max-width: 700px) {
+
         .reservation-header-row {
             align-items: flex-start;
+
             flex-direction: column;
         }
 
@@ -465,11 +619,13 @@
 
         .reservation-card-header {
             align-items: flex-start;
+
             flex-direction: column;
         }
 
         .reservation-item-header {
             align-items: flex-start;
+
             flex-direction: column;
         }
 
@@ -483,6 +639,7 @@
     }
 
     @media (max-width: 560px) {
+
         .reservation-title {
             font-size: 25px;
         }
@@ -501,6 +658,7 @@
 
         .reservation-actions {
             align-items: stretch;
+
             flex-direction: column-reverse;
         }
 
@@ -515,6 +673,7 @@
 </style>
 @endsection
 
+
 @section('content')
 
 <div class="reservation-page">
@@ -522,6 +681,7 @@
     {{-- =====================================================
          HEADER
     ====================================================== --}}
+
     <div class="reservation-header">
 
         <p class="reservation-eyebrow">
@@ -531,29 +691,34 @@
         <div class="reservation-header-row">
 
             <div>
+
                 <h1 class="reservation-title">
                     Review Reservation
                 </h1>
 
                 <p class="reservation-description">
-                    Review all reservation details before submitting your request.
+                    Review all classroom reservation details before submitting your request.
                 </p>
+
             </div>
 
+
             <a
-                href="{{ route('training-officer.cart') }}"
+                href="{{ route('training-officer.classroom.cart') }}"
                 class="reservation-back-button"
             >
-                Back to Cart
+                Back to Booking List
             </a>
 
         </div>
 
     </div>
 
+
     {{-- =====================================================
          NOTICE
     ====================================================== --}}
+
     <div class="reservation-notice">
 
         <svg
@@ -571,6 +736,7 @@
             />
         </svg>
 
+
         <div class="reservation-notice-content">
 
             <p class="reservation-notice-title">
@@ -578,7 +744,7 @@
             </p>
 
             <p class="reservation-notice-text">
-                Please make sure all reservation details are correct.
+                Please make sure all classroom reservation details are correct.
                 You can edit any reservation before submitting your request.
             </p>
 
@@ -586,9 +752,11 @@
 
     </div>
 
+
     {{-- =====================================================
          RESERVATION CARD
     ====================================================== --}}
+
     <div class="reservation-card">
 
         <div class="reservation-card-header">
@@ -600,20 +768,28 @@
                 </h2>
 
                 <p class="reservation-card-description">
-                    {{ $totalItems }} resource(s) will be submitted as separate reservation requests.
+                    {{ $totalItems }}
+                    {{ $totalItems === 1 ? 'room' : 'rooms' }}
+                    will be submitted as separate reservation requests.
                 </p>
 
             </div>
 
+
             <span class="reservation-count">
-                {{ $totalItems }} {{ $totalItems === 1 ? 'Resource' : 'Resources' }}
+
+                {{ $totalItems }}
+                {{ $totalItems === 1 ? 'Room' : 'Rooms' }}
+
             </span>
 
         </div>
 
+
         {{-- =================================================
              RESERVATION LIST
         ================================================== --}}
+
         @if (count($reservations) > 0)
 
             <div class="reservation-list">
@@ -622,9 +798,11 @@
 
                     <div class="reservation-item">
 
-                        {{-- =================================================
+
+                        {{-- =============================================
                              ITEM HEADER
-                        ================================================== --}}
+                        ============================================== --}}
+
                         <div class="reservation-item-header">
 
                             <div class="reservation-item-title-wrap">
@@ -639,21 +817,20 @@
 
                             </div>
 
+
                             <span class="reservation-resource-type">
-                                {{ match ($reservation['resource_type']) {
-                                    'room' => 'Room',
-                                    'training_room' => 'Training Media',
-                                    'field' => 'Field',
-                                    default => 'Resource',
-                                } }}
+                                Room
                             </span>
 
                         </div>
 
-                        {{-- =================================================
+
+                        {{-- =============================================
                              DETAILS
-                        ================================================== --}}
+                        ============================================== --}}
+
                         <div class="reservation-details">
+
 
                             <div class="reservation-detail">
 
@@ -667,6 +844,7 @@
 
                             </div>
 
+
                             <div class="reservation-detail">
 
                                 <p class="reservation-detail-label">
@@ -679,6 +857,7 @@
 
                             </div>
 
+
                             <div class="reservation-detail">
 
                                 <p class="reservation-detail-label">
@@ -686,10 +865,15 @@
                                 </p>
 
                                 <p class="reservation-detail-value">
-                                    {{ \Carbon\Carbon::parse($reservation['starts_at'])->format('d M Y, H:i') }}
+
+                                    {{ \Carbon\Carbon::parse(
+                                        $reservation['starts_at']
+                                    )->format('d M Y, H:i') }}
+
                                 </p>
 
                             </div>
+
 
                             <div class="reservation-detail">
 
@@ -698,10 +882,15 @@
                                 </p>
 
                                 <p class="reservation-detail-value">
-                                    {{ \Carbon\Carbon::parse($reservation['ends_at'])->format('d M Y, H:i') }}
+
+                                    {{ \Carbon\Carbon::parse(
+                                        $reservation['ends_at']
+                                    )->format('d M Y, H:i') }}
+
                                 </p>
 
                             </div>
+
 
                             <div class="reservation-detail">
 
@@ -710,11 +899,20 @@
                                 </p>
 
                                 <p class="reservation-detail-value">
-                                    {{ number_format($reservation['total_person']) }}
-                                    {{ $reservation['total_person'] == 1 ? 'Person' : 'People' }}
+
+                                    {{ number_format(
+                                        $reservation['total_person']
+                                    ) }}
+
+                                    {{ $reservation['total_person'] == 1
+                                        ? 'Person'
+                                        : 'People'
+                                    }}
+
                                 </p>
 
                             </div>
+
 
                             <div class="reservation-detail">
 
@@ -723,16 +921,20 @@
                                 </p>
 
                                 <p class="reservation-detail-value">
+
                                     {{ $reservation['instructor'] ?: 'Not specified' }}
+
                                 </p>
 
                             </div>
 
                         </div>
 
-                        {{-- =================================================
+
+                        {{-- =============================================
                              DESCRIPTION
-                        ================================================== --}}
+                        ============================================== --}}
+
                         <div class="reservation-description-block">
 
                             <p class="reservation-description-label">
@@ -745,17 +947,19 @@
 
                         </div>
 
-                        {{-- =================================================
+
+                        {{-- =============================================
                              EDIT ACTION
-                        ================================================== --}}
+                        ============================================== --}}
+
                         <div class="reservation-item-actions">
 
                             <a
                                 href="{{ route(
-                                    'training-officer.reservation.resource.create',
+                                    'training-officer.classroom.reservation.resource.create',
                                     [
-                                        'type' => $reservation['resource_type'],
-                                        'resource' => $reservation['resource_id'],
+                                        'room' => $reservation['resource_id'],
+                                        'edit' => 1,
                                     ]
                                 ) }}"
                                 class="reservation-edit-button"
@@ -768,6 +972,7 @@
                                     stroke="currentColor"
                                     stroke-width="1.8"
                                 >
+
                                     <path
                                         stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -779,6 +984,7 @@
                                         stroke-linejoin="round"
                                         d="M15.5 5l3.5 3.5"
                                     />
+
                                 </svg>
 
                                 Edit Reservation
@@ -793,7 +999,12 @@
 
             </div>
 
+
         @else
+
+            {{-- =================================================
+                 EMPTY STATE
+            ================================================== --}}
 
             <div class="reservation-empty">
 
@@ -805,6 +1016,7 @@
                     stroke="currentColor"
                     stroke-width="1.6"
                 >
+
                     <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
@@ -816,30 +1028,38 @@
                         stroke-linejoin="round"
                         d="M13 3v5h5"
                     />
+
                 </svg>
+
 
                 <h3 class="reservation-empty-title">
                     No Reservation Data
                 </h3>
 
+
                 <p class="reservation-empty-text">
-                    There are no reservation details available to review.
-                    Please return to your cart and start the reservation process again.
+                    There are no classroom reservation details available to review.
+                    Please return to your booking list and start the reservation process again.
                 </p>
 
             </div>
 
         @endif
 
+
         {{-- =================================================
              ACTIONS
         ================================================== --}}
+
         @if (count($reservations) > 0)
 
             <div class="reservation-actions">
 
+
                 <a
-                    href="{{ route('training-officer.reservation.create') }}"
+                    href="{{ route(
+                        'training-officer.classroom.reservation.create'
+                    ) }}"
                     class="reservation-action-button reservation-back-action"
                 >
 
@@ -850,20 +1070,25 @@
                         stroke="currentColor"
                         stroke-width="1.8"
                     >
+
                         <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"
                         />
+
                     </svg>
 
                     Back to Reservation
 
                 </a>
 
+
                 <form
                     method="POST"
-                    action="{{ route('training-officer.reservation.submit') }}"
+                    action="{{ route(
+                        'training-officer.classroom.reservation.submit'
+                    ) }}"
                 >
 
                     @csrf
@@ -880,6 +1105,7 @@
                             stroke="currentColor"
                             stroke-width="1.8"
                         >
+
                             <path
                                 stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -891,6 +1117,7 @@
                                 stroke-linejoin="round"
                                 d="M9 12l2 2 4-4"
                             />
+
                         </svg>
 
                         Confirm & Submit Reservation

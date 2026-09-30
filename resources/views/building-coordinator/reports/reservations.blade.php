@@ -7,7 +7,10 @@
 
     <div class="content-header">
         <h2>Reservation Report</h2>
-        <p>Review reservation activity by month and export filtered data.</p>
+
+        <p>
+            Review reservation activity by period and export filtered data.
+        </p>
     </div>
 
     <div class="card">
@@ -18,16 +21,30 @@
                 method="GET"
                 action="{{ route('building-coordinator.reports.reservations') }}"
                 class="filter-form"
+                id="reservation-report-filter"
             >
 
                 <div class="filter-grid">
 
+                    {{-- MONTH --}}
                     <div class="field-group">
+
                         <label for="month">
                             Month
                         </label>
 
-                        <select id="month" name="month">
+                        <select
+                            id="month"
+                            name="month"
+                            class="auto-filter"
+                        >
+
+                            <option
+                                value=""
+                                {{ $month === null ? 'selected' : '' }}
+                            >
+                                All Months
+                            </option>
 
                             @foreach(range(1, 12) as $monthNumber)
 
@@ -35,22 +52,37 @@
                                     value="{{ $monthNumber }}"
                                     {{ $month === $monthNumber ? 'selected' : '' }}
                                 >
-                                    {{ \Carbon\Carbon::create()->month($monthNumber)->format('F') }}
+                                    {{ \Carbon\Carbon::create()
+                                        ->month($monthNumber)
+                                        ->format('F') }}
                                 </option>
 
                             @endforeach
 
                         </select>
+
                     </div>
 
+                    {{-- YEAR --}}
                     <div class="field-group">
+
                         <label for="year">
                             Year
                         </label>
 
-                        <select id="year" name="year">
+                        <select
+                            id="year"
+                            name="year"
+                            class="auto-filter"
+                        >
 
-                            @foreach(range(now()->year - 2, now()->year + 2) as $yearNumber)
+                            @foreach(
+                                range(
+                                    now()->year - 2,
+                                    now()->year + 2
+                                )
+                                as $yearNumber
+                            )
 
                                 <option
                                     value="{{ $yearNumber }}"
@@ -62,14 +94,21 @@
                             @endforeach
 
                         </select>
+
                     </div>
 
+                    {{-- STATUS --}}
                     <div class="field-group">
+
                         <label for="status">
                             Status
                         </label>
 
-                        <select id="status" name="status">
+                        <select
+                            id="status"
+                            name="status"
+                            class="auto-filter"
+                        >
 
                             <option value="">
                                 All Statuses
@@ -92,9 +131,12 @@
                             @endforeach
 
                         </select>
+
                     </div>
 
+                    {{-- RESOURCE TYPE --}}
                     <div class="field-group">
+
                         <label for="resource_type">
                             Resource Type
                         </label>
@@ -102,6 +144,7 @@
                         <select
                             id="resource_type"
                             name="resource_type"
+                            class="auto-filter"
                         >
 
                             <option value="">
@@ -130,9 +173,12 @@
                             </option>
 
                         </select>
+
                     </div>
 
+                    {{-- BUILDING --}}
                     <div class="field-group">
+
                         <label for="building">
                             Building
                         </label>
@@ -140,6 +186,7 @@
                         <select
                             id="building"
                             name="building"
+                            class="auto-filter"
                         >
 
                             <option value="">
@@ -158,9 +205,12 @@
                             @endforeach
 
                         </select>
+
                     </div>
 
+                    {{-- SEARCH --}}
                     <div class="field-group field-search">
+
                         <label for="search">
                             Search
                         </label>
@@ -171,22 +221,21 @@
                             name="search"
                             value="{{ $search }}"
                             placeholder="Search reservation, booker..."
+                            autocomplete="off"
                         >
+
                     </div>
 
                 </div>
 
+                {{-- NO APPLY FILTER BUTTON --}}
+
                 <div class="filter-actions">
 
-                    <button
-                        type="submit"
-                        class="button button-primary"
-                    >
-                        Apply Filter
-                    </button>
-
                     <a
-                        href="{{ route('building-coordinator.reports.reservations') }}"
+                        href="{{ route(
+                            'building-coordinator.reports.reservations'
+                        ) }}"
                         class="button button-secondary"
                     >
                         Reset
@@ -210,9 +259,12 @@
 
     </div>
 
+    {{-- STATISTICS --}}
+
     <div class="statistics-grid">
 
         <div class="stat-card">
+
             <div class="stat-label">
                 Total Reservations
             </div>
@@ -220,9 +272,11 @@
             <div class="stat-value">
                 {{ $total }}
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-label">
                 Pending
             </div>
@@ -230,9 +284,11 @@
             <div class="stat-value">
                 {{ $pending }}
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-label">
                 Approved
             </div>
@@ -240,9 +296,11 @@
             <div class="stat-value">
                 {{ $approved }}
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-label">
                 Rejected
             </div>
@@ -250,9 +308,11 @@
             <div class="stat-value">
                 {{ $rejected }}
             </div>
+
         </div>
 
         <div class="stat-card">
+
             <div class="stat-label">
                 Cancelled
             </div>
@@ -260,9 +320,12 @@
             <div class="stat-value">
                 {{ $cancelled }}
             </div>
+
         </div>
 
     </div>
+
+    {{-- TABLE --}}
 
     <div class="card table-card">
 
@@ -271,6 +334,7 @@
             <table class="data-table">
 
                 <thead>
+
                     <tr>
                         <th>Reservation</th>
                         <th>User</th>
@@ -281,6 +345,7 @@
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
@@ -288,62 +353,125 @@
                     @forelse($reservations as $reservation)
 
                         @php
+
                             if ($reservation->room !== null) {
+
                                 $resourceTypeLabel = 'Room';
-                                $resourceName = $reservation->room->name;
-                            } elseif ($reservation->trainingRoom !== null) {
-                                $resourceTypeLabel = 'Media Training';
-                                $resourceName = $reservation->trainingRoom->name;
-                            } elseif ($reservation->field !== null) {
+
+                                $resourceName =
+                                    $reservation->room->name;
+
+                            } elseif (
+                                $reservation->trainingRoom !== null
+                            ) {
+
+                                $resourceTypeLabel =
+                                    'Media Training';
+
+                                $resourceName =
+                                    $reservation
+                                        ->trainingRoom
+                                        ->name;
+
+                            } elseif (
+                                $reservation->field !== null
+                            ) {
+
                                 $resourceTypeLabel = 'Field';
-                                $resourceName = $reservation->field->name;
+
+                                $resourceName =
+                                    $reservation
+                                        ->field
+                                        ->name;
+
                             } else {
+
                                 $resourceTypeLabel = '—';
                                 $resourceName = '—';
+
                             }
 
-                            $statusClass = match ($reservation->status) {
-                                'PENDING' => 'status-pending',
-                                'APPROVED' => 'status-approved',
-                                'REJECTED' => 'status-rejected',
-                                'CANCELLED' => 'status-cancelled',
-                                default => 'status-default',
+                            $statusClass = match (
+                                $reservation->status
+                            ) {
+
+                                'PENDING'
+                                    => 'status-pending',
+
+                                'APPROVED'
+                                    => 'status-approved',
+
+                                'REJECTED'
+                                    => 'status-rejected',
+
+                                'CANCELLED'
+                                    => 'status-cancelled',
+
+                                default
+                                    => 'status-default',
+
                             };
+
                         @endphp
 
                         <tr>
 
+                            {{-- RESERVATION --}}
+
                             <td>
+
                                 <div class="reservation-number">
                                     {{ $reservation->reservation_number }}
                                 </div>
+
                             </td>
 
+                            {{-- USER --}}
+
                             <td>
+
                                 <div class="user-main">
                                     {{ $reservation->user?->name ?? '—' }}
                                 </div>
 
-                                @if($reservation->user?->employee_number)
+                                @if(
+                                    $reservation
+                                        ->user
+                                        ?->employee_number
+                                )
+
                                     <div class="user-sub">
                                         {{ $reservation->user->employee_number }}
                                     </div>
+
                                 @endif
+
                             </td>
 
+                            {{-- BOOKER --}}
+
                             <td>
+
                                 <div class="booker-name">
                                     {{ $reservation->booker_name }}
                                 </div>
+
                             </td>
 
+                            {{-- TOTAL PERSON --}}
+
                             <td>
+
                                 <div class="total-person">
                                     {{ $reservation->total_person }}
                                 </div>
+
                             </td>
 
+                            {{-- RESOURCE --}}
+
                             <td>
+
                                 <div class="resource-name">
                                     {{ $resourceName }}
                                 </div>
@@ -351,25 +479,42 @@
                                 <div class="resource-type">
                                     {{ $resourceTypeLabel }}
                                 </div>
+
                             </td>
 
+                            {{-- SCHEDULE --}}
+
                             <td>
+
                                 <div class="date-main">
                                     {{ $reservation->starts_at?->format('d M Y') }}
                                 </div>
 
                                 <div class="date-sub">
+
                                     {{ $reservation->starts_at?->format('H:i') }}
+
                                     –
+
                                     {{ $reservation->ends_at?->format('H:i') }}
+
                                 </div>
+
                             </td>
 
+                            {{-- STATUS --}}
+
                             <td>
-                                <span class="status-badge {{ $statusClass }}">
+
+                                <span
+                                    class="status-badge {{ $statusClass }}"
+                                >
                                     {{ $reservation->status }}
                                 </span>
+
                             </td>
+
+                            {{-- ACTION --}}
 
                             <td class="action-column">
 
@@ -390,12 +535,14 @@
                     @empty
 
                         <tr>
+
                             <td
                                 colspan="8"
                                 class="empty-state"
                             >
                                 No reservations found for the selected period.
                             </td>
+
                         </tr>
 
                     @endforelse
@@ -406,9 +553,12 @@
 
         </div>
 
+        {{-- PAGINATION --}}
+
         <div class="pagination-wrapper">
 
             <div class="pagination-info">
+
                 Showing
                 {{ $reservations->firstItem() ?? 0 }}
                 to
@@ -416,19 +566,26 @@
                 of
                 {{ $reservations->total() }}
                 results
+
             </div>
 
             @if($reservations->hasPages())
 
                 <div class="pagination">
 
-                    @foreach($reservations->getUrlRange(
-                        max(1, $reservations->currentPage() - 2),
-                        min(
-                            $reservations->lastPage(),
-                            $reservations->currentPage() + 2
+                    @foreach(
+                        $reservations->getUrlRange(
+                            max(
+                                1,
+                                $reservations->currentPage() - 2
+                            ),
+                            min(
+                                $reservations->lastPage(),
+                                $reservations->currentPage() + 2
+                            )
                         )
-                    ) as $page => $url)
+                        as $page => $url
+                    )
 
                         <a
                             href="{{ $url }}"
@@ -450,6 +607,7 @@
 @endsection
 
 @push('styles')
+
 <style>
 
     .filter-form {
@@ -460,7 +618,10 @@
 
     .filter-grid {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(
+            5,
+            minmax(0, 1fr)
+        );
         gap: 14px;
     }
 
@@ -497,7 +658,14 @@
     .field-group input:focus,
     .field-group select:focus {
         border-color: var(--blue);
-        box-shadow: 0 0 0 3px rgba(0, 111, 174, 0.08);
+        box-shadow:
+            0 0 0 3px
+            rgba(
+                0,
+                111,
+                174,
+                0.08
+            );
     }
 
     .filter-actions {
@@ -525,17 +693,6 @@
             color 0.15s ease;
     }
 
-    .button-primary {
-        background: #007fae;
-        border-color: #007fae;
-        color: #ffffff;
-    }
-
-    .button-primary:hover {
-        background: #006f99;
-        border-color: #006f99;
-    }
-
     .button-secondary {
         background: #ffffff;
         border-color: var(--border);
@@ -559,7 +716,10 @@
 
     .statistics-grid {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(
+            5,
+            minmax(0, 1fr)
+        );
         gap: 14px;
         margin-top: 20px;
     }
@@ -775,7 +935,10 @@
     @media (max-width: 1100px) {
 
         .filter-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(
+                2,
+                minmax(0, 1fr)
+            );
         }
 
         .field-search {
@@ -783,7 +946,10 @@
         }
 
         .statistics-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-columns: repeat(
+                3,
+                minmax(0, 1fr)
+            );
         }
 
     }
@@ -799,7 +965,10 @@
         }
 
         .statistics-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(
+                2,
+                minmax(0, 1fr)
+            );
         }
 
         .pagination-wrapper {
@@ -815,4 +984,115 @@
     }
 
 </style>
+
+@endpush
+
+@push('scripts')
+
+<script>
+
+    document.addEventListener(
+        'DOMContentLoaded',
+        function () {
+
+            const form =
+                document.getElementById(
+                    'reservation-report-filter'
+                );
+
+            if (!form) {
+                return;
+            }
+
+            /*
+             * Automatic filter
+             *
+             * Select changes submit immediately.
+             */
+            form
+                .querySelectorAll(
+                    '.auto-filter'
+                )
+                .forEach(
+                    function (element) {
+
+                        element.addEventListener(
+                            'change',
+                            function () {
+
+                                form.submit();
+
+                            }
+                        );
+
+                    }
+                );
+
+            /*
+             * Automatic search
+             *
+             * Wait until the user stops typing
+             * before submitting the form.
+             */
+            const search =
+                document.getElementById(
+                    'search'
+                );
+
+            let searchTimer = null;
+
+            if (search) {
+
+                search.addEventListener(
+                    'input',
+                    function () {
+
+                        clearTimeout(
+                            searchTimer
+                        );
+
+                        searchTimer =
+                            setTimeout(
+                                function () {
+
+                                    form.submit();
+
+                                },
+                                500
+                            );
+
+                    }
+                );
+
+                /*
+                 * Allow Enter to submit immediately.
+                 */
+                search.addEventListener(
+                    'keydown',
+                    function (event) {
+
+                        if (
+                            event.key === 'Enter'
+                        ) {
+
+                            event.preventDefault();
+
+                            clearTimeout(
+                                searchTimer
+                            );
+
+                            form.submit();
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
 @endpush

@@ -20,6 +20,24 @@ use Illuminate\View\View;
 
 class ReservationController extends Controller
 {
+    public function myReservations(Request $request): View
+    {
+        $reservations = Reservation::query()
+            ->with([
+                'room.building',
+                'trainingRoom.building',
+                'field',
+            ])
+            ->where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('reservations.my-index', [
+            'reservations' => $reservations,
+        ]);
+    }
+
     public function index(Request $request): View
     {
         $search = $request->string('search')
@@ -38,6 +56,14 @@ class ReservationController extends Controller
         $sort = $request->string('sort')
             ->toString();
 
+        $dateFrom = $request->string('date_from')
+            ->trim()
+            ->toString();
+
+        $dateTo = $request->string('date_to')
+            ->trim()
+            ->toString();
+
         $isFieldCoordinator = $this->isFieldCoordinator();
 
         if ($isFieldCoordinator) {
@@ -50,7 +76,7 @@ class ReservationController extends Controller
         ];
 
         if (!in_array($sort, $allowedSorts, true)) {
-            $sort = 'schedule_desc';
+            $sort = 'created_desc';
         }
 
         $reservations = Reservation::query()
@@ -60,12 +86,26 @@ class ReservationController extends Controller
                 'trainingRoom.building',
                 'field',
             ])
+
+            /*
+            |--------------------------------------------------------------------------
+            | Field Coordinator restriction
+            |--------------------------------------------------------------------------
+            */
+
             ->when(
                 $isFieldCoordinator,
                 function ($query) {
                     $query->whereNotNull('field_id');
                 }
             )
+
+            /*
+            |--------------------------------------------------------------------------
+            | Search
+            |--------------------------------------------------------------------------
+            */
+
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($query) use ($search) {
                     $query
@@ -130,6 +170,13 @@ class ReservationController extends Controller
                         });
                 });
             })
+
+            /*
+            |--------------------------------------------------------------------------
+            | Building
+            |--------------------------------------------------------------------------
+            */
+
             ->when(
                 !$isFieldCoordinator && $building !== '',
                 function ($query) use ($building) {
@@ -150,49 +197,115 @@ class ReservationController extends Controller
                     });
                 }
             )
+
+            /*
+            |--------------------------------------------------------------------------
+            | Status
+            |--------------------------------------------------------------------------
+            */
+
             ->when($status !== '', function ($query) use ($status) {
                 $query->where(
                     'status',
                     $status
                 );
             })
+
+            /*
+            |--------------------------------------------------------------------------
+            | Resource Type
+            |--------------------------------------------------------------------------
+            */
+
             ->when(
                 $resourceType === 'room',
                 function ($query) {
                     $query->whereNotNull('room_id');
                 }
             )
+
             ->when(
                 $resourceType === 'training_room',
                 function ($query) {
                     $query->whereNotNull('training_room_id');
                 }
             )
+
             ->when(
                 $resourceType === 'field',
                 function ($query) {
                     $query->whereNotNull('field_id');
                 }
+            )
+
+            /*
+            |--------------------------------------------------------------------------
+            | Date From
+            |
+            | Reservation must end on or after Date From.
+            |--------------------------------------------------------------------------
+            */
+
+            ->when(
+                $dateFrom !== '',
+                function ($query) use ($dateFrom) {
+                    try {
+                        $from = Carbon::createFromFormat(
+                            'Y-m-d',
+                            $dateFrom,
+                            config('app.timezone')
+                        )->startOfDay();
+
+                        $query->where(
+                            'ends_at',
+                            '>=',
+                            $from
+                        );
+                    } catch (\Throwable $e) {
+                        // Ignore invalid date input.
+                    }
+                }
+            )
+
+            /*
+            |--------------------------------------------------------------------------
+            | Date To
+            |
+            | Reservation must start before the end of Date To.
+            |--------------------------------------------------------------------------
+            */
+
+            ->when(
+                $dateTo !== '',
+                function ($query) use ($dateTo) {
+                    try {
+                        $to = Carbon::createFromFormat(
+                            'Y-m-d',
+                            $dateTo,
+                            config('app.timezone')
+                        )->endOfDay();
+
+                        $query->where(
+                            'starts_at',
+                            '<=',
+                            $to
+                        );
+                    } catch (\Throwable $e) {
+                        // Ignore invalid date input.
+                    }
+                }
             );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Sort
+        |--------------------------------------------------------------------------
+        */
 
         switch ($sort) {
             case 'created_asc':
                 $reservations->orderBy(
                     'created_at',
-                    'asc'
-                );
-                break;
-
-            case 'schedule_desc':
-                $reservations->orderBy(
-                    'starts_at',
-                    'desc'
-                );
-                break;
-
-            case 'schedule_asc':
-                $reservations->orderBy(
-                    'starts_at',
                     'asc'
                 );
                 break;
@@ -222,6 +335,8 @@ class ReservationController extends Controller
             'status' => $status,
             'resourceType' => $resourceType,
             'sort' => $sort,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
         ]);
     }
 

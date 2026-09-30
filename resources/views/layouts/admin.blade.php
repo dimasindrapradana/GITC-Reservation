@@ -725,8 +725,8 @@
 
             @endif
 
-            {{-- Reports --}}
-            @if($userRole === 'Coordinator')
+           {{-- Reports --}}
+            @if($userRole === 'Admin')
 
                 <div class="menu-section">
 
@@ -735,8 +735,8 @@
                     </div>
 
                     <a
-                        href="{{ route('coordinator.reports.reservations') }}"
-                        class="menu-link {{ request()->routeIs('coordinator.reports.*') ? 'active' : '' }}"
+                        href="{{ route('admin.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
                     >
                         <span class="menu-icon">▥</span>
                         <span>Reservation Report</span>
@@ -744,43 +744,61 @@
 
                 </div>
 
-            @elseif($userRole === 'Building Coordinator')
+        @elseif($userRole === 'Coordinator')
 
-                <div class="menu-section">
+            <div class="menu-section">
 
-                    <div class="menu-title">
-                        Reports
-                    </div>
-
-                    <a
-                        href="{{ route('building-coordinator.reports.reservations') }}"
-                        class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
-                    >
-                        <span class="menu-icon">▥</span>
-                        <span>Reservation Report</span>
-                    </a>
-
+                <div class="menu-title">
+                    Reports
                 </div>
 
-            @elseif($userRole === 'Field Coordinator')
+                <a
+                    href="{{ route('coordinator.reports.reservations') }}"
+                    class="menu-link {{ request()->routeIs('coordinator.reports.*') ? 'active' : '' }}"
+                >
+                    <span class="menu-icon">▥</span>
+                    <span>Reservation Report</span>
+                </a>
 
-                <div class="menu-section">
+            </div>
 
-                    <div class="menu-title">
-                        Reports
-                    </div>
+        @elseif($userRole === 'Building Coordinator')
 
-                    <a
-                        href="{{ route('field-coordinator.reports.reservations') }}"
-                        class="menu-link {{ request()->routeIs('field-coordinator.reports.*') ? 'active' : '' }}"
-                    >
-                        <span class="menu-icon">▥</span>
-                        <span>Reservation Report</span>
-                    </a>
+            <div class="menu-section">
 
+                <div class="menu-title">
+                    Reports
                 </div>
 
-            @endif
+                <a
+                    href="{{ route('building-coordinator.reports.reservations') }}"
+                    class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
+                >
+                    <span class="menu-icon">▥</span>
+                    <span>Reservation Report</span>
+                </a>
+
+            </div>
+
+        @elseif($userRole === 'Field Coordinator')
+
+            <div class="menu-section">
+
+                <div class="menu-title">
+                    Reports
+                </div>
+
+                <a
+                    href="{{ route('field-coordinator.reports.reservations') }}"
+                    class="menu-link {{ request()->routeIs('field-coordinator.reports.*') ? 'active' : '' }}"
+                >
+                    <span class="menu-icon">▥</span>
+                    <span>Reservation Report</span>
+                </a>
+
+            </div>
+
+        @endif
 
             {{-- Master Data --}}
             @if($userRole === 'Admin')

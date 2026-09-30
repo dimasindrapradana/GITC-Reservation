@@ -37,6 +37,7 @@
     @endif
 
     <div class="content-card">
+
         <div class="card-header">
             <div>
                 <h2>Reservation List</h2>
@@ -46,194 +47,263 @@
             </div>
         </div>
 
+
+        {{-- ==========================================================
+            FILTER
+        =========================================================== --}}
+
         <form
             method="GET"
             action="{{ route('reservations.index') }}"
             class="filter-form"
         >
-            <div class="filter-group search-group">
-                <label for="search">
-                    Search
-                </label>
 
-                <input
-                    type="text"
-                    id="search"
-                    name="search"
-                    value="{{ $search }}"
-                    placeholder="Search reservations..."
-                >
-            </div>
+            {{-- SEARCH --}}
+            <div class="filter-row search-row">
 
-            @if (!$isFieldCoordinator)
-                <div class="filter-group">
-                    <label for="building">
-                        Building
+                <div class="filter-group search-group">
+                    <label for="search">
+                        Search
                     </label>
 
-                    <select
-                        id="building"
-                        name="building"
+                    <input
+                        type="text"
+                        id="search"
+                        name="search"
+                        value="{{ $search }}"
+                        placeholder="Search reservations..."
                     >
-                        <option value="">
-                            All Buildings
-                        </option>
+                </div>
 
-                        @foreach ($buildings as $item)
-                            <option
-                                value="{{ $item->id }}"
-                                @selected((string) $building === (string) $item->id)
-                            >
-                                {{ $item->name }}
+            </div>
+
+
+            {{-- OTHER FILTERS --}}
+            <div class="filter-row">
+
+                @if (!$isFieldCoordinator)
+
+                    <div class="filter-group">
+                        <label for="building">
+                            Building
+                        </label>
+
+                        <select
+                            id="building"
+                            name="building"
+                        >
+                            <option value="">
+                                All Buildings
                             </option>
-                        @endforeach
-                    </select>
-                </div>
-            @endif
 
-            <div class="filter-group">
-                <label for="status">
-                    Status
-                </label>
+                            @foreach ($buildings as $item)
+                                <option
+                                    value="{{ $item->id }}"
+                                    @selected((string) $building === (string) $item->id)
+                                >
+                                    {{ $item->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
-                <select
-                    id="status"
-                    name="status"
-                >
-                    <option value="">
-                        All Statuses
-                    </option>
+                @endif
 
-                    <option
-                        value="PENDING"
-                        @selected($status === 'PENDING')
-                    >
-                        Pending
-                    </option>
 
-                    <option
-                        value="APPROVED"
-                        @selected($status === 'APPROVED')
-                    >
-                        Approved
-                    </option>
-
-                    <option
-                        value="REJECTED"
-                        @selected($status === 'REJECTED')
-                    >
-                        Rejected
-                    </option>
-
-                    <option
-                        value="CANCELLED"
-                        @selected($status === 'CANCELLED')
-                    >
-                        Cancelled
-                    </option>
-                </select>
-            </div>
-
-            @if ($isFieldCoordinator)
+                {{-- STATUS --}}
                 <div class="filter-group">
-                    <label for="resource_type">
-                        Resource Type
+                    <label for="status">
+                        Status
                     </label>
 
                     <select
-                        id="resource_type"
-                        name="resource_type"
-                    >
-                        <option
-                            value="field"
-                            selected
-                        >
-                            Fields
-                        </option>
-                    </select>
-                </div>
-            @else
-                <div class="filter-group">
-                    <label for="resource_type">
-                        Resource Type
-                    </label>
-
-                    <select
-                        id="resource_type"
-                        name="resource_type"
+                        id="status"
+                        name="status"
                     >
                         <option value="">
-                            All Resources
+                            All Statuses
                         </option>
 
                         <option
-                            value="room"
-                            @selected($resourceType === 'room')
+                            value="PENDING"
+                            @selected($status === 'PENDING')
                         >
-                            Rooms
+                            Pending
                         </option>
 
                         <option
-                            value="training_room"
-                            @selected($resourceType === 'training_room')
+                            value="APPROVED"
+                            @selected($status === 'APPROVED')
                         >
-                            Media Training
+                            Approved
                         </option>
 
                         <option
-                            value="field"
-                            @selected($resourceType === 'field')
+                            value="REJECTED"
+                            @selected($status === 'REJECTED')
                         >
-                            Fields
+                            Rejected
+                        </option>
+
+                        <option
+                            value="CANCELLED"
+                            @selected($status === 'CANCELLED')
+                        >
+                            Cancelled
                         </option>
                     </select>
                 </div>
-            @endif
 
-            <div class="filter-group">
-                <label for="sort">
-                    Sort By
-                </label>
 
-                <select
-                    id="sort"
-                    name="sort"
-                >
-                    <option
-                        value="created_desc"
-                        @selected($sort === 'created_desc')
+                {{-- RESOURCE TYPE --}}
+                <div class="filter-group">
+                    <label for="resource_type">
+                        Resource Type
+                    </label>
+
+                    @if ($isFieldCoordinator)
+
+                        <select
+                            id="resource_type"
+                            name="resource_type"
+                        >
+                            <option
+                                value="field"
+                                selected
+                            >
+                                Fields
+                            </option>
+                        </select>
+
+                    @else
+
+                        <select
+                            id="resource_type"
+                            name="resource_type"
+                        >
+                            <option value="">
+                                All Resources
+                            </option>
+
+                            <option
+                                value="room"
+                                @selected($resourceType === 'room')
+                            >
+                                Rooms
+                            </option>
+
+                            <option
+                                value="training_room"
+                                @selected($resourceType === 'training_room')
+                            >
+                                Media Training
+                            </option>
+
+                            <option
+                                value="field"
+                                @selected($resourceType === 'field')
+                            >
+                                Fields
+                            </option>
+                        </select>
+
+                    @endif
+                </div>
+
+
+                {{-- DATE FROM --}}
+                <div class="filter-group">
+                    <label for="date_from">
+                        Date From
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date_from"
+                        name="date_from"
+                        value="{{ request('date_from') }}"
                     >
-                        Newest
-                    </option>
+                </div>
 
-                    <option
-                        value="created_asc"
-                        @selected($sort === 'created_asc')
+
+                {{-- DATE TO --}}
+                <div class="filter-group">
+                    <label for="date_to">
+                        Date To
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date_to"
+                        name="date_to"
+                        value="{{ request('date_to') }}"
                     >
-                        Oldest
-                    </option>
-                </select>
+                </div>
+
+
+                {{-- SORT --}}
+                <div class="filter-group">
+                    <label for="sort">
+                        Sort By
+                    </label>
+
+                    <select
+                        id="sort"
+                        name="sort"
+                    >
+                        <option
+                            value="created_desc"
+                            @selected($sort === 'created_desc')
+                        >
+                            Newest
+                        </option>
+
+                        <option
+                            value="created_asc"
+                            @selected($sort === 'created_asc')
+                        >
+                            Oldest
+                        </option>
+                    </select>
+                </div>
+
             </div>
 
-            <div class="filter-actions">
-                <button
-                    type="submit"
-                    class="search-button"
-                >
-                    Search
-                </button>
 
-                <a
-                    href="{{ route('reservations.index') }}"
-                    class="reset-button"
-                >
-                    Reset
-                </a>
+            {{-- FILTER BUTTONS --}}
+            <div class="filter-row filter-button-row">
+
+                <div class="filter-actions">
+
+                    <button
+                        type="submit"
+                        class="search-button"
+                    >
+                        Search
+                    </button>
+
+                    <a
+                        href="{{ route('reservations.index') }}"
+                        class="reset-button"
+                    >
+                        Reset
+                    </a>
+
+                </div>
+
             </div>
+
         </form>
 
+
+        {{-- ==========================================================
+            TABLE
+        =========================================================== --}}
+
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -246,34 +316,70 @@
                     </tr>
                 </thead>
 
+
                 <tbody>
+
                     @forelse ($reservations as $index => $reservation)
+
                         @php
+
                             if ($reservation->room) {
+
                                 $resourceTypeLabel = 'Room';
-                                $resourceName = $reservation->room->name;
-                                $resourceLocation = $reservation->room->building->name ?? '—';
+
+                                $resourceName =
+                                    $reservation->room->name;
+
+                                $resourceLocation =
+                                    $reservation->room->building->name
+                                    ?? '—';
+
                             } elseif ($reservation->trainingRoom) {
-                                $resourceTypeLabel = 'Media Training';
-                                $resourceName = $reservation->trainingRoom->name;
-                                $resourceLocation = $reservation->trainingRoom->building->name ?? '—';
+
+                                $resourceTypeLabel =
+                                    'Media Training';
+
+                                $resourceName =
+                                    $reservation->trainingRoom->name;
+
+                                $resourceLocation =
+                                    $reservation->trainingRoom->building->name
+                                    ?? '—';
+
                             } elseif ($reservation->field) {
-                                $resourceTypeLabel = 'Field';
-                                $resourceName = $reservation->field->name;
+
+                                $resourceTypeLabel =
+                                    'Field';
+
+                                $resourceName =
+                                    $reservation->field->name;
+
                                 $resourceLocation = '—';
+
                             } else {
+
                                 $resourceTypeLabel = '—';
+
                                 $resourceName = '—';
+
                                 $resourceLocation = '—';
+
                             }
+
                         @endphp
 
+
                         <tr>
+
+                            {{-- NO --}}
                             <td>
                                 {{ $reservations->firstItem() + $index }}
                             </td>
 
+
+                            {{-- RESERVATION --}}
                             <td>
+
                                 <div class="reservation-number">
                                     {{ $reservation->reservation_number }}
                                 </div>
@@ -281,9 +387,13 @@
                                 <div class="secondary-text">
                                     {{ $reservation->created_at->format('d M Y') }}
                                 </div>
+
                             </td>
 
+
+                            {{-- REQUESTER --}}
                             <td>
+
                                 <div class="primary-text">
                                     {{ $reservation->user->name ?? '—' }}
                                 </div>
@@ -291,56 +401,87 @@
                                 <div class="secondary-text">
                                     {{ $reservation->user->employee_number ?? '—' }}
                                 </div>
+
                             </td>
 
+
+                            {{-- RESOURCE --}}
                             <td>
+
                                 <div class="primary-text">
                                     {{ $resourceName }}
                                 </div>
 
                                 <div class="secondary-text">
+
                                     {{ $resourceTypeLabel }}
 
                                     @if ($resourceLocation !== '—')
                                         · {{ $resourceLocation }}
                                     @endif
+
                                 </div>
+
                             </td>
 
+
+                            {{-- SCHEDULE --}}
                             <td>
+
                                 <div class="primary-text">
                                     {{ $reservation->starts_at->format('d M Y') }}
                                 </div>
 
                                 <div class="secondary-text">
+
                                     {{ $reservation->starts_at->format('H:i') }}
+
                                     –
+
                                     {{ $reservation->ends_at->format('H:i') }}
+
                                 </div>
+
                             </td>
 
+
+                            {{-- STATUS --}}
                             <td>
+
                                 @if ($reservation->status === 'PENDING')
+
                                     <span class="status-badge pending">
                                         Pending
                                     </span>
+
                                 @elseif ($reservation->status === 'APPROVED')
+
                                     <span class="status-badge approved">
                                         Approved
                                     </span>
+
                                 @elseif ($reservation->status === 'REJECTED')
+
                                     <span class="status-badge rejected">
                                         Rejected
                                     </span>
+
                                 @elseif ($reservation->status === 'CANCELLED')
+
                                     <span class="status-badge cancelled">
                                         Cancelled
                                     </span>
+
                                 @endif
+
                             </td>
 
+
+                            {{-- ACTIONS --}}
                             <td>
+
                                 <div class="action-group">
+
                                     <a
                                         href="{{ route('reservations.show', $reservation) }}"
                                         class="action-link detail"
@@ -348,7 +489,15 @@
                                         Detail
                                     </a>
 
-                                    @if (in_array($reservation->status, ['PENDING', 'APPROVED'], true))
+
+                                    @if (
+                                        in_array(
+                                            $reservation->status,
+                                            ['PENDING', 'APPROVED'],
+                                            true
+                                        )
+                                    )
+
                                         <a
                                             href="{{ route('reservations.edit', $reservation) }}"
                                             class="action-link edit"
@@ -356,12 +505,15 @@
                                             Edit
                                         </a>
 
+
                                         <form
                                             action="{{ route('reservations.destroy', $reservation) }}"
                                             method="POST"
                                             onsubmit="return confirm('Are you sure you want to cancel this reservation?');"
                                         >
+
                                             @csrf
+
                                             @method('DELETE')
 
                                             <button
@@ -370,28 +522,49 @@
                                             >
                                                 Cancel
                                             </button>
+
                                         </form>
+
                                     @endif
+
                                 </div>
+
                             </td>
+
                         </tr>
+
                     @empty
+
                         <tr>
+
                             <td
                                 colspan="7"
                                 class="empty-state"
                             >
                                 No reservations found.
                             </td>
+
                         </tr>
+
                     @endforelse
+
                 </tbody>
+
             </table>
+
         </div>
 
+
+        {{-- ==========================================================
+            PAGINATION
+        =========================================================== --}}
+
         @if ($reservations->hasPages())
+
             <div class="pagination-wrapper">
+
                 <div class="pagination-info">
+
                     Showing
                     {{ $reservations->firstItem() }}
                     to
@@ -399,35 +572,58 @@
                     of
                     {{ $reservations->total() }}
                     results
+
                 </div>
 
+
                 <div class="pagination-pages">
+
                     @for (
                         $page = 1;
                         $page <= $reservations->lastPage();
                         $page++
                     )
-                        @if ($page === $reservations->currentPage())
+
+                        @if (
+                            $page === $reservations->currentPage()
+                        )
+
                             <span class="pagination-page active">
                                 {{ $page }}
                             </span>
+
                         @else
+
                             <a
                                 href="{{ $reservations->url($page) }}"
                                 class="pagination-page"
                             >
                                 {{ $page }}
                             </a>
+
                         @endif
+
                     @endfor
+
                 </div>
+
             </div>
+
         @endif
+
     </div>
+
 @endsection
 
+
 @push('styles')
+
 <style>
+
+    /* ==========================================================
+       PAGE HEADER
+    ========================================================== */
+
     .page-header {
         display: flex;
         align-items: flex-start;
@@ -449,6 +645,7 @@
         font-size: 13px;
     }
 
+
     .primary-button {
         display: inline-flex;
         align-items: center;
@@ -469,6 +666,11 @@
         background: #005f95;
     }
 
+
+    /* ==========================================================
+       ALERT
+    ========================================================== */
+
     .alert {
         margin-bottom: 18px;
         padding: 12px 14px;
@@ -487,6 +689,11 @@
         background: #fff7f7;
         color: #9b2c2c;
     }
+
+
+    /* ==========================================================
+       CARD
+    ========================================================== */
 
     .content-card {
         overflow: hidden;
@@ -517,32 +724,59 @@
         font-size: 11px;
     }
 
+
+    /* ==========================================================
+       FILTER
+    ========================================================== */
+
     .filter-form {
-        display: flex;
-        align-items: flex-end;
-        gap: 12px;
         padding: 16px 20px;
         border-bottom: 1px solid #edf2f5;
         background: #fbfcfd;
     }
 
+    .filter-row {
+        display: grid;
+        grid-template-columns:
+            repeat(6, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .filter-row:last-child {
+        margin-bottom: 0;
+    }
+
+    .search-row {
+        grid-template-columns: 1fr;
+    }
+
+    .filter-button-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 0;
+    }
+
+
     .filter-group {
         display: flex;
         flex-direction: column;
         gap: 6px;
-        min-width: 150px;
+        min-width: 0;
     }
 
     .search-group {
-        flex: 1;
-        min-width: 220px;
+        width: 100%;
     }
+
 
     .filter-group label {
         color: #526b82;
         font-size: 11px;
         font-weight: 700;
     }
+
 
     .filter-group input,
     .filter-group select {
@@ -559,17 +793,24 @@
         box-sizing: border-box;
     }
 
+
     .filter-group input:focus,
     .filter-group select:focus {
         border-color: #8fc6dc;
         box-shadow: 0 0 0 2px #edf8fc;
     }
 
+
     .filter-actions {
         display: flex;
         align-items: center;
-        gap: 7px;
+        gap: 8px;
     }
+
+
+    /* ==========================================================
+       SEARCH / RESET BUTTON
+    ========================================================== */
 
     .search-button,
     .reset-button {
@@ -577,7 +818,7 @@
         align-items: center;
         justify-content: center;
         min-height: 36px;
-        padding: 0 13px;
+        padding: 0 18px;
         border-radius: 6px;
         font-family: inherit;
         font-size: 11px;
@@ -587,6 +828,7 @@
         box-sizing: border-box;
     }
 
+
     .search-button {
         border: 1px solid #006fae;
         background: #006fae;
@@ -595,7 +837,9 @@
 
     .search-button:hover {
         background: #005f95;
+        border-color: #005f95;
     }
+
 
     .reset-button {
         border: 1px solid #d0dce5;
@@ -607,6 +851,11 @@
         background: #f7fafc;
     }
 
+
+    /* ==========================================================
+       TABLE
+    ========================================================== */
+
     .table-wrapper {
         width: 100%;
         overflow-x: auto;
@@ -617,6 +866,7 @@
         border-collapse: collapse;
         min-width: 950px;
     }
+
 
     thead th {
         padding: 12px 14px;
@@ -631,6 +881,7 @@
         white-space: nowrap;
     }
 
+
     tbody td {
         padding: 14px;
         border-bottom: 1px solid #edf2f5;
@@ -638,6 +889,7 @@
         font-size: 12px;
         vertical-align: middle;
     }
+
 
     tbody tr:last-child td {
         border-bottom: none;
@@ -647,11 +899,13 @@
         background: #fcfdfe;
     }
 
+
     .reservation-number {
         color: #29445d;
         font-size: 12px;
         font-weight: 700;
     }
+
 
     .primary-text {
         color: #405a70;
@@ -659,11 +913,17 @@
         font-weight: 600;
     }
 
+
     .secondary-text {
         margin-top: 3px;
         color: #8294a5;
         font-size: 10px;
     }
+
+
+    /* ==========================================================
+       STATUS
+    ========================================================== */
 
     .status-badge {
         display: inline-flex;
@@ -677,25 +937,34 @@
         white-space: nowrap;
     }
 
+
     .status-badge.pending {
         background: #fff3d6;
         color: #8a6200;
     }
+
 
     .status-badge.approved {
         background: #eaf5fb;
         color: #15803d;
     }
 
+
     .status-badge.rejected {
         background: #fff0f0;
         color: #a33b3b;
     }
 
+
     .status-badge.cancelled {
         background: #edf1f4;
         color: #65798a;
     }
+
+
+    /* ==========================================================
+       ACTIONS
+    ========================================================== */
 
     .action-group {
         display: flex;
@@ -703,9 +972,11 @@
         gap: 8px;
     }
 
+
     .action-group form {
         margin: 0;
     }
+
 
     .action-link {
         display: inline-flex;
@@ -724,11 +995,13 @@
         white-space: nowrap;
     }
 
+
     .action-link.detail {
         border-color: #c9dfe9;
         background: #f2f9fc;
         color: #006fae;
     }
+
 
     .action-link.edit {
         border-color: #d0dce5;
@@ -736,15 +1009,22 @@
         color: #4f6680;
     }
 
+
     .action-link.delete {
         border-color: #e2b8b8;
         background: #fff7f7;
         color: #b33a3a;
     }
 
+
     .action-link:hover {
         filter: brightness(.97);
     }
+
+
+    /* ==========================================================
+       EMPTY
+    ========================================================== */
 
     .empty-state {
         padding: 40px 20px !important;
@@ -752,6 +1032,11 @@
         text-align: center;
         font-size: 12px !important;
     }
+
+
+    /* ==========================================================
+       PAGINATION
+    ========================================================== */
 
     .pagination-wrapper {
         display: flex;
@@ -762,11 +1047,13 @@
         border-top: 1px solid #edf2f5;
     }
 
+
     .pagination-info {
         color: #668096;
         font-size: 12px;
         white-space: nowrap;
     }
+
 
     .pagination-pages {
         display: flex;
@@ -774,6 +1061,7 @@
         gap: 6px;
         margin-left: auto;
     }
+
 
     .pagination-page {
         display: inline-flex;
@@ -792,11 +1080,13 @@
         box-sizing: border-box;
     }
 
+
     .pagination-page:hover {
         border-color: #c9dfe9;
         background: #f2f9fc;
         color: #006fae;
     }
+
 
     .pagination-page.active {
         border-color: #006fae;
@@ -804,52 +1094,58 @@
         color: #ffffff;
     }
 
+
+    /* ==========================================================
+       RESPONSIVE
+    ========================================================== */
+
     @media (max-width: 1200px) {
-        .filter-form {
-            flex-wrap: wrap;
+
+        .filter-row {
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
         }
 
-        .search-group {
-            flex: 1 1 100%;
+        .search-row {
+            grid-template-columns: 1fr;
         }
 
-        .filter-group {
-            flex: 1;
-        }
-
-        .filter-actions {
-            flex-shrink: 0;
-        }
     }
 
+
     @media (max-width: 700px) {
+
         .page-header {
             flex-direction: column;
             align-items: stretch;
         }
 
+
         .primary-button {
             width: 100%;
         }
 
-        .filter-form {
-            flex-direction: column;
-            align-items: stretch;
+
+        .filter-row {
+            grid-template-columns: 1fr;
         }
 
-        .filter-group {
-            width: 100%;
-            min-width: 0;
+
+        .filter-button-row {
+            justify-content: stretch;
         }
+
 
         .filter-actions {
             width: 100%;
         }
 
+
         .search-button,
         .reset-button {
             flex: 1;
         }
+
 
         .pagination-wrapper {
             flex-direction: column;
@@ -857,9 +1153,13 @@
             gap: 12px;
         }
 
+
         .pagination-pages {
             margin-left: 0;
         }
+
     }
+
 </style>
+
 @endpush

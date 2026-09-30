@@ -10,6 +10,7 @@ use App\Http\Controllers\CoordinatorDashboardController;
 use App\Http\Controllers\CoordinatorReportController;
 use App\Http\Controllers\CoordinatorReservationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\FieldController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NotificationController;
@@ -20,7 +21,67 @@ use App\Http\Controllers\TrainingOfficerController;
 use App\Http\Controllers\TrainingOfficerReservationController;
 use App\Http\Controllers\TrainingRoomController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\TrainingOfficerClassroomController;
+use App\Http\Controllers\TrainingOfficerClassroomCartController;
+use App\Http\Controllers\TrainingOfficerClassroomReservationController;
 use Illuminate\Support\Facades\Route;
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Landing Page
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/',
+    [LandingController::class, 'index']
+)->name('landing');
+
+Route::get(
+    '/landing/reservations',
+    [LandingController::class, 'reservations']
+)->name('landing.reservations');
+
+
+/*
+|--------------------------------------------------------------------------
+| Public Display Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/display/{buildingName}',
+    [DisplayController::class, 'index']
+)->name('display');
+
+Route::get(
+    '/display/{buildingName}/data',
+    [DisplayController::class, 'data']
+)->name('display.data');
+Route::get(
+    '/display/{buildingName}/detail',
+    function (string $buildingName) {
+        return view(
+            'display.detail',
+            [
+                'buildingName' => $buildingName,
+            ]
+        );
+    }
+)->name('display.detail');
+
+Route::get(
+    '/display/{buildingName}/upcoming',
+    [DisplayController::class, 'upcoming']
+)->name('display.upcoming');
+
+Route::get(
+    '/display/{buildingName}/upcoming/data',
+    [DisplayController::class, 'upcomingData']
+)->name('display.upcoming.data');
 
 
 /*
@@ -62,6 +123,13 @@ Route::middleware('auth')->group(function () {
         [AuthController::class, 'logout']
     )->name('logout');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notifications
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/notifications',
         [NotificationController::class, 'index']
@@ -77,24 +145,71 @@ Route::middleware('auth')->group(function () {
         [NotificationController::class, 'readAll']
     )->name('notifications.read-all');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | My Reservations
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/my-reservations',
+        [ReservationController::class, 'myReservations']
+    )->name('reservations.my');
+
+    Route::get(
+        '/my-reservations/{reservation}',
+        [ReservationController::class, 'myShow']
+    )->name('my-reservations.show');
+
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| Admin Routes
-|--------------------------------------------------------------------------
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes
+    |--------------------------------------------------------------------------
+    */
 
-Route::middleware([
-    'auth',
-    'role:Admin',
-])->group(function () {
+    Route::middleware([
+        'auth',
+        'role:Admin',
+    ])->group(function () {
+
+        Route::get(
+            '/admin',
+            [DashboardController::class, 'index']
+        )->name('admin.dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reports
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
-        '/admin',
-        [DashboardController::class, 'index']
-    )->name('admin.dashboard');
+        '/admin/reports/reservations',
+        [
+            AdminReportController::class,
+            'reservationReport'
+        ]
+    )->name('admin.reports.reservations');
+
+    Route::get(
+        '/admin/reports/reservations/export',
+        [
+            AdminReportController::class,
+            'exportReservationReport'
+        ]
+    )->name('admin.reports.reservations.export');
+
+    Route::get(
+        '/admin/reports/reservations/{reservation}',
+        [
+            AdminReportController::class,
+            'showReservationReport'
+        ]
+    )->name('admin.reports.reservations.show');
 
 
     /*
@@ -300,6 +415,12 @@ Route::middleware([
     ->name('building-coordinator.')
     ->group(function () {
 
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard
+        |--------------------------------------------------------------------------
+        */
+
         Route::get(
             '/dashboard',
             [BuildingCoordinatorDashboardController::class, 'index']
@@ -385,6 +506,12 @@ Route::middleware([
     ->prefix('coordinator')
     ->name('coordinator.')
     ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Dashboard
+        |--------------------------------------------------------------------------
+        */
 
         Route::get(
             '/',
@@ -542,6 +669,10 @@ Route::middleware([
 |--------------------------------------------------------------------------
 | Training Officer Routes
 |--------------------------------------------------------------------------
+|
+| HANYA untuk role:
+| Training Officer
+|
 */
 
 Route::middleware([
@@ -566,7 +697,7 @@ Route::middleware([
 
         /*
         |--------------------------------------------------------------------------
-        | Cart
+        | Cart / Booking List
         |--------------------------------------------------------------------------
         */
 
@@ -596,6 +727,23 @@ Route::middleware([
             '/reservation/create',
             [TrainingOfficerReservationController::class, 'create']
         )->name('reservation.create');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reservation - Multi Resource Step
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/reservation/step/{step}',
+            [TrainingOfficerReservationController::class, 'create']
+        )->name('reservation.step');
+
+        Route::post(
+            '/reservation/step/{step}',
+            [TrainingOfficerReservationController::class, 'store']
+        )->name('reservation.step.store');
 
 
         /*
@@ -636,6 +784,138 @@ Route::middleware([
         Route::post(
             '/reservation/submit',
             [TrainingOfficerReservationController::class, 'submit']
+        )->name('reservation.submit');
+
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Training Officer Classroom Routes
+|--------------------------------------------------------------------------
+|
+| HANYA untuk role:
+| Training Officer Classroom
+|
+*/
+
+Route::middleware([
+    'auth',
+    'role:Training Officer Classroom',
+])
+    ->prefix('training-officer/classroom')
+    ->name('training-officer.classroom.')
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Home
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/',
+            [TrainingOfficerClassroomController::class, 'index']
+        )->name('home');
+
+
+                /*
+        |--------------------------------------------------------------------------
+        | My Reservations
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/my-reservations',
+            [
+                TrainingOfficerClassroomReservationController::class,
+                'myReservations'
+            ]
+        )->name('my-reservations');
+
+        Route::get(
+            '/my-reservations/{reservation}',
+            [TrainingOfficerClassroomReservationController::class, 'show']
+        )->name('my-reservations.show');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Booking List / Cart
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/cart',
+            [TrainingOfficerClassroomCartController::class, 'index']
+        )->name('cart');
+
+        Route::post(
+            '/cart/add',
+            [TrainingOfficerClassroomCartController::class, 'add']
+        )->name('cart.add');
+
+        Route::delete(
+            '/cart/remove',
+            [TrainingOfficerClassroomCartController::class, 'remove']
+        )->name('cart.remove');
+
+        Route::delete(
+            '/cart/clear',
+            [TrainingOfficerClassroomCartController::class, 'clear']
+        )->name('cart.clear');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reservation - Start
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/reservation/create',
+            [TrainingOfficerClassroomReservationController::class, 'create']
+        )->name('reservation.create');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reservation - Room
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/reservation/room/{room}/create',
+            [TrainingOfficerClassroomReservationController::class, 'createResource']
+        )->name('reservation.resource.create');
+
+        Route::post(
+            '/reservation/room/{room}',
+            [TrainingOfficerClassroomReservationController::class, 'storeResource']
+        )->name('reservation.resource.store');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reservation - Review
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/reservation/review',
+            [TrainingOfficerClassroomReservationController::class, 'review']
+        )->name('reservation.review');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Reservation - Final Submission
+        |--------------------------------------------------------------------------
+        */
+
+        Route::post(
+            '/reservation/submit',
+            [TrainingOfficerClassroomReservationController::class, 'submit']
         )->name('reservation.submit');
 
     });

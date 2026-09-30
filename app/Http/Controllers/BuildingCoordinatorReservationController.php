@@ -36,6 +36,12 @@ class BuildingCoordinatorReservationController extends Controller
         $sort = $request->string('sort')
             ->toString();
 
+        $dateFrom = $request->string('date_from')
+            ->toString();
+
+        $dateTo = $request->string('date_to')
+            ->toString();
+
         $allowedSorts = [
             'newest',
             'latest',
@@ -124,6 +130,20 @@ class BuildingCoordinatorReservationController extends Controller
             })
             ->when($resourceType === 'training_room', function ($query) {
                 $query->whereNotNull('training_room_id');
+            })
+            ->when($dateFrom !== '', function ($query) use ($dateFrom) {
+                $query->whereDate(
+                    'starts_at',
+                    '>=',
+                    $dateFrom
+                );
+            })
+            ->when($dateTo !== '', function ($query) use ($dateTo) {
+                $query->whereDate(
+                    'starts_at',
+                    '<=',
+                    $dateTo
+                );
             });
 
         if ($sort === 'latest') {
@@ -146,6 +166,8 @@ class BuildingCoordinatorReservationController extends Controller
             'status' => $status,
             'resourceType' => $resourceType,
             'sort' => $sort,
+            'dateFrom' => $dateFrom,
+            'dateTo' => $dateTo,
         ]);
     }
 

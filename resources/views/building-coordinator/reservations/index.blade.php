@@ -137,6 +137,28 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label for="date_from">Date From</label>
+
+                <input
+                    type="date"
+                    id="date_from"
+                    name="date_from"
+                    value="{{ $dateFrom }}"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="date_to">Date To</label>
+
+                <input
+                    type="date"
+                    id="date_to"
+                    name="date_to"
+                    value="{{ $dateTo }}"
+                >
+            </div>
+
         </div>
 
         <div class="filter-actions">
@@ -486,17 +508,19 @@
     }
 
     .take-action {
-        background: #f59e0b;
-        border-color: #f59e0b;
+        background: #facc15;
+        border-color: #facc15;
         color: #ffffff;
-        font-weight: 700;
-        padding: 6px 8px;
+        font-weight: 800;
+        padding: 6px 10px;
         font-size: 10px;
+        letter-spacing: 0.02em;
     }
 
     .take-action:hover {
-        background: #d97706;
-        border-color: #d97706;
+        background: #eab308;
+        border-color: #eab308;
+       
     }
 
     .table-card {

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
 class BuildingCoordinatorReservationReportExport implements
     FromQuery,
@@ -20,7 +21,7 @@ class BuildingCoordinatorReservationReportExport implements
 {
     public function __construct(
         private $buildingIds,
-        private int $month,
+        private ?int $month,
         private int $year,
         private string $status = '',
         private string $resourceType = '',
@@ -61,17 +62,20 @@ class BuildingCoordinatorReservationReportExport implements
         if ($reservation->room !== null) {
             $resourceType = 'Room';
             $resourceName = $reservation->room->name;
+
             $buildingName =
                 $reservation->room->building?->name ?? '-';
         } elseif ($reservation->trainingRoom !== null) {
             $resourceType = 'Training Room';
             $resourceName =
                 $reservation->trainingRoom->name;
+
             $buildingName =
                 $reservation->trainingRoom->building?->name ?? '-';
         } elseif ($reservation->field !== null) {
             $resourceType = 'Field';
             $resourceName = $reservation->field->name;
+
             $buildingName =
                 $reservation->field->building?->name ?? '-';
         }
@@ -98,64 +102,119 @@ class BuildingCoordinatorReservationReportExport implements
     public function registerEvents(): array
     {
         return [
-            AfterSheet::class => function (AfterSheet $event) {
-                $sheet = $event->sheet->getDelegate();
-
-                $total = $this->baseQuery()->count();
-
-                $pending = (clone $this->baseQuery())
-                    ->where('status', 'PENDING')
-                    ->count();
-
-                $approved = (clone $this->baseQuery())
-                    ->where('status', 'APPROVED')
-                    ->count();
-
-                $rejected = (clone $this->baseQuery())
-                    ->where('status', 'REJECTED')
-                    ->count();
-
-                $cancelled = (clone $this->baseQuery())
-                    ->where('status', 'CANCELLED')
-                    ->count();
-
-                $monthName = date(
-                    'F',
-                    strtotime(
-                        sprintf(
-                            '%04d-%02d-01',
-                            $this->year,
-                            $this->month
-                        )
-                    )
-                );
-
-                $firstDay = date(
-                    'd F Y',
-                    strtotime(
-                        sprintf(
-                            '%04d-%02d-01',
-                            $this->year,
-                            $this->month
-                        )
-                    )
-                );
-
-                $lastDay = date(
-                    'd F Y',
-                    strtotime(
-                        sprintf(
-                            '%04d-%02d-01 +1 month -1 day',
-                            $this->year,
-                            $this->month
-                        )
-                    )
-                );
+            AfterSheet::class => function (
+                AfterSheet $event
+            ) {
+                $sheet =
+                    $event->sheet->getDelegate();
 
                 /*
-                 * Add lightweight report information above the table.
+                 * Statistics.
                  */
-                $sheet->insertNewRowBefore(1, 5);
+                $total =
+                    $this->baseQuery()->count();
+
+                $pending =
+                    (clone $this->baseQuery())
+                        ->where(
+                            'status',
+                            'PENDING'
+                        )
+                        ->count();
+
+                $approved =
+                    (clone $this->baseQuery())
+                        ->where(
+                            'status',
+                            'APPROVED'
+                        )
+                        ->count();
+
+                $rejected =
+                    (clone $this->baseQuery())
+                        ->where(
+                            'status',
+                            'REJECTED'
+                        )
+                        ->count();
+
+                $cancelled =
+                    (clone $this->baseQuery())
+                        ->where(
+                            'status',
+                            'CANCELLED'
+                        )
+                        ->count();
+
+                /*
+                 * Report period.
+                 */
+                if ($this->month === null) {
+                    /*
+                     * Entire year.
+                     */
+                    $periodTitle =
+                        'January - December ' .
+                        $this->year;
+
+                    $firstDay =
+                        '01 January ' .
+                        $this->year;
+
+                    $lastDay =
+                        '31 December ' .
+                        $this->year;
+                } else {
+                    /*
+                     * Specific month.
+                     */
+                    $monthName = date(
+                        'F',
+                        strtotime(
+                            sprintf(
+                                '%04d-%02d-01',
+                                $this->year,
+                                $this->month
+                            )
+                        )
+                    );
+
+                    $periodTitle =
+                        $monthName .
+                        ' ' .
+                        $this->year;
+
+                    $firstDay = date(
+                        'd F Y',
+                        strtotime(
+                            sprintf(
+                                '%04d-%02d-01',
+                                $this->year,
+                                $this->month
+                            )
+                        )
+                    );
+
+                    $lastDay = date(
+                        'd F Y',
+                        strtotime(
+                            sprintf(
+                                '%04d-%02d-01 +1 month -1 day',
+                                $this->year,
+                                $this->month
+                            )
+                        )
+                    );
+                }
+
+                /*
+                 * Insert report information
+                 * above the table.
+                 */
+                $sheet->insertNewRowBefore(
+                    1,
+                    5
+                );
 
                 $sheet->setCellValue(
                     'A1',
@@ -164,54 +223,90 @@ class BuildingCoordinatorReservationReportExport implements
 
                 $sheet->setCellValue(
                     'A2',
-                    $monthName . ' ' . $this->year
+                    $periodTitle
                 );
 
                 $sheet->setCellValue(
                     'A3',
-                    $firstDay . ' — ' . $lastDay
+                    $firstDay .
+                    ' — ' .
+                    $lastDay
                 );
 
                 $sheet->setCellValue(
                     'A4',
-                    'Total: ' . $total .
-                    ' | Pending: ' . $pending .
-                    ' | Approved: ' . $approved .
-                    ' | Rejected: ' . $rejected .
-                    ' | Cancelled: ' . $cancelled
+                    'Total: ' .
+                    $total .
+                    ' | Pending: ' .
+                    $pending .
+                    ' | Approved: ' .
+                    $approved .
+                    ' | Rejected: ' .
+                    $rejected .
+                    ' | Cancelled: ' .
+                    $cancelled
                 );
 
-                $sheet->getStyle('A1')->getFont()->setBold(true);
-                $sheet->getStyle('A1')->getFont()->setSize(14);
+                /*
+                 * Report title.
+                 */
+                $sheet
+                    ->getStyle('A1')
+                    ->getFont()
+                    ->setBold(true);
 
-                $sheet->getStyle('A2:A4')->getFont()->setBold(true);
+                $sheet
+                    ->getStyle('A1')
+                    ->getFont()
+                    ->setSize(14);
 
-                $sheet->getStyle('A1:A4')
+                /*
+                 * Report metadata.
+                 */
+                $sheet
+                    ->getStyle('A2:A4')
+                    ->getFont()
+                    ->setBold(true);
+
+                $sheet
+                    ->getStyle('A1:A4')
                     ->getAlignment()
                     ->setVertical(
                         Alignment::VERTICAL_CENTER
                     );
 
                 /*
-                 * Detail table header is now row 6.
+                 * Table header is row 6.
                  */
-                $sheet->getStyle('A6:K6')->getFont()->setBold(true);
+                $sheet
+                    ->getStyle('A6:K6')
+                    ->getFont()
+                    ->setBold(true);
 
-                $sheet->getStyle('A6:K6')->getFill()
-                    ->setFillType(Fill::FILL_SOLID)
+                $sheet
+                    ->getStyle('A6:K6')
+                    ->getFill()
+                    ->setFillType(
+                        Fill::FILL_SOLID
+                    )
                     ->getStartColor()
                     ->setARGB('EAF5FB');
 
-                $highestRow = $sheet->getHighestRow();
+                /*
+                 * Auto filter.
+                 */
+                $highestRow =
+                    $sheet->getHighestRow();
 
                 if ($highestRow >= 7) {
                     $sheet->setAutoFilter(
-                        'A6:K' . $highestRow
+                        'A6:K' .
+                        $highestRow
                     );
                 }
 
                 /*
-                 * Keep widths fixed for faster export.
+                 * Column widths.
                  */
                 $widths = [
                     'A' => 24,
@@ -227,23 +322,31 @@ class BuildingCoordinatorReservationReportExport implements
                     'K' => 35,
                 ];
 
-                foreach ($widths as $column => $width) {
-                    $sheet->getColumnDimension($column)
+                foreach (
+                    $widths as $column => $width
+                ) {
+                    $sheet
+                        ->getColumnDimension(
+                            $column
+                        )
                         ->setWidth($width);
                 }
 
                 /*
-                 * Freeze the table header.
+                 * Freeze table header.
                  */
                 $sheet->freezePane('A7');
 
                 /*
-                 * Simple print setup.
+                 * Print setup.
                  */
-                $sheet->getPageSetup()
-                    ->setOrientation('landscape')
+                $sheet
+                    ->getPageSetup()
+                    ->setOrientation(
+                        PageSetup::ORIENTATION_LANDSCAPE
+                    )
                     ->setPaperSize(
-                        \PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4
+                        PageSetup::PAPERSIZE_A4
                     )
                     ->setFitToWidth(1)
                     ->setFitToHeight(0);
@@ -260,11 +363,15 @@ class BuildingCoordinatorReservationReportExport implements
                 'trainingRoom.building',
                 'field.building',
             ])
-            ->where(function (Builder $query) {
+            ->where(function (
+                Builder $query
+            ) {
                 $query
                     ->whereHas(
                         'room',
-                        function (Builder $query) {
+                        function (
+                            Builder $query
+                        ) {
                             $query->whereIn(
                                 'building_id',
                                 $this->buildingIds
@@ -273,7 +380,9 @@ class BuildingCoordinatorReservationReportExport implements
                     )
                     ->orWhereHas(
                         'trainingRoom',
-                        function (Builder $query) {
+                        function (
+                            Builder $query
+                        ) {
                             $query->whereIn(
                                 'building_id',
                                 $this->buildingIds
@@ -282,7 +391,9 @@ class BuildingCoordinatorReservationReportExport implements
                     )
                     ->orWhereHas(
                         'field',
-                        function (Builder $query) {
+                        function (
+                            Builder $query
+                        ) {
                             $query->whereIn(
                                 'building_id',
                                 $this->buildingIds
@@ -290,51 +401,94 @@ class BuildingCoordinatorReservationReportExport implements
                         }
                     );
             })
+            /*
+             * Year is always applied.
+             */
             ->whereYear(
                 'starts_at',
                 $this->year
             )
-            ->whereMonth(
-                'starts_at',
-                $this->month
+            /*
+             * Month is optional.
+             */
+            ->when(
+                $this->month !== null,
+                function (
+                    Builder $query
+                ) {
+                    $query->whereMonth(
+                        'starts_at',
+                        $this->month
+                    );
+                }
             )
+            /*
+             * Status.
+             */
             ->when(
                 $this->status !== '',
-                function (Builder $query) {
+                function (
+                    Builder $query
+                ) {
                     $query->where(
                         'status',
                         $this->status
                     );
                 }
             )
+            /*
+             * Resource type.
+             */
             ->when(
                 $this->resourceType !== '',
-                function (Builder $query) {
-                    $query->where(function (Builder $query) {
-                        if ($this->resourceType === 'room') {
-                            $query->whereNotNull('room_id');
-                        }
+                function (
+                    Builder $query
+                ) {
+                    if (
+                        $this->resourceType ===
+                        'room'
+                    ) {
+                        $query->whereNotNull(
+                            'room_id'
+                        );
+                    }
 
-                        if ($this->resourceType === 'training_room') {
-                            $query->whereNotNull(
-                                'training_room_id'
-                            );
-                        }
+                    if (
+                        $this->resourceType ===
+                        'training_room'
+                    ) {
+                        $query->whereNotNull(
+                            'training_room_id'
+                        );
+                    }
 
-                        if ($this->resourceType === 'field') {
-                            $query->whereNotNull('field_id');
-                        }
-                    });
+                    if (
+                        $this->resourceType ===
+                        'field'
+                    ) {
+                        $query->whereNotNull(
+                            'field_id'
+                        );
+                    }
                 }
             )
+            /*
+             * Building.
+             */
             ->when(
                 $this->building !== '',
-                function (Builder $query) {
-                    $query->where(function (Builder $query) {
+                function (
+                    Builder $query
+                ) {
+                    $query->where(function (
+                        Builder $query
+                    ) {
                         $query
                             ->whereHas(
                                 'room.building',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'id',
                                         $this->building
@@ -343,7 +497,9 @@ class BuildingCoordinatorReservationReportExport implements
                             )
                             ->orWhereHas(
                                 'trainingRoom.building',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'id',
                                         $this->building
@@ -352,7 +508,9 @@ class BuildingCoordinatorReservationReportExport implements
                             )
                             ->orWhereHas(
                                 'field.building',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'id',
                                         $this->building
@@ -362,79 +520,114 @@ class BuildingCoordinatorReservationReportExport implements
                     });
                 }
             )
+            /*
+             * Search.
+             */
             ->when(
                 $this->search !== '',
-                function (Builder $query) {
-                    $query->where(function (Builder $query) {
+                function (
+                    Builder $query
+                ) {
+                    $query->where(function (
+                        Builder $query
+                    ) {
                         $query
                             ->where(
                                 'reservation_number',
                                 'like',
-                                '%' . $this->search . '%'
+                                '%' .
+                                $this->search .
+                                '%'
                             )
                             ->orWhere(
                                 'event_name',
                                 'like',
-                                '%' . $this->search . '%'
+                                '%' .
+                                $this->search .
+                                '%'
                             )
                             ->orWhere(
                                 'booker_name',
                                 'like',
-                                '%' . $this->search . '%'
+                                '%' .
+                                $this->search .
+                                '%'
                             )
                             ->orWhere(
                                 'instructor',
                                 'like',
-                                '%' . $this->search . '%'
+                                '%' .
+                                $this->search .
+                                '%'
                             )
                             ->orWhere(
                                 'description',
                                 'like',
-                                '%' . $this->search . '%'
+                                '%' .
+                                $this->search .
+                                '%'
                             )
                             ->orWhereHas(
                                 'user',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query
                                         ->where(
                                             'name',
                                             'like',
-                                            '%' . $this->search . '%'
+                                            '%' .
+                                            $this->search .
+                                            '%'
                                         )
                                         ->orWhere(
                                             'employee_number',
                                             'like',
-                                            '%' . $this->search . '%'
+                                            '%' .
+                                            $this->search .
+                                            '%'
                                         );
                                 }
                             )
                             ->orWhereHas(
                                 'room',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'name',
                                         'like',
-                                        '%' . $this->search . '%'
+                                        '%' .
+                                        $this->search .
+                                        '%'
                                     );
                                 }
                             )
                             ->orWhereHas(
                                 'trainingRoom',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'name',
                                         'like',
-                                        '%' . $this->search . '%'
+                                        '%' .
+                                        $this->search .
+                                        '%'
                                     );
                                 }
                             )
                             ->orWhereHas(
                                 'field',
-                                function (Builder $query) {
+                                function (
+                                    Builder $query
+                                ) {
                                     $query->where(
                                         'name',
                                         'like',
-                                        '%' . $this->search . '%'
+                                        '%' .
+                                        $this->search .
+                                        '%'
                                     );
                                 }
                             );

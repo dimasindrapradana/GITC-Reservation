@@ -6,32 +6,18 @@
 @section('content')
 
     @php
-        $isFieldCoordinator =
-            auth()->user()?->role?->name === 'Field Coordinator';
-
-        $reportRoute = $isFieldCoordinator
-            ? 'field-coordinator.reports.reservations'
-            : 'coordinator.reports.reservations';
-
-        $exportRoute = $isFieldCoordinator
-            ? 'field-coordinator.reports.reservations.export'
-            : 'coordinator.reports.reservations.export';
-
-        $detailRoute = $isFieldCoordinator
-            ? 'field-coordinator.reports.reservations.show'
-            : 'coordinator.reports.reservations.show';
+        $reportRoute = 'admin.reports.reservations';
+        $exportRoute = 'admin.reports.reservations.export';
+        $detailRoute = 'admin.reports.reservations.show';
     @endphp
 
     <div class="content-header">
         <h2>
-            {{ $isFieldCoordinator ? 'Field Reservation Report' : 'Reservation Report' }}
+            Reservation Report
         </h2>
 
         <p>
-            {{ $isFieldCoordinator
-                ? 'Review field reservation activity by period and export filtered data.'
-                : 'Review reservation activity by period and export filtered data.'
-            }}
+            Review reservation activity by month and export filtered data.
         </p>
     </div>
 
@@ -43,7 +29,7 @@
                 method="GET"
                 action="{{ route($reportRoute) }}"
                 class="filter-form"
-                id="reservation-report-filter"
+                id="reservation-filter-form"
             >
 
                 <div class="filter-grid">
@@ -66,7 +52,7 @@
 
                                 <option
                                     value="{{ $monthNumber }}"
-                                    {{ (string) $month === (string) $monthNumber ? 'selected' : '' }}
+                                    {{ (int) $month === $monthNumber ? 'selected' : '' }}
                                 >
                                     {{ \Carbon\Carbon::create()->month($monthNumber)->format('F') }}
                                 </option>
@@ -87,7 +73,7 @@
 
                                 <option
                                     value="{{ $yearNumber }}"
-                                    {{ (int) $year === $yearNumber ? 'selected' : '' }}
+                                    {{ $year === $yearNumber ? 'selected' : '' }}
                                 >
                                     {{ $yearNumber }}
                                 </option>
@@ -132,92 +118,66 @@
                             Resource Type
                         </label>
 
-                        @if($isFieldCoordinator)
+                        <select
+                            id="resource_type"
+                            name="resource_type"
+                        >
 
-                            <select
-                                id="resource_type"
-                                name="resource_type"
-                                disabled
+                            <option value="">
+                                All Resources
+                            </option>
+
+                            <option
+                                value="room"
+                                {{ $resourceType === 'room' ? 'selected' : '' }}
                             >
-                                <option value="field" selected>
-                                    Field
-                                </option>
-                            </select>
+                                Room
+                            </option>
 
-                            <input
-                                type="hidden"
-                                name="resource_type"
+                            <option
+                                value="training_room"
+                                {{ $resourceType === 'training_room' ? 'selected' : '' }}
+                            >
+                                Media Training
+                            </option>
+
+                            <option
                                 value="field"
+                                {{ $resourceType === 'field' ? 'selected' : '' }}
                             >
+                                Field
+                            </option>
 
-                        @else
-
-                            <select
-                                id="resource_type"
-                                name="resource_type"
-                            >
-
-                                <option value="">
-                                    All Resources
-                                </option>
-
-                                <option
-                                    value="room"
-                                    {{ $resourceType === 'room' ? 'selected' : '' }}
-                                >
-                                    Room
-                                </option>
-
-                                <option
-                                    value="training_room"
-                                    {{ $resourceType === 'training_room' ? 'selected' : '' }}
-                                >
-                                    Media Training
-                                </option>
-
-                                <option
-                                    value="field"
-                                    {{ $resourceType === 'field' ? 'selected' : '' }}
-                                >
-                                    Field
-                                </option>
-
-                            </select>
-
-                        @endif
+                        </select>
                     </div>
 
-                    @unless($isFieldCoordinator)
+                    <div class="field-group">
+                        <label for="building">
+                            Building
+                        </label>
 
-                        <div class="field-group">
-                            <label for="building">
-                                Building
-                            </label>
+                        <select
+                            id="building"
+                            name="building"
+                        >
 
-                            <select
-                                id="building"
-                                name="building"
-                            >
+                            <option value="">
+                                All Buildings
+                            </option>
 
-                                <option value="">
-                                    All Buildings
+                            @foreach($buildings as $buildingOption)
+
+                                <option
+                                    value="{{ $buildingOption->id }}"
+                                    {{ $building === (string) $buildingOption->id ? 'selected' : '' }}
+                                >
+                                    {{ $buildingOption->name }}
                                 </option>
 
-                                @foreach($buildings as $buildingOption)
+                            @endforeach
 
-                                    <option
-                                        value="{{ $buildingOption->id }}"
-                                        {{ $building === (string) $buildingOption->id ? 'selected' : '' }}
-                                    >
-                                        {{ $buildingOption->name }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
-                        </div>
-
-                    @endunless
+                        </select>
+                    </div>
 
                     <div class="field-group field-search">
                         <label for="search">
@@ -230,6 +190,7 @@
                             name="search"
                             value="{{ $search }}"
                             placeholder="Search reservation, booker..."
+                            autocomplete="off"
                         >
                     </div>
 
@@ -237,13 +198,12 @@
 
                 <div class="filter-actions">
 
-                    <button
-                        type="button"
+                    <a
+                        href="{{ route($reportRoute) }}"
                         class="button button-secondary"
-                        id="reset-filter"
                     >
                         Reset
-                    </button>
+                    </a>
 
                     <a
                         href="{{ route(
@@ -251,7 +211,6 @@
                             request()->query()
                         ) }}"
                         class="button button-export"
-                        id="export-button"
                     >
                         Export Excel
                     </a>
@@ -584,6 +543,17 @@
             color 0.15s ease;
     }
 
+    .button-primary {
+        background: #007fae;
+        border-color: #007fae;
+        color: #ffffff;
+    }
+
+    .button-primary:hover {
+        background: #006f99;
+        border-color: #006f99;
+    }
+
     .button-secondary {
         background: #ffffff;
         border-color: var(--border);
@@ -867,57 +837,65 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById(
-            'reservation-report-filter'
-        );
+document.addEventListener('DOMContentLoaded', function () {
 
-        if (!form) {
+    const form = document.getElementById(
+        'reservation-filter-form'
+    );
+
+    if (!form) {
+        return;
+    }
+
+    /*
+     * Automatically submit when a select filter changes.
+     */
+    const autoSubmitFields = [
+        'month',
+        'year',
+        'status',
+        'resource_type',
+        'building'
+    ];
+
+    autoSubmitFields.forEach(function (fieldName) {
+
+        const field = document.getElementById(fieldName);
+
+        if (!field) {
             return;
         }
 
-        const selects = form.querySelectorAll(
-            'select'
-        );
-
-        const search = document.getElementById(
-            'search'
-        );
-
-        const resetButton = document.getElementById(
-            'reset-filter'
-        );
-
-        selects.forEach(function (select) {
-            select.addEventListener(
-                'change',
-                function () {
-                    form.submit();
-                }
-            );
+        field.addEventListener('change', function () {
+            form.submit();
         });
 
-        if (search) {
-            search.addEventListener(
-                'keydown',
-                function (event) {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                        form.submit();
-                    }
-                }
-            );
-        }
-
-        if (resetButton) {
-            resetButton.addEventListener(
-                'click',
-                function () {
-                    window.location.href =
-                        '{{ route($reportRoute) }}';
-                }
-            );
-        }
     });
+
+    /*
+     * Search filter.
+     *
+     * Wait 500ms after the user stops typing
+     * before submitting the form.
+     */
+    const search = document.getElementById('search');
+
+    if (search) {
+
+        let searchTimer;
+
+        search.addEventListener('input', function () {
+
+            clearTimeout(searchTimer);
+
+            searchTimer = setTimeout(function () {
+                form.submit();
+            }, 500);
+
+        });
+
+    }
+
+});
 </script>
 @endpush

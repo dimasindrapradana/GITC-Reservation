@@ -22,21 +22,31 @@ class BuildingCoordinatorReportController extends Controller
             ->orderBy('name')
             ->get();
 
-        $month = $request->integer(
-            'month',
-            now()->month
-        );
+        /*
+         * Month:
+         * null = All Months
+         * 1-12 = specific month
+         */
+        $month = $request->filled('month')
+            ? $request->integer('month')
+            : null;
 
         $year = $request->integer(
             'year',
             now()->year
         );
 
-        if ($month < 1 || $month > 12) {
-            $month = now()->month;
+        if (
+            $month !== null &&
+            ($month < 1 || $month > 12)
+        ) {
+            $month = null;
         }
 
-        if ($year < 2020 || $year > 2100) {
+        if (
+            $year < 2020 ||
+            $year > 2100
+        ) {
             $year = now()->year;
         }
 
@@ -58,6 +68,9 @@ class BuildingCoordinatorReportController extends Controller
                 ->toString()
         );
 
+        /*
+         * Main reservation query.
+         */
         $query = $this->reservationQuery(
             $buildingIds
         );
@@ -70,11 +83,14 @@ class BuildingCoordinatorReportController extends Controller
         );
 
         $reservations = $query
-            ->orderBy('created_at', 'desc')
+            ->orderBy('starts_at', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(15)
             ->withQueryString();
 
+        /*
+         * Statistics query.
+         */
         $statisticsQuery = $this->reservationQuery(
             $buildingIds
         );
@@ -86,7 +102,8 @@ class BuildingCoordinatorReportController extends Controller
             $year
         );
 
-        $total = (clone $statisticsQuery)->count();
+        $total = (clone $statisticsQuery)
+            ->count();
 
         $pending = (clone $statisticsQuery)
             ->where('status', 'PENDING')
@@ -129,21 +146,31 @@ class BuildingCoordinatorReportController extends Controller
     ): BinaryFileResponse {
         $buildingIds = $this->buildingIds();
 
-        $month = $request->integer(
-            'month',
-            now()->month
-        );
+        /*
+         * Month:
+         * null = entire year
+         * 1-12 = specific month
+         */
+        $month = $request->filled('month')
+            ? $request->integer('month')
+            : null;
 
         $year = $request->integer(
             'year',
             now()->year
         );
 
-        if ($month < 1 || $month > 12) {
-            $month = now()->month;
+        if (
+            $month !== null &&
+            ($month < 1 || $month > 12)
+        ) {
+            $month = null;
         }
 
-        if ($year < 2020 || $year > 2100) {
+        if (
+            $year < 2020 ||
+            $year > 2100
+        ) {
             $year = now()->year;
         }
 
@@ -164,6 +191,31 @@ class BuildingCoordinatorReportController extends Controller
             ->trim()
             ->toString();
 
+        /*
+         * Filename:
+         *
+         * All Months:
+         * GITC_Building_Coordinator_Reservation_Report_2026.xlsx
+         *
+         * Specific Month:
+         * GITC_Building_Coordinator_Reservation_Report_2026_09.xlsx
+         */
+        $filename =
+            'GITC_Building_Coordinator_Reservation_Report_' .
+            $year;
+
+        if ($month !== null) {
+            $filename .= '_' .
+                str_pad(
+                    (string) $month,
+                    2,
+                    '0',
+                    STR_PAD_LEFT
+                );
+        }
+
+        $filename .= '.xlsx';
+
         return Excel::download(
             new BuildingCoordinatorReservationReportExport(
                 buildingIds: $buildingIds,
@@ -174,16 +226,7 @@ class BuildingCoordinatorReportController extends Controller
                 building: $building,
                 search: $search,
             ),
-            'GITC_Building_Coordinator_Reservation_Report_' .
-                $year .
-                '_' .
-                str_pad(
-                    (string) $month,
-                    2,
-                    '0',
-                    STR_PAD_LEFT
-                ) .
-                '.xlsx'
+            $filename
         );
     }
 
@@ -280,7 +323,7 @@ class BuildingCoordinatorReportController extends Controller
     private function applyFilters(
         Builder $query,
         Request $request,
-        int $month,
+        ?int $month,
         int $year
     ): void {
         $search = trim(
@@ -301,20 +344,30 @@ class BuildingCoordinatorReportController extends Controller
             ->string('building')
             ->toString();
 
-        if ($month >= 1 && $month <= 12) {
+        /*
+         * YEAR is always applied.
+         */
+        $query->whereYear(
+            'starts_at',
+            $year
+        );
+
+        /*
+         * MONTH is optional.
+         *
+         * null = All Months
+         * 1-12 = specific month
+         */
+        if ($month !== null) {
             $query->whereMonth(
                 'starts_at',
                 $month
             );
         }
 
-        if ($year >= 2000 && $year <= 2100) {
-            $query->whereYear(
-                'starts_at',
-                $year
-            );
-        }
-
+        /*
+         * Search.
+         */
         if ($search !== '') {
             $query->where(function (
                 Builder $query
@@ -402,6 +455,9 @@ class BuildingCoordinatorReportController extends Controller
             });
         }
 
+        /*
+         * Status.
+         */
         if (
             $status !== '' &&
             in_array(
@@ -421,8 +477,13 @@ class BuildingCoordinatorReportController extends Controller
             );
         }
 
+        /*
+         * Resource type.
+         */
         if ($resourceType === 'room') {
-            $query->whereNotNull('room_id');
+            $query->whereNotNull(
+                'room_id'
+            );
         }
 
         if ($resourceType === 'training_room') {
@@ -432,14 +493,30 @@ class BuildingCoordinatorReportController extends Controller
         }
 
         if ($resourceType === 'field') {
-            $query->whereNotNull('field_id');
+            $query->whereNotNull(
+                'field_id'
+            );
         }
 
+        /*
+         * Building.
+         */
         if (
             $building !== '' &&
             ctype_digit($building)
         ) {
             $buildingId = (int) $building;
+
+            /*
+             * Only allow buildings that belong
+             * to this coordinator.
+             */
+            if (
+                !$this->buildingIds()
+                    ->contains($buildingId)
+            ) {
+                return;
+            }
 
             $query->where(function (
                 Builder $query

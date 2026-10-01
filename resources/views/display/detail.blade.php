@@ -341,7 +341,7 @@
                 hidden;
 
             text-overflow:
-                ellipsis;
+                clip;
 
             white-space:
                 nowrap;
@@ -356,8 +356,7 @@
             font-weight:
                 800;
 
-            line-height:
-                1.05;
+           
 
         }
 
@@ -1654,12 +1653,9 @@
 
             <div class="building-block">
 
-                <div class="building-label">
-                    Current Building
-                </div>
 
                 <div class="building-name">
-                    {{ str_replace('_', ' ', $buildingName) }}
+                    {{ $building->name }}
                 </div>
 
             </div>
@@ -1693,7 +1689,10 @@
             <div class="logo-area">
 
                 <img
-                    src="{{ asset('images/Logo2.png') }}"
+                
+                src="{{ asset('images/logo/gitc-logo.png') }}"
+                alt="GITC Logo"
+    
                     alt="Garuda Indonesia Training Center"
                 >
 

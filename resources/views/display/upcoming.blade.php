@@ -282,35 +282,7 @@
         }
 
 
-        .building-label {
-
-            color:
-                rgba(
-                    255,
-                    255,
-                    255,
-                    0.55
-                );
-
-            font-size:
-                10px;
-
-            font-weight:
-                700;
-
-            letter-spacing:
-                0.10em;
-
-            text-transform:
-                uppercase;
-
-        }
-
-
         .building-name {
-
-            margin-top:
-                5px;
 
             max-width:
                 34vw;
@@ -603,89 +575,90 @@
 
         }
 
+
         .schedule-search {
 
-        width:
-            clamp(
-                180px,
-                14vw,
-                240px
-            );
+            width:
+                clamp(
+                    180px,
+                    14vw,
+                    240px
+                );
 
-        height:
-            44px;
+            height:
+                44px;
 
-        min-height:
-            44px;
+            min-height:
+                44px;
 
-        padding:
-            0
-            16px;
+            padding:
+                0
+                16px;
 
-        border:
-            1px solid
-            #cbdce6;
+            border:
+                1px solid
+                #cbdce6;
 
-        border-radius:
-            999px;
+            border-radius:
+                999px;
 
-        outline:
-            none;
+            outline:
+                none;
 
-        background:
-            #ffffff;
+            background:
+                #ffffff;
 
-        color:
-            var(--text);
+            color:
+                var(--text);
 
-        font-family:
-            "Segoe UI",
-            Arial,
-            sans-serif;
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
 
-        font-size:
-            12px;
+            font-size:
+                12px;
 
-        font-weight:
-            500;
+            font-weight:
+                500;
 
-        transition:
-            border-color 0.2s ease,
-            box-shadow 0.2s ease;
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
 
-    }
-
-
-    .schedule-search::placeholder {
-
-        color:
-            #93a4af;
-
-    }
+        }
 
 
-    .schedule-search:focus {
+        .schedule-search::placeholder {
 
-        border-color:
-            rgba(
-                0,
-                59,
-                111,
-                0.35
-            );
+            color:
+                #93a4af;
 
-        box-shadow:
-            0
-            3px
-            10px
-            rgba(
-                0,
-                41,
-                79,
-                0.07
-            );
+        }
 
-    }
+
+        .schedule-search:focus {
+
+            border-color:
+                rgba(
+                    0,
+                    59,
+                    111,
+                    0.35
+                );
+
+            box-shadow:
+                0
+                3px
+                10px
+                rgba(
+                    0,
+                    41,
+                    79,
+                    0.07
+                );
+
+        }
 
 
         .back-button {
@@ -929,28 +902,32 @@
             min-height:
                 82px;
 
+            height:
+                auto;
+
             display:
                 grid;
 
             grid-template-columns:
-                40px
-                125px
-                110px
+                42px
+                minmax(
+                    200px,
+                    0.9fr
+                )
                 minmax(
                     0,
-                    1fr
-                )
-                120px;
+                    1.4fr
+                );
 
             align-items:
-                center;
+                start;
 
             gap:
-                12px;
+                18px;
 
             padding:
-                10px
-                16px;
+                15px
+                18px;
 
             border-bottom:
                 1px solid
@@ -967,7 +944,14 @@
         }
 
 
+        /* =========================================================
+           NUMBER
+        ========================================================= */
+
         .schedule-number {
+
+            padding-top:
+                3px;
 
             color:
                 rgba(
@@ -978,7 +962,7 @@
                 );
 
             font-size:
-                14px;
+                12px;
 
             font-weight:
                 800;
@@ -986,56 +970,23 @@
         }
 
 
-        .schedule-time {
-
-            color:
-                var(--navy);
-
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
-
-            font-size:
-                clamp(
-                    13px,
-                    0.88vw,
-                    18px
-                );
-
-            font-weight:
-                800;
-
-            white-space:
-                nowrap;
-
-        }
-
-
-        .schedule-type {
-
-            color:
-                var(--muted);
-
-            font-size:
-                9px;
-
-            font-weight:
-                800;
-
-            letter-spacing:
-                0.08em;
-
-            text-transform:
-                uppercase;
-
-        }
-
+        /* =========================================================
+           RESOURCE / ROOM
+        ========================================================= */
 
         .schedule-resource {
 
             min-width:
                 0;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                flex-start;
 
         }
 
@@ -1046,10 +997,14 @@
                 var(--muted);
 
             font-size:
-                8px;
+                clamp(
+                    8px,
+                    0.52vw,
+                    11px
+                );
 
             font-weight:
-                700;
+                800;
 
             letter-spacing:
                 0.08em;
@@ -1063,29 +1018,53 @@
         .resource-name {
 
             margin-top:
-                3px;
-
-            overflow:
-                hidden;
-
-            text-overflow:
-                ellipsis;
-
-            white-space:
-                nowrap;
+                4px;
 
             color:
                 var(--navy);
 
             font-size:
                 clamp(
-                    13px,
-                    0.95vw,
-                    19px
+                    17px,
+                    1.18vw,
+                    24px
                 );
 
             font-weight:
                 800;
+
+            line-height:
+                1.2;
+
+            white-space:
+                normal;
+
+            overflow-wrap:
+                anywhere;
+
+            word-break:
+                break-word;
+
+        }
+
+
+        /* =========================================================
+           EVENT + TIME
+        ========================================================= */
+
+        .schedule-event-block {
+
+            min-width:
+                0;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                flex-start;
 
         }
 
@@ -1096,35 +1075,71 @@
                 0;
 
             color:
-                var(--text);
+                var(--navy-dark);
 
             font-size:
                 clamp(
-                    11px,
-                    0.73vw,
-                    16px
+                    16px,
+                    1.05vw,
+                    22px
+                );
+
+            font-weight:
+                750;
+
+            line-height:
+                1.3;
+
+            white-space:
+                normal;
+
+            overflow:
+                visible;
+
+            overflow-wrap:
+                anywhere;
+
+            word-break:
+                break-word;
+
+        }
+
+
+        .schedule-time {
+
+            margin-top:
+                7px;
+
+            color:
+                var(--muted);
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            font-size:
+                clamp(
+                    10px,
+                    0.64vw,
+                    14px
                 );
 
             font-weight:
                 650;
 
             line-height:
-                1.25;
+                1.2;
 
-            display:
-                -webkit-box;
-
-            -webkit-line-clamp:
-                2;
-
-            -webkit-box-orient:
-                vertical;
-
-            overflow:
-                hidden;
+            white-space:
+                nowrap;
 
         }
 
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
 
         .status-badge {
 
@@ -1185,6 +1200,10 @@
 
         }
 
+
+        /* =========================================================
+           EMPTY
+        ========================================================= */
 
         .empty-state {
 
@@ -1298,14 +1317,46 @@
             .schedule-row {
 
                 grid-template-columns:
-                    32px
-                    110px
-                    95px
+                    34px
+                    minmax(
+                        150px,
+                        0.85fr
+                    )
                     minmax(
                         0,
-                        1fr
-                    )
-                    100px;
+                        1.15fr
+                    );
+
+                gap:
+                    14px;
+
+                padding:
+                    14px
+                16px;
+
+            }
+
+
+            .resource-name {
+
+                font-size:
+                    clamp(
+                        15px,
+                        1.8vw,
+                        21px
+                    );
+
+            }
+
+
+            .event-name {
+
+                font-size:
+                    clamp(
+                        14px,
+                        1.6vw,
+                        20px
+                    );
 
             }
 
@@ -1335,28 +1386,50 @@
             .schedule-row {
 
                 grid-template-columns:
-                    32px
-                    100px
+                    30px
+                    minmax(
+                        130px,
+                        0.8fr
+                    )
                     minmax(
                         0,
-                        1fr
+                        1.2fr
                     );
 
-            }
-
-
-            .schedule-type {
-
-                display:
-                    none;
+                gap:
+                    12px;
 
             }
 
 
-            .status-badge {
+            .schedule-number {
 
-                grid-column:
-                    3;
+                font-size:
+                    11px;
+
+            }
+
+
+            .resource-name {
+
+                font-size:
+                    15px;
+
+            }
+
+
+            .event-name {
+
+                font-size:
+                    14px;
+
+            }
+
+
+            .schedule-time {
+
+                font-size:
+                    10px;
 
             }
 
@@ -1416,18 +1489,24 @@
             .schedule-row {
 
                 grid-template-columns:
-                    28px
-                    90px
+                    24px
+                    minmax(
+                        95px,
+                        0.75fr
+                    )
                     minmax(
                         0,
-                        1fr
+                        1.25fr
                     );
 
                 min-height:
                     78px;
 
+                gap:
+                    10px;
+
                 padding:
-                    9px
+                    11px
                     10px;
 
             }
@@ -1436,15 +1515,15 @@
             .schedule-number {
 
                 font-size:
-                    12px;
+                    10px;
 
             }
 
 
-            .schedule-time {
+            .resource-label {
 
                 font-size:
-                    12px;
+                    7px;
 
             }
 
@@ -1460,15 +1539,21 @@
             .event-name {
 
                 font-size:
-                    11px;
+                    12px;
+
+                line-height:
+                    1.3;
 
             }
 
 
-            .status-badge {
+            .schedule-time {
 
-                grid-column:
-                    3;
+                margin-top:
+                    5px;
+
+                font-size:
+                    9px;
 
             }
 
@@ -1522,12 +1607,8 @@
 
             <div class="building-block">
 
-                <div class="building-label">
-                    Current Building
-                </div>
-
                 <div class="building-name">
-                    {{ str_replace('_', ' ', $buildingName) }}
+                    {{ $building->name }}
                 </div>
 
             </div>
@@ -1561,7 +1642,10 @@
             <div class="logo-area">
 
                 <img
-                    src="{{ asset('images/Logo2.png') }}"
+                
+                src="{{ asset('images/logo/gitc-logo.png') }}"
+                alt="GITC Logo"
+    
                     alt="Garuda Indonesia Training Center"
                 >
 
@@ -1609,24 +1693,27 @@
 
             <div class="page-actions">
 
-            <input
-                type="text"
-                id="scheduleSearch"
-                class="schedule-search"
-                placeholder="Search room or event..."
-                autocomplete="off"
-            >
 
-            <a
-                href="{{ route('display', [
-                    'buildingName' => $buildingName
-                ]) }}"
-                class="back-button"
-            >
-                Back to Display
-            </a>
+                <input
+                    type="text"
+                    id="scheduleSearch"
+                    class="schedule-search"
+                    placeholder="Search room or event..."
+                    autocomplete="off"
+                >
 
-        </div>
+
+                <a
+                    href="{{ route('display', [
+                        'buildingName' => $buildingName
+                    ]) }}"
+                    class="back-button"
+                >
+                    Back to Display
+                </a>
+
+
+            </div>
 
 
         </div>
@@ -1892,12 +1979,13 @@
        RENDER
     ========================================================= */
 
-        function renderSchedule() {
+    function renderSchedule() {
 
         const container =
             document.getElementById(
                 'scheduleScroll'
             );
+
 
         const subtitle =
             document.getElementById(
@@ -1919,110 +2007,110 @@
 
 
         /*
-        * Filter setiap hari secara
-        * terpisah.
-        *
-        * Hari tanpa hasil akan
-        * otomatis disembunyikan.
-        */
+         * Filter setiap hari secara terpisah.
+         * Hari tanpa hasil otomatis disembunyikan.
+         */
 
         const filteredSchedule =
             schedule
-                .map(day => {
+                .map(
+                    day => {
 
-                    const filteredReservations =
-                        day.reservations.filter(
-                            reservation => {
+                        const filteredReservations =
+                            day.reservations.filter(
+                                reservation => {
 
-                                if (!keyword) {
+                                    if (!keyword) {
 
-                                    return true;
+                                        return true;
+
+                                    }
+
+
+                                    const event =
+                                        String(
+                                            reservation
+                                                ?.event_name
+                                            ??
+                                            ''
+                                        )
+                                        .toLowerCase();
+
+
+                                    const resource =
+                                        String(
+                                            reservation
+                                                ?.resource
+                                                ?.name
+                                            ??
+                                            ''
+                                        )
+                                        .toLowerCase();
+
+
+                                    const type =
+                                        String(
+                                            reservation
+                                                ?.resource
+                                                ?.type
+                                            ??
+                                            ''
+                                        )
+                                        .toLowerCase();
+
+
+                                    const booker =
+                                        String(
+                                            reservation
+                                                ?.booker_name
+                                            ??
+                                            ''
+                                        )
+                                        .toLowerCase();
+
+
+                                    return (
+                                        event.includes(
+                                            keyword
+                                        )
+                                        ||
+                                        resource.includes(
+                                            keyword
+                                        )
+                                        ||
+                                        type.includes(
+                                            keyword
+                                        )
+                                        ||
+                                        booker.includes(
+                                            keyword
+                                        )
+                                    );
 
                                 }
+                            );
 
 
-                                const event =
-                                    String(
-                                        reservation
-                                            ?.event_name
-                                        ??
-                                        ''
-                                    )
-                                    .toLowerCase();
+                        return {
+                            ...day,
+                            reservations:
+                                filteredReservations
+                        };
 
-
-                                const resource =
-                                    String(
-                                        reservation
-                                            ?.resource
-                                            ?.name
-                                        ??
-                                        ''
-                                    )
-                                    .toLowerCase();
-
-
-                                const type =
-                                    String(
-                                        reservation
-                                            ?.resource
-                                            ?.type
-                                        ??
-                                        ''
-                                    )
-                                    .toLowerCase();
-
-
-                                const booker =
-                                    String(
-                                        reservation
-                                            ?.booker_name
-                                        ??
-                                        ''
-                                    )
-                                    .toLowerCase();
-
-
-                                return (
-                                    event.includes(
-                                        keyword
-                                    )
-                                    ||
-                                    resource.includes(
-                                        keyword
-                                    )
-                                    ||
-                                    type.includes(
-                                        keyword
-                                    )
-                                    ||
-                                    booker.includes(
-                                        keyword
-                                    )
-                                );
-
-                            }
-                        );
-
-
-                    return {
-                        ...day,
-                        reservations:
-                            filteredReservations
-                    };
-
-                })
+                    }
+                )
                 .filter(
                     day =>
-                        day.reservations.length > 0
+                        day.reservations.length >
+                        0
                 );
 
 
         /*
-        * =========================
-        * SUMMARY
-        * =========================
-        */
+         * =========================
+         * SUMMARY
+         * =========================
+         */
 
         const totalReservations =
             filteredSchedule.reduce(
@@ -2084,13 +2172,14 @@
 
 
         /*
-        * =========================
-        * NO RESULT
-        * =========================
-        */
+         * =========================
+         * NO RESULT
+         * =========================
+         */
 
         if (
-            filteredSchedule.length === 0
+            filteredSchedule.length ===
+            0
         ) {
 
             container.innerHTML = `
@@ -2113,10 +2202,10 @@
 
 
         /*
-        * =========================
-        * RENDER DAYS
-        * =========================
-        */
+         * =========================
+         * RENDER DAYS
+         * =========================
+         */
 
         container.innerHTML =
             filteredSchedule
@@ -2228,40 +2317,6 @@
 
                                                             <div
                                                                 class="
-                                                                    schedule-time
-                                                                "
-                                                            >
-
-                                                                ${formatTime(
-                                                                    reservation
-                                                                        .starts_at
-                                                                )}
-
-                                                                -
-
-                                                                ${formatTime(
-                                                                    reservation
-                                                                        .ends_at
-                                                                )}
-
-                                                            </div>
-
-
-                                                            <div
-                                                                class="
-                                                                    schedule-type
-                                                                "
-                                                            >
-
-                                                                ${escapeHtml(
-                                                                    resourceType
-                                                                )}
-
-                                                            </div>
-
-
-                                                            <div
-                                                                class="
                                                                     schedule-resource
                                                                 "
                                                             >
@@ -2296,13 +2351,42 @@
 
                                                             <div
                                                                 class="
-                                                                    event-name
+                                                                    schedule-event-block
                                                                 "
                                                             >
 
-                                                                ${escapeHtml(
-                                                                    eventName
-                                                                )}
+                                                                <div
+                                                                    class="
+                                                                        event-name
+                                                                    "
+                                                                >
+
+                                                                    ${escapeHtml(
+                                                                        eventName
+                                                                    )}
+
+                                                                </div>
+
+
+                                                                <div
+                                                                    class="
+                                                                        schedule-time
+                                                                    "
+                                                                >
+
+                                                                    ${formatTime(
+                                                                        reservation
+                                                                            .starts_at
+                                                                    )}
+
+                                                                    -
+
+                                                                    ${formatTime(
+                                                                        reservation
+                                                                            .ends_at
+                                                                    )}
+
+                                                                </div>
 
                                                             </div>
 
@@ -2405,30 +2489,35 @@
 
     }
 
-            const searchInput =
-            document.getElementById(
-                'scheduleSearch'
-            );
+
+    /* =========================================================
+       SEARCH
+    ========================================================= */
+
+    const searchInput =
+        document.getElementById(
+            'scheduleSearch'
+        );
 
 
-        if (searchInput) {
+    if (searchInput) {
 
-            searchInput.addEventListener(
-                'input',
-                function () {
+        searchInput.addEventListener(
+            'input',
+            function () {
 
-                    searchKeyword =
-                        this.value
-                            .trim()
-                            .toLowerCase();
+                searchKeyword =
+                    this.value
+                        .trim()
+                        .toLowerCase();
 
 
-                    renderSchedule();
+                renderSchedule();
 
-                }
-            );
+            }
+        );
 
-        }
+    }
 
 
     /* =========================================================

@@ -237,7 +237,7 @@
 
             font-weight: 800;
 
-            line-height: 1;
+            
 
         }
 
@@ -433,7 +433,7 @@
 
             font-weight: 800;
 
-            line-height: 1;
+            
 
             white-space: nowrap;
 
@@ -1036,8 +1036,7 @@
                     50px
                 );
 
-            line-height:
-                1.12;
+            
 
             font-weight:
                 800;
@@ -1150,8 +1149,7 @@
             font-weight:
                 800;
 
-            line-height:
-                1.05;
+          
 
         }
 
@@ -1570,8 +1568,6 @@
             font-weight:
                 800;
 
-            line-height:
-                1.15;
 
         }
 
@@ -1791,8 +1787,6 @@
             font-weight:
                 750;
 
-            line-height:
-                1.25;
 
         }
 
@@ -1830,82 +1824,115 @@
 
         .upcoming-detail-button {
 
-            flex:
-                0 0 auto;
+        flex:
+            0 0 auto;
 
-            display:
-                inline-flex;
+        display:
+            inline-flex;
 
-            align-items:
-                center;
+        align-items:
+            center;
 
-            justify-content:
-                center;
+        justify-content:
+            center;
 
-            min-height:
-                34px;
+        min-height:
+            34px;
 
-            padding:
-                0
-                13px;
+        padding:
+            0
+            16px;
 
-            margin-top:
-                1px;
+        margin-top:
+            1px;
 
-            border:
-                1px solid
-                #cbdce6;
+        border:
+            1px solid
+            #006fae;
 
-            border-radius:
-                999px;
+        border-radius:
+            999px;
 
-            background:
-                #ffffff;
+        background:
+            #006fae;
 
-            color:
-                #06466d;
+        color:
+            #ffffff;
 
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
+        font-family:
+            "Segoe UI",
+            Arial,
+            sans-serif;
 
-            font-size:
-                8px;
+        font-size:
+            8px;
 
-            font-weight:
-                800;
+        font-weight:
+            800;
 
-            letter-spacing:
-                0.05em;
+        letter-spacing:
+            0.05em;
 
-            text-decoration:
-                none;
+        text-decoration:
+            none;
 
-            text-transform:
-                uppercase;
+        text-transform:
+            uppercase;
 
-            white-space:
-                nowrap;
+        white-space:
+            nowrap;
 
-            cursor:
-                pointer;
+        cursor:
+            pointer;
 
-            transition:
-                background 0.2s ease,
-                transform 0.2s ease;
+        box-shadow:
+            0
+            3px
+            8px
+            rgba(
+                0,
+                111,
+                174,
+                0.18
+            );
 
-        }
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
 
-        .upcoming-detail-button:hover {
+    }
 
-            background:
-                #f1f8fb;
 
-            transform:
-                translateY(-1px);
+    .upcoming-detail-button:hover,
+    .upcoming-detail-button:focus,
+    .upcoming-detail-button:active {
 
-        }
+        background:
+            #005b8f !important;
+
+        border-color:
+            #005b8f !important;
+
+        color:
+            #ffffff !important;
+
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0
+            5px
+            12px
+            rgba(
+                0,
+                111,
+                174,
+                0.25
+            );
+
+    }
 
         .upcoming-empty {
 
@@ -2756,7 +2783,6 @@
 
             font-weight: 800;
 
-            line-height: 1.05;
 
             white-space: nowrap;
 
@@ -2787,7 +2813,7 @@
 
             font-weight: 700;
 
-            line-height: 1.2;
+           
 
             display:
                 -webkit-box;
@@ -2957,62 +2983,103 @@
 
         .today-detail-link {
 
-            display:
-                inline-flex;
+        display:
+            inline-flex;
 
-            align-items:
-                center;
+        align-items:
+            center;
 
-            justify-content:
-                center;
+        justify-content:
+            center;
 
-            padding:
-                7px
-                13px;
+        min-height:
+            34px;
 
-            border:
-                1px solid
-                #cbdce6;
+        padding:
+            0
+            16px;
 
-            border-radius:
-                999px;
+        border:
+            1px solid
+            #006fae;
 
-            background:
-                #ffffff;
+        border-radius:
+            999px;
 
-            color:
-                #06466d;
+        background:
+            #006fae;
 
-            text-decoration:
-                none;
+        color:
+            #ffffff;
 
-            font-size:
-                8px;
+        text-decoration:
+            none;
 
-            font-weight:
-                800;
+        font-family:
+            "Segoe UI",
+            Arial,
+            sans-serif;
 
-            letter-spacing:
-                0.06em;
+        font-size:
+            8px;
 
-            text-transform:
-                uppercase;
+        font-weight:
+            800;
 
-            transition:
-                0.2s ease;
+        letter-spacing:
+            0.06em;
 
-        }
+        text-transform:
+            uppercase;
+
+        white-space:
+            nowrap;
+
+        box-shadow:
+            0
+            3px
+            8px
+            rgba(
+                0,
+                111,
+                174,
+                0.18
+            );
+
+        transition:
+            background 0.2s ease,
+            border-color 0.2s ease,
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+
+    }
 
 
-        .today-detail-link:hover {
+    .today-detail-link:hover {
 
-            background:
-                #f1f8fb;
+        background:
+            #005b8f;
 
-            transform:
-                translateY(-1px);
+        border-color:
+            #005b8f;
 
-        }
+        transform:
+            translateY(-1px);
+
+        box-shadow:
+            0
+            5px
+            12px
+            rgba(
+                0,
+                111,
+                174,
+                0.25
+            );
+
+    }
+
+
 
 
         /* =========================================================
@@ -3152,6 +3219,7 @@
                     0,
                     1fr
                 );
+            touch-action: pan-y;
 
         }
 
@@ -3647,8 +3715,6 @@
                     18px
                 );
 
-            line-height:
-                1.65;
 
             white-space:
                 pre-wrap;
@@ -3743,6 +3809,125 @@
 
         }
 
+        .news-modal-nav {
+            position: absolute;
+
+            top: 50%;
+
+            width: 52px;
+            height: 52px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 0;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(0, 0, 0, 0.22);
+
+            color: #ffffff;
+
+            font-family: Arial, sans-serif;
+            font-size: 34px;
+            font-weight: 400;
+
+            line-height: 52px;
+            text-align: center;
+
+            cursor: pointer;
+
+            transform: translateY(-50%);
+
+            z-index: 10001;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .news-modal-nav:hover {
+            background: rgba(0, 0, 0, 0.42);
+
+            transform:
+                translateY(-50%)
+                scale(1.08);
+        }
+
+
+        .news-modal-nav:active {
+            transform:
+                translateY(-50%)
+                scale(0.96);
+        }
+
+
+        .news-modal-prev {
+            left: calc(50% - min(44vw, 550px) - 58px);
+        }
+
+
+        .news-modal-next {
+            right: calc(50% - min(44vw, 550px) - 58px);
+        }
+
+
+        .news-modal-nav[hidden] {
+            display: none;
+        }
+
+
+
+        @media (max-width: 900px) {
+
+        .news-modal-prev {
+            left: 12px;
+        }
+
+
+
+       .news-modal-nav:hover {
+
+            background:
+                rgba(
+                    0,
+                    0,
+                    0,
+                    0.40
+                );
+
+        }
+
+
+        .news-modal-prev:hover {
+
+            transform:
+                translateY(-50%)
+                translateX(-1px);
+
+        }
+
+
+        .news-modal-next:hover {
+
+            transform:
+                translateY(-50%)
+                translateX(1px);
+
+        }
+
+
+        .news-modal-nav:active {
+
+            transform:
+                translateY(-50%)
+                scale(0.96);
+
+        }
+
     </style>
 
 </head>
@@ -3821,8 +4006,11 @@
 
             <div class="logo-area">
 
-                <img
-                    src="{{ asset('images/Logo2.png') }}"
+               <img
+                
+                src="{{ asset('images/logo/gitc-logo.png') }}"
+                alt="GITC Logo"
+    
                     alt="Garuda Indonesia Training Center"
                 >
 
@@ -3876,7 +4064,7 @@
                 </div>
 
 
-                <a
+                {{-- <a
                     href="{{ route('display.detail', [
                         'buildingName' => Str::slug(
                             $building->name,
@@ -3886,7 +4074,7 @@
                     class="hero-detail-link"
                 >
                     Detail Schedule
-                </a>
+                </a> --}}
 
 
             </section>
@@ -3968,7 +4156,7 @@
                         <div class="card-heading">
 
                             <h2 class="card-title">
-                                News
+                                Information
                             </h2>
 
                             <div class="card-subtitle">
@@ -3987,7 +4175,7 @@
                     >
 
                         <div class="news-empty">
-                            Loading news...
+                            Loading info...
                         </div>
 
                     </div>
@@ -4110,7 +4298,7 @@
 
 
         <div class="footer-brand">
-            RESERVATION DISPLAY SYSTEM
+            Garuda Indonesia Training Center Information
         </div>
 
 
@@ -4133,6 +4321,95 @@
 
 
 </div>
+
+
+    {{-- =========================================================
+        NEWS DETAIL MODAL
+    ========================================================= --}}
+
+    <div
+        class="news-modal"
+        id="newsModal"
+        aria-hidden="true"
+    >
+
+      <button
+                type="button"
+                class="news-modal-nav news-modal-prev"
+                id="newsModalPrev"
+                aria-label="Previous news"
+            >
+                ‹
+            </button>
+
+        <button
+                type="button"
+                class="news-modal-nav news-modal-next"
+                id="newsModalNext"
+                aria-label="Next news"
+            >
+                ›
+         </button>
+
+        <div
+            class="news-modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="newsModalTitle"
+        >
+
+            <button
+                type="button"
+                class="news-modal-close"
+                id="newsModalClose"
+                aria-label="Close news"
+            >
+                ×
+            </button>
+
+
+            <div
+                class="news-modal-image"
+                id="newsModalImage"
+            >
+        </div>
+
+
+            <div class="news-modal-body">
+
+                <div class="news-modal-label">
+                    Announcement
+                </div>
+
+
+                <h2
+                    class="news-modal-title"
+                    id="newsModalTitle"
+                >
+                    —
+                </h2>
+
+
+                <div
+                    class="news-modal-date"
+                    id="newsModalDate"
+                >
+                    —
+                </div>
+
+
+                <div
+                    class="news-modal-content-text"
+                    id="newsModalContent"
+                >
+                    —
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
 
@@ -4186,6 +4463,15 @@
     let searchKeyword = '';
 
     let selectedNews = null;
+
+    let selectedNewsIndex = 0;
+
+    let newsTouchStartX = 0;
+
+    let newsTouchEndX = 0;
+
+
+    
 
 
     /* =========================================================
@@ -6044,14 +6330,23 @@
         }
 
 
-        if (subtitle) {
+        // if (subtitle) {
 
+        //     subtitle.textContent =
+        //         formatDate(
+        //             tomorrowReservations[0]
+        //                 ?.starts_at
+        //         );
+
+        // }
+
+        if (subtitle) {
             subtitle.textContent =
                 formatDate(
-                    tomorrowReservations[0]
-                        ?.starts_at
+                    new Date(
+                        Date.now() + 86400000
+                    )
                 );
-
         }
 
 
@@ -6579,6 +6874,46 @@
 
     }
 
+    document.addEventListener(
+    'keydown',
+    function (event) {
+
+        if (
+            !newsModal ||
+            !newsModal.classList.contains(
+                'open'
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            event.key === 'ArrowLeft'
+        ) {
+
+            event.preventDefault();
+
+            showPreviousNews();
+
+        }
+
+
+        if (
+            event.key === 'ArrowRight'
+        ) {
+
+            event.preventDefault();
+
+            showNextNews();
+
+        }
+
+    }
+);
+
     /* =========================================================
     NEWS MODAL
     ========================================================= */
@@ -6592,6 +6927,17 @@
     const newsModalClose =
         document.getElementById(
             'newsModalClose'
+        );
+
+    const newsModalPrev =
+        document.getElementById(
+            'newsModalPrev'
+        );
+
+
+    const newsModalNext =
+        document.getElementById(
+            'newsModalNext'
         );
 
 
@@ -6619,100 +6965,166 @@
         );
 
 
-    function openNewsModal(
-        news
-    ) {
+    function renderNewsModal() {
 
-        if (
-            !newsModal ||
-            !news
-        ) {
+            if (
+                !newsModal ||
+                !newsItems.length
+            ) {
 
-            return;
+                return;
+
+            }
+
+
+            const news =
+                newsItems[
+                    selectedNewsIndex
+                ];
+
+
+            if (!news) {
+
+                return;
+
+            }
+
+
+            selectedNews =
+                news;
+
+
+            const imageUrl =
+                news.image_url
+                ??
+                null;
+
+
+            if (
+                imageUrl
+            ) {
+
+                newsModalImage.innerHTML = `
+
+                    <img
+                        src="${escapeHtml(
+                            imageUrl
+                        )}"
+                        alt="${escapeHtml(
+                            news.title
+                        )}"
+                    >
+
+                `;
+
+            } else {
+
+                newsModalImage.innerHTML = `
+
+                    <div
+                        class="
+                            news-modal-image-empty
+                        "
+                    >
+                        NEWS
+                    </div>
+
+                `;
+
+            }
+
+
+            newsModalTitle.textContent =
+                news.title
+                ??
+                'Untitled News';
+
+
+            newsModalDate.textContent =
+                news.starts_at
+                    ? formatDate(
+                        news.starts_at
+                    )
+                    : '';
+
+
+            newsModalContent.textContent =
+                stripHtml(
+                    news.content
+                );
+
+
+            const hasMultipleNews =
+                newsItems.length > 1;
+
+
+            if (
+                newsModalPrev
+            ) {
+
+                newsModalPrev.hidden =
+                    !hasMultipleNews;
+
+            }
+
+
+            if (
+                newsModalNext
+            ) {
+
+                newsModalNext.hidden =
+                    !hasMultipleNews;
+
+            }
 
         }
 
 
-        selectedNews =
-            news;
-
-
-        const imageUrl =
-            news.image_url
-            ??
-            null;
-
-
-        if (
-            imageUrl
+        function openNewsModal(
+            news
         ) {
 
-            newsModalImage.innerHTML = `
+            if (
+                !newsModal ||
+                !news
+            ) {
 
-                <img
-                    src="${escapeHtml(
-                        imageUrl
-                    )}"
-                    alt="${escapeHtml(
-                        news.title
-                    )}"
-                >
+                return;
 
-            `;
-
-        } else {
-
-            newsModalImage.innerHTML = `
-
-                <div
-                    class="
-                        news-modal-image-empty
-                    "
-                >
-                    NEWS
-                </div>
-
-            `;
-
-        }
+            }
 
 
-        newsModalTitle.textContent =
-            news.title
-            ??
-            'Untitled News';
+            const index =
+                newsItems.indexOf(
+                    news
+                );
 
 
-        newsModalDate.textContent =
-            news.starts_at
-                ? formatDate(
-                    news.starts_at
-                )
-                : '';
+            selectedNewsIndex =
+                index >= 0
+                    ? index
+                    : 0;
 
 
-        newsModalContent.textContent =
-            stripHtml(
-                news.content
+            renderNewsModal();
+
+
+            newsModal.classList.add(
+                'open'
             );
 
 
-        newsModal.classList.add(
-            'open'
-        );
+            newsModal.setAttribute(
+                'aria-hidden',
+                'false'
+            );
 
 
-        newsModal.setAttribute(
-            'aria-hidden',
-            'false'
-        );
+            document.body.classList.add(
+                'news-modal-open'
+            );
 
-
-        document.body.classList.add(
-            'news-modal-open'
-        );
-
-    }
+        }
 
 
     function closeNewsModal() {
@@ -6744,6 +7156,245 @@
             null;
 
     }
+
+    function showPreviousNews() {
+
+            if (
+                newsItems.length <= 1
+            ) {
+
+                return;
+
+            }
+
+
+            selectedNewsIndex--;
+
+            if (
+                selectedNewsIndex < 0
+            ) {
+
+                selectedNewsIndex =
+                    newsItems.length - 1;
+
+            }
+
+
+            renderNewsModal();
+
+        }
+
+
+        function showNextNews() {
+
+            if (
+                newsItems.length <= 1
+            ) {
+
+                return;
+
+            }
+
+
+            selectedNewsIndex++;
+
+            if (
+                selectedNewsIndex >=
+                newsItems.length
+            ) {
+
+                selectedNewsIndex = 0;
+
+            }
+
+
+            renderNewsModal();
+
+        }
+
+
+        if (newsModalPrev) {
+
+            newsModalPrev.addEventListener(
+                'click',
+                function (event) {
+
+                    event.stopPropagation();
+
+                    showPreviousNews();
+
+                }
+            );
+
+        }
+
+
+        if (newsModalNext) {
+
+            newsModalNext.addEventListener(
+                'click',
+                function (event) {
+
+                    event.stopPropagation();
+
+                    showNextNews();
+
+                }
+            );
+
+        }
+
+        /* =========================================================
+        NEWS MODAL SWIPE
+        ========================================================= */
+
+
+
+        if (newsModal) {
+
+            newsModal.addEventListener(
+                'touchstart',
+                function (event) {
+
+                    if (
+                        !newsModal.classList.contains('open')
+                    ) {
+
+                        return;
+
+                    }
+
+                    const touch =
+                        event.changedTouches[0];
+
+                    newsTouchStartX =
+                        touch.clientX;
+
+                    newsTouchStartY =
+                        touch.clientY;
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+
+            newsModal.addEventListener(
+                'touchend',
+                function (event) {
+
+                    if (
+                        !newsModal.classList.contains('open')
+                    ) {
+
+                        return;
+
+                    }
+
+                    if (
+                        newsItems.length <= 1
+                    ) {
+
+                        return;
+
+                    }
+
+                    const touch =
+                        event.changedTouches[0];
+
+                    const deltaX =
+                        touch.clientX -
+                        newsTouchStartX;
+
+                    const deltaY =
+                        touch.clientY -
+                        newsTouchStartY;
+
+
+                    /*
+                    * Abaikan jika gerakannya
+                    * lebih dominan vertikal.
+                    */
+                    if (
+                        Math.abs(deltaX) <=
+                        Math.abs(deltaY)
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                    * Minimal jarak swipe 60px.
+                    */
+                    if (
+                        Math.abs(deltaX) < 60
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    /*
+                    * Swipe ke kiri
+                    * = News berikutnya
+                    */
+                    if (
+                        deltaX < 0
+                    ) {
+
+                        selectedNewsIndex++;
+
+                        if (
+                            selectedNewsIndex >=
+                            newsItems.length
+                        ) {
+
+                            selectedNewsIndex = 0;
+
+                        }
+
+                    }
+
+
+                    /*
+                    * Swipe ke kanan
+                    * = News sebelumnya
+                    */
+                    else {
+
+                        selectedNewsIndex--;
+
+                        if (
+                            selectedNewsIndex < 0
+                        ) {
+
+                            selectedNewsIndex =
+                                newsItems.length - 1;
+
+                        }
+
+                    }
+
+
+                    selectedNews =
+                        newsItems[
+                            selectedNewsIndex
+                        ];
+
+
+                    renderNewsModal();
+
+                },
+                {
+                    passive: true
+                }
+            );
+
+        }
 
 
     /* =========================================================
@@ -6980,6 +7631,7 @@
 
     }
 
+    
 
     /* =========================================================
        SEARCH

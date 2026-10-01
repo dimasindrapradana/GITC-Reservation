@@ -12,12 +12,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DisplayController extends Controller
 {
-    /**
-     * Display Smart TV page.
-     *
-     * Example:
-     * /display/building_A
-     */
+
     public function index(string $buildingName): View
     {
         $building = $this->findBuilding($buildingName);
@@ -28,12 +23,22 @@ class DisplayController extends Controller
         ]);
     }
 
-    /**
-     * Display Smart TV data API.
-     *
-     * Example:
-     * /display/building_A/data
-     */
+    public function detail(
+        string $buildingName
+    ): View {
+        $building =
+            $this->findBuilding(
+                $buildingName
+            );
+
+        return view('display.detail', [
+            'building' =>
+                $building,
+
+            'buildingName' =>
+                $buildingName,
+        ]);
+    }
     public function data(string $buildingName): JsonResponse
     {
         $building = $this->findBuilding($buildingName);

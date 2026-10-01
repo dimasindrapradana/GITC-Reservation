@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedInteger('lcd_count')->default(0);
             $table->unsignedInteger('whiteboard_count')->default(0);
             $table->string('status', 20)->default('AVAILABLE');
+            $table->softDeletes();
 
             $table->timestamps();
         });

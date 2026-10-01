@@ -23,6 +23,7 @@ use App\Http\Controllers\TrainingRoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\SecurityDisplayController;
 use App\Http\Controllers\TrainingOfficerClassroomController;
 use App\Http\Controllers\TrainingOfficerClassroomCartController;
 use App\Http\Controllers\TrainingOfficerClassroomReservationController;
@@ -63,14 +64,7 @@ Route::get(
 )->name('display.data');
 Route::get(
     '/display/{buildingName}/detail',
-    function (string $buildingName) {
-        return view(
-            'display.detail',
-            [
-                'buildingName' => $buildingName,
-            ]
-        );
-    }
+    [DisplayController::class, 'detail']
 )->name('display.detail');
 
 Route::get(
@@ -82,6 +76,22 @@ Route::get(
     '/display/{buildingName}/upcoming/data',
     [DisplayController::class, 'upcomingData']
 )->name('display.upcoming.data');
+
+/*
+|--------------------------------------------------------------------------
+| Public Security Display Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/security',
+    [SecurityDisplayController::class, 'index']
+)->name('security.display');
+
+Route::get(
+    '/security/data',
+    [SecurityDisplayController::class, 'data']
+)->name('security.display.data');
 
 
 /*

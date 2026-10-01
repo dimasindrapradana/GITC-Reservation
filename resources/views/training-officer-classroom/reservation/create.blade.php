@@ -1694,7 +1694,181 @@
                 ) {
                     return;
                 }
+                            /*
+            * =========================================================
+            * RESERVATION DATE LIMIT
+            *
+            * User can only select dates from today
+            * until exactly 3 calendar months from today.
+            *
+            * Example:
+            * 01 October 2026 → maximum 01 January 2027
+            * 02 October 2026 → maximum 02 January 2027
+            * =========================================================
+            */
 
+            function formatDateForInput(date) {
+
+                const year =
+                    date.getFullYear();
+
+                const month =
+                    String(date.getMonth() + 1).padStart(2, '0');
+
+                const day =
+                    String(date.getDate()).padStart(2, '0');
+
+                return `${year}-${month}-${day}`;
+            }
+
+
+            function getReservationDateLimit() {
+
+                const today = new Date();
+
+                today.setHours(
+                    0,
+                    0,
+                    0,
+                    0
+                );
+
+
+                const maxDate = new Date(today);
+
+                maxDate.setMonth(
+                    maxDate.getMonth() + 3
+                );
+
+
+                return {
+                    min: formatDateForInput(today),
+                    max: formatDateForInput(maxDate)
+                };
+            }
+
+
+            function applyReservationDateLimit() {
+
+                const limits =
+                    getReservationDateLimit();
+
+
+                /*
+                * Start Date
+                */
+                startDate.min =
+                    limits.min;
+
+                startDate.max =
+                    limits.max;
+
+
+                /*
+                * End Date
+                *
+                * Initially follows today's minimum.
+                * It will be updated again when
+                * Start Date is selected.
+                */
+                endDate.min =
+                    limits.min;
+
+                endDate.max =
+                    limits.max;
+            }
+
+
+            /*
+            * Apply initial date limits.
+            */
+            applyReservationDateLimit();
+
+
+            /*
+            * Prevent manual typing / paste / drag & drop.
+            *
+            * User must choose the date
+            * through the calendar picker.
+            */
+            [startDate, endDate].forEach(function (input) {
+
+                input.addEventListener(
+                    'keydown',
+                    function (event) {
+
+                        event.preventDefault();
+
+                    }
+                );
+
+
+                input.addEventListener(
+                    'paste',
+                    function (event) {
+
+                        event.preventDefault();
+
+                    }
+                );
+
+
+                input.addEventListener(
+                    'drop',
+                    function (event) {
+
+                        event.preventDefault();
+
+                    }
+                );
+
+            });
+
+
+            /*
+            * Keep End Date at or after Start Date.
+            */
+            startDate.addEventListener(
+                'change',
+                function () {
+
+                    const limits =
+                        getReservationDateLimit();
+
+
+                    if (startDate.value) {
+
+                        endDate.min =
+                            startDate.value;
+
+                    } else {
+
+                        endDate.min =
+                            limits.min;
+
+                    }
+
+                    endDate.max =
+                        limits.max;
+
+
+                    /*
+                    * If the currently selected
+                    * End Date becomes invalid,
+                    * clear it so the user chooses
+                    * again from the valid range.
+                    */
+                    if (
+                        endDate.value &&
+                        endDate.value < endDate.min
+                    ) {
+
+                        endDate.value = '';
+
+                    }
+
+                }
+            );
 
                 /*
                  * =====================================================

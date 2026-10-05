@@ -21,7 +21,6 @@ return new class extends Migration
             $table->unsignedInteger('whiteboard_count')->default(0);
             $table->string('status', 20)->default('AVAILABLE');
             $table->softDeletes();
-
             $table->timestamps();
         });
     }

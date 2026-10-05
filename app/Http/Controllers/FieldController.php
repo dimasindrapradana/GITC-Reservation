@@ -200,25 +200,10 @@ class FieldController extends Controller
             );
     }
 
-    public function destroy(
-        Field $field,
-        ResourceImageService $imageService
-    ): RedirectResponse {
-        if ($field->reservations()->exists()) {
-            return redirect()
-                ->route('fields.index')
-                ->with(
-                    'error',
-                    'This field cannot be deleted because it has existing reservations.'
-                );
-        }
-
-        $field->load('images');
-
-        foreach ($field->images as $image) {
-            $imageService->delete($image);
-        }
-
+    public function destroy(Field $field): RedirectResponse
+    {
+        // Soft delete only.
+        // Existing images and reservations are preserved.
         $field->delete();
 
         return redirect()
@@ -238,6 +223,7 @@ class FieldController extends Controller
             ->whereKey($image)
             ->firstOrFail();
 
+        // Only the selected image is permanently deleted.
         $imageService->delete($resourceImage);
 
         $remainingImages = $field->images()

@@ -177,8 +177,32 @@
 
         .menu-icon {
             width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             font-size: 15px;
+        }
+
+        .menu-icon img {
+            width: 18px;
+            height: 18px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .menu-link:not(.active) .menu-icon img {
+            opacity: 0.72;
+        }
+
+        .menu-link.active .menu-icon img {
+            opacity: 1;
+        }
+
+        .menu-icon img.fallback-icon {
+            filter: none;
         }
 
         .sidebar-footer {
@@ -248,10 +272,16 @@
             color: var(--muted);
             border-radius: 8px;
             cursor: pointer;
-            font-size: 17px;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .notification-button img {
+            width: 19px;
+            height: 19px;
+            display: block;
+            object-fit: contain;
         }
 
         .notification-button:hover {
@@ -507,7 +537,14 @@
             background: transparent;
             color: var(--navy);
             cursor: pointer;
-            font-size: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-button img {
+            width: 20px;
+            height: 20px;
+            display: block;
         }
 
         @media (max-width: 900px) {
@@ -525,7 +562,7 @@
             }
 
             .mobile-menu-button {
-                display: block;
+                display: flex;
             }
 
             .topbar {
@@ -591,7 +628,9 @@
                         href="{{ route('admin.dashboard') }}"
                         class="menu-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">⌂</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/dashboard.svg') }}" alt="">
+                        </span>
                         <span>Dashboard</span>
                     </a>
 
@@ -601,7 +640,9 @@
                         href="{{ route('coordinator.dashboard') }}"
                         class="menu-link {{ request()->routeIs('coordinator.dashboard') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">⌂</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/dashboard.svg') }}" alt="">
+                        </span>
                         <span>Dashboard</span>
                     </a>
 
@@ -611,7 +652,9 @@
                         href="{{ route('building-coordinator.dashboard') }}"
                         class="menu-link {{ request()->routeIs('building-coordinator.dashboard') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">⌂</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/dashboard.svg') }}" alt="">
+                        </span>
                         <span>Dashboard</span>
                     </a>
 
@@ -621,7 +664,9 @@
                         href="{{ route('dashboard') }}"
                         class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">⌂</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/dashboard.svg') }}" alt="">
+                        </span>
                         <span>Dashboard</span>
                     </a>
 
@@ -642,7 +687,9 @@
                         href="{{ route('news.index') }}"
                         class="menu-link {{ request()->routeIs('news.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">▤</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/news.svg') }}" alt="">
+                        </span>
                         <span>News</span>
                     </a>
 
@@ -663,7 +710,9 @@
                         href="{{ route('reservations.index') }}"
                         class="menu-link {{ request()->routeIs('reservations.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◫</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/reservation.svg') }}" alt="">
+                        </span>
                         <span>Reservations</span>
                     </a>
 
@@ -681,7 +730,9 @@
                         href="{{ route('coordinator.reservations.index') }}"
                         class="menu-link {{ request()->routeIs('coordinator.reservations.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◫</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/reservation.svg') }}" alt="">
+                        </span>
                         <span>Reservations</span>
                     </a>
 
@@ -699,7 +750,9 @@
                         href="{{ route('building-coordinator.reservations.index') }}"
                         class="menu-link {{ request()->routeIs('building-coordinator.reservations.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◫</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/reservation.svg') }}" alt="">
+                        </span>
                         <span>Reservations</span>
                     </a>
 
@@ -717,7 +770,9 @@
                         href="{{ route('field-coordinator.reservations.index') }}"
                         class="menu-link {{ request()->routeIs('field-coordinator.reservations.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◫</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/reservation.svg') }}" alt="">
+                        </span>
                         <span>Reservations</span>
                     </a>
 
@@ -725,7 +780,7 @@
 
             @endif
 
-           {{-- Reports --}}
+            {{-- Reports --}}
             @if($userRole === 'Admin')
 
                 <div class="menu-section">
@@ -738,67 +793,75 @@
                         href="{{ route('admin.reports.reservations') }}"
                         class="menu-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">▥</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/report.svg') }}" alt="">
+                        </span>
                         <span>Reservation Report</span>
                     </a>
 
                 </div>
 
-        @elseif($userRole === 'Coordinator')
+            @elseif($userRole === 'Coordinator')
 
-            <div class="menu-section">
+                <div class="menu-section">
 
-                <div class="menu-title">
-                    Reports
+                    <div class="menu-title">
+                        Reports
+                    </div>
+
+                    <a
+                        href="{{ route('coordinator.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('coordinator.reports.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/report.svg') }}" alt="">
+                        </span>
+                        <span>Reservation Report</span>
+                    </a>
+
                 </div>
 
-                <a
-                    href="{{ route('coordinator.reports.reservations') }}"
-                    class="menu-link {{ request()->routeIs('coordinator.reports.*') ? 'active' : '' }}"
-                >
-                    <span class="menu-icon">▥</span>
-                    <span>Reservation Report</span>
-                </a>
+            @elseif($userRole === 'Building Coordinator')
 
-            </div>
+                <div class="menu-section">
 
-        @elseif($userRole === 'Building Coordinator')
+                    <div class="menu-title">
+                        Reports
+                    </div>
 
-            <div class="menu-section">
+                    <a
+                        href="{{ route('building-coordinator.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/report.svg') }}" alt="">
+                        </span>
+                        <span>Reservation Report</span>
+                    </a>
 
-                <div class="menu-title">
-                    Reports
                 </div>
 
-                <a
-                    href="{{ route('building-coordinator.reports.reservations') }}"
-                    class="menu-link {{ request()->routeIs('building-coordinator.reports.*') ? 'active' : '' }}"
-                >
-                    <span class="menu-icon">▥</span>
-                    <span>Reservation Report</span>
-                </a>
+            @elseif($userRole === 'Field Coordinator')
 
-            </div>
+                <div class="menu-section">
 
-        @elseif($userRole === 'Field Coordinator')
+                    <div class="menu-title">
+                        Reports
+                    </div>
 
-            <div class="menu-section">
+                    <a
+                        href="{{ route('field-coordinator.reports.reservations') }}"
+                        class="menu-link {{ request()->routeIs('field-coordinator.reports.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/report.svg') }}" alt="">
+                        </span>
+                        <span>Reservation Report</span>
+                    </a>
 
-                <div class="menu-title">
-                    Reports
                 </div>
 
-                <a
-                    href="{{ route('field-coordinator.reports.reservations') }}"
-                    class="menu-link {{ request()->routeIs('field-coordinator.reports.*') ? 'active' : '' }}"
-                >
-                    <span class="menu-icon">▥</span>
-                    <span>Reservation Report</span>
-                </a>
-
-            </div>
-
-        @endif
+            @endif
 
             {{-- Master Data --}}
             @if($userRole === 'Admin')
@@ -813,7 +876,9 @@
                         href="{{ route('buildings.index') }}"
                         class="menu-link {{ request()->routeIs('buildings.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">▤</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/building.svg') }}" alt="">
+                        </span>
                         <span>Buildings</span>
                     </a>
 
@@ -821,7 +886,13 @@
                         href="{{ route('rooms.index') }}"
                         class="menu-link {{ request()->routeIs('rooms.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">▤</span>
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/room.svg') }}"
+                                alt=""
+                                class="fallback-icon"
+                            >
+                        </span>
                         <span>Rooms</span>
                     </a>
 
@@ -829,7 +900,13 @@
                         href="{{ route('training-rooms.index') }}"
                         class="menu-link {{ request()->routeIs('training-rooms.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">▥</span>
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/training-media.svg') }}"
+                                alt=""
+                                class="fallback-icon"
+                            >
+                        </span>
                         <span>Media Training</span>
                     </a>
 
@@ -837,7 +914,13 @@
                         href="{{ route('fields.index') }}"
                         class="menu-link {{ request()->routeIs('fields.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◇</span>
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/field.svg') }}"
+                                alt=""
+                                class="fallback-icon"
+                            >
+                        </span>
                         <span>Fields</span>
                     </a>
 
@@ -858,7 +941,9 @@
                         href="{{ route('users.index') }}"
                         class="menu-link {{ request()->routeIs('users.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">♙</span>
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/user.svg') }}" alt="">
+                        </span>
                         <span>Users</span>
                     </a>
 
@@ -866,7 +951,13 @@
                         href="{{ route('audit-logs.index') }}"
                         class="menu-link {{ request()->routeIs('audit-logs.*') ? 'active' : '' }}"
                     >
-                        <span class="menu-icon">◷</span>
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/audit-log.svg') }}"
+                                alt=""
+                                class="fallback-icon"
+                            >
+                        </span>
                         <span>Audit Logs</span>
                     </a>
 
@@ -895,7 +986,13 @@
                         text-align: left;
                     "
                 >
-                    <span class="menu-icon">↪</span>
+                    <span class="menu-icon">
+                        <img
+                            src="{{ asset('assets/icons/navigation/logout.svg') }}"
+                            alt=""
+                            class="fallback-icon"
+                        >
+                    </span>
                     <span>Logout</span>
                 </button>
 
@@ -917,8 +1014,12 @@
                     type="button"
                     class="mobile-menu-button"
                     onclick="toggleSidebar()"
+                    aria-label="Open menu"
                 >
-                    ☰
+                    <img
+                        src="{{ asset('assets/icons/navigation/menu.svg') }}"
+                        alt=""
+                    >
                 </button>
 
                 <h1>
@@ -954,7 +1055,10 @@
                         aria-label="Notifications"
                         aria-expanded="false"
                     >
-                        ♧
+                        <img
+                            src="{{ asset('assets/icons/navigation/notification.svg') }}"
+                            alt=""
+                        >
 
                         <span
                             id="notification-dot"

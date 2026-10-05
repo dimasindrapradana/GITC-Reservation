@@ -42,7 +42,7 @@
 
 <div class="content-card">
 
-    <div class="card-header">
+    {{-- <div class="card-header">
 
         <div>
             <h3>Room List</h3>
@@ -52,7 +52,7 @@
             </p>
         </div>
 
-    </div>
+    </div> --}}
 
     <form
         action="{{ route('rooms.index') }}"
@@ -239,7 +239,7 @@
                         </td>
 
                         <td>
-                            {{ $room->building->name }}
+                            {{ $room->building?->name ?? 'Building deleted' }}
                         </td>
 
                         <td>

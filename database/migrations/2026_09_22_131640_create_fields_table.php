@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name', 100);
             $table->unsignedInteger('capacity')->default(0);
             $table->string('status', 20)->default('AVAILABLE');
-
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -50,8 +50,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
         flex-shrink: 0;
+    }
+
+    .stat-icon img {
+        width: 20px;
+        height: 20px;
+        display: block;
     }
 
     .dashboard-grid {
@@ -166,6 +171,12 @@
         flex-shrink: 0;
     }
 
+    .quick-icon img {
+        width: 18px;
+        height: 18px;
+        display: block;
+    }
+
     .quick-info {
         min-width: 0;
     }
@@ -206,7 +217,7 @@
         <h2>Overview</h2>
 
         <p>
-            Ringkasan kondisi sistem dan aktivitas reservasi.
+            Summary of system status and reservation activity.
         </p>
     </div>
 
@@ -226,7 +237,10 @@
             </div>
 
             <div class="stat-icon">
-                ▤
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/building.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -243,7 +257,10 @@
             </div>
 
             <div class="stat-icon">
-                □
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/room.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -251,7 +268,7 @@
         <div class="stat-card">
             <div class="stat-info">
                 <div class="stat-label">
-                    Media Training
+                    Training Media
                 </div>
 
                 <div class="stat-value">
@@ -260,7 +277,10 @@
             </div>
 
             <div class="stat-icon">
-                ▥
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/training-media.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -277,7 +297,10 @@
             </div>
 
             <div class="stat-icon">
-                ◇
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/field.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -294,7 +317,10 @@
             </div>
 
             <div class="stat-icon">
-                ◫
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -311,7 +337,10 @@
             </div>
 
             <div class="stat-icon">
-                ▣
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/news.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -352,7 +381,7 @@
                                 </div>
 
                                 <div class="reservation-resource">
-                                    {{ $resource?->name ?? 'Resource tidak ditemukan' }}
+                                    {{ $resource?->name ?? 'Resource not found' }}
                                 </div>
                             </div>
 
@@ -379,7 +408,7 @@
                 @empty
 
                     <div class="empty-state">
-                        Belum ada reservation yang akan datang.
+                        No upcoming reservations.
                     </div>
 
                 @endforelse
@@ -405,7 +434,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◷
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">
@@ -424,7 +456,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ▣
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/news.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">
@@ -443,7 +478,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◫
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/reservation.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">

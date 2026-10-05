@@ -42,7 +42,7 @@
 
 <div class="content-card">
 
-    <div class="card-header">
+    {{-- <div class="card-header">
 
         <div>
             <h3>User List</h3>
@@ -52,7 +52,7 @@
             </p>
         </div>
 
-    </div>
+    </div> --}}
 
     <form
         action="{{ route('users.index') }}"

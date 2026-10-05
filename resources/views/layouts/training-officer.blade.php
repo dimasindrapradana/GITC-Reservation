@@ -606,9 +606,8 @@
 
 
                     {{-- My Reservations --}}
-                    <a
-                        href="{{ route('reservations.my') }}"
-                        class="to-my-reservations"
+                    <a href="{{ route('training-officer.my-reservations.index') }}"
+                    class="to-my-reservations"
                     >
                         My Reservations
                     </a>

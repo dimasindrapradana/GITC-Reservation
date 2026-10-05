@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -107,7 +108,10 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:50',
-                'unique:users,employee_number',
+                Rule::unique(
+                    'users',
+                    'employee_number'
+                ),
             ],
 
             'name' => [
@@ -120,14 +124,20 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:100',
-                'unique:users,username',
+                Rule::unique(
+                    'users',
+                    'username'
+                ),
             ],
 
             'email' => [
                 'required',
                 'email',
                 'max:150',
-                'unique:users,email',
+                Rule::unique(
+                    'users',
+                    'email'
+                ),
             ],
 
             'password' => [
@@ -144,7 +154,10 @@ class UserController extends Controller
 
             'building_ids.*' => [
                 'integer',
-                'exists:buildings,id',
+                Rule::exists(
+                    'buildings',
+                    'id'
+                )->whereNull('deleted_at'),
             ],
         ]);
 
@@ -161,7 +174,8 @@ class UserController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'building_ids' => 'Please select at least one building for a Building Coordinator.',
+                    'building_ids' =>
+                        'Please select at least one building for a Building Coordinator.',
                 ]);
         }
 
@@ -239,7 +253,11 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:50',
-                'unique:users,employee_number,' . $user->id,
+                Rule::unique(
+                    'users',
+                    'employee_number'
+                )
+                    ->ignore($user->id),
             ],
 
             'name' => [
@@ -252,14 +270,22 @@ class UserController extends Controller
                 'required',
                 'string',
                 'max:100',
-                'unique:users,username,' . $user->id,
+                Rule::unique(
+                    'users',
+                    'username'
+                )
+                    ->ignore($user->id),
             ],
 
             'email' => [
                 'required',
                 'email',
                 'max:150',
-                'unique:users,email,' . $user->id,
+                Rule::unique(
+                    'users',
+                    'email'
+                )
+                    ->ignore($user->id),
             ],
 
             'password' => [
@@ -276,7 +302,10 @@ class UserController extends Controller
 
             'building_ids.*' => [
                 'integer',
-                'exists:buildings,id',
+                Rule::exists(
+                    'buildings',
+                    'id'
+                )->whereNull('deleted_at'),
             ],
         ]);
 
@@ -305,7 +334,8 @@ class UserController extends Controller
                 return back()
                     ->withInput()
                     ->withErrors([
-                        'role_id' => 'The last Admin account cannot be changed to another role.',
+                        'role_id' =>
+                            'The last Admin account cannot be changed to another role.',
                     ]);
             }
         }
@@ -319,7 +349,8 @@ class UserController extends Controller
             return back()
                 ->withInput()
                 ->withErrors([
-                    'building_ids' => 'Please select at least one building for a Building Coordinator.',
+                    'building_ids' =>
+                        'Please select at least one building for a Building Coordinator.',
                 ]);
         }
 
@@ -334,16 +365,26 @@ class UserController extends Controller
             $buildingIds,
             $user
         ) {
-            $user->role_id = $validated['role_id'];
-            $user->employee_number = $validated['employee_number'];
-            $user->name = $validated['name'];
-            $user->username = $validated['username'];
-            $user->email = $validated['email'];
+            $user->role_id =
+                $validated['role_id'];
+
+            $user->employee_number =
+                $validated['employee_number'];
+
+            $user->name =
+                $validated['name'];
+
+            $user->username =
+                $validated['username'];
+
+            $user->email =
+                $validated['email'];
 
             if (
-                ! empty($validated['password'])
+                !empty($validated['password'])
             ) {
-                $user->password = $validated['password'];
+                $user->password =
+                    $validated['password'];
             }
 
             $user->save();
@@ -405,22 +446,15 @@ class UserController extends Controller
         }
 
         /*
-         * Existing protection:
-         * users with reservation records cannot be deleted.
+         * Soft delete the user.
+         *
+         * Reservation records remain untouched.
+         * Building assignments are detached so the
+         * deleted user is no longer an active coordinator.
          */
-        if (
-            $user->reservations()->exists()
-        ) {
-            return redirect()
-                ->route('users.index')
-                ->with(
-                    'error',
-                    'This user cannot be deleted because they have reservation records.'
-                );
-        }
-
         DB::transaction(function () use ($user) {
             $user->buildings()->detach();
+
             $user->delete();
         });
 
@@ -428,7 +462,7 @@ class UserController extends Controller
             ->route('users.index')
             ->with(
                 'success',
-                'User deleted successfully.'
+                'User has been successfully deleted.'
             );
     }
 }

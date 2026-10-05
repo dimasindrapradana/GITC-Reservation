@@ -111,6 +111,57 @@ class SecurityDisplayController extends Controller
             ])
             ->where('starts_at', '<', $tomorrowEnd)
             ->where('ends_at', '>', $todayStart)
+            ->where(function ($query) {
+
+                /*
+                * ROOM
+                *
+                * Room harus aktif
+                * dan Building-nya juga harus aktif.
+                */
+                $query->whereHas('room', function ($query) {
+
+                    $query
+                        ->whereNull('rooms.deleted_at')
+                        ->whereHas('building', function ($query) {
+
+                            $query->whereNull('buildings.deleted_at');
+
+                        });
+
+                })
+
+                /*
+                * TRAINING MEDIA
+                *
+                * Training Media harus aktif
+                * dan Building-nya juga harus aktif.
+                */
+                ->orWhereHas('trainingRoom', function ($query) {
+
+                    $query
+                        ->whereNull('training_rooms.deleted_at')
+                        ->whereHas('building', function ($query) {
+
+                            $query->whereNull('buildings.deleted_at');
+
+                        });
+
+                })
+
+                /*
+                * FIELD
+                *
+                * Field tidak memiliki Building.
+                * Cukup pastikan Field masih aktif.
+                */
+                ->orWhereHas('field', function ($query) {
+
+                    $query->whereNull('fields.deleted_at');
+
+                });
+
+            })
             ->orderBy('starts_at')
             ->get();
 

@@ -7,9 +7,6 @@
 
 <div class="page-header">
     <div>
-        <a href="{{ route('rooms.index') }}" class="back-link">
-            ← Back to Rooms
-        </a>
 
         <h2>Edit Room</h2>
 

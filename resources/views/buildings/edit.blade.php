@@ -12,13 +12,6 @@
 
         <div class="page-header-content">
 
-            <a
-                href="{{ route('buildings.index') }}"
-                class="back-link"
-            >
-                ← Back to Buildings
-            </a>
-
             <h2>
                 Edit Building
             </h2>

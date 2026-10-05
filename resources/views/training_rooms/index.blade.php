@@ -42,7 +42,7 @@
 
 <div class="content-card">
 
-    <div class="card-header">
+    {{-- <div class="card-header">
 
         <div>
             <h3>Media Training List</h3>
@@ -52,7 +52,7 @@
             </p>
         </div>
 
-    </div>
+    </div> --}}
 
     {{-- Search & Filter --}}
 
@@ -240,7 +240,7 @@
                         </td>
 
                         <td>
-                            {{ $trainingRoom->building->name }}
+                            {{ $trainingRoom->building?->name ?? 'Building deleted' }}
                         </td>
 
                         <td>

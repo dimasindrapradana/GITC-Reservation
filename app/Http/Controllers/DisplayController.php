@@ -1027,7 +1027,7 @@ class DisplayController extends Controller
          *
          * building_A
          *
-         * ->
+         * ->   
          *
          * building A
          */

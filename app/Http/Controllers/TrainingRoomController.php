@@ -32,58 +32,55 @@ class TrainingRoomController extends Controller
         }
 
         $trainingRooms = TrainingRoom::query()
-            ->with('building')
+            ->with([
+                'building' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
             ->withCount('reservations')
 
             ->when($search !== '', function ($query) use ($search) {
-
                 $query->where(function ($query) use ($search) {
-
                     $query
                         ->where(
                             'training_rooms.name',
                             'like',
                             '%' . $search . '%'
                         )
-                        ->orWhereHas('building', function ($query) use ($search) {
-
-                            $query->where(
-                                'name',
-                                'like',
-                                '%' . $search . '%'
-                            );
-
-                        });
-
+                        ->orWhereHas(
+                            'building',
+                            function ($query) use ($search) {
+                                $query
+                                    ->withTrashed()
+                                    ->where(
+                                        'name',
+                                        'like',
+                                        '%' . $search . '%'
+                                    );
+                            }
+                        );
                 });
-
             })
 
             ->when($building !== '', function ($query) use ($building) {
-
                 $query->where(
                     'building_id',
                     $building
                 );
-
             })
 
             ->when($filter === 'available', function ($query) {
-
                 $query->where(
                     'status',
                     'AVAILABLE'
                 );
-
             })
 
             ->when($filter === 'maintenance', function ($query) {
-
                 $query->where(
                     'status',
                     'MAINTENANCE'
                 );
-
             })
 
             ->when($sort === 'oldest', function ($query) {
@@ -134,7 +131,8 @@ class TrainingRoomController extends Controller
             'building_id' => [
                 'required',
                 'integer',
-                'exists:buildings,id',
+                Rule::exists('buildings', 'id')
+                    ->whereNull('deleted_at'),
             ],
             'name' => [
                 'required',
@@ -203,7 +201,9 @@ class TrainingRoomController extends Controller
     public function show(TrainingRoom $trainingRoom): View
     {
         $trainingRoom->load([
-            'building',
+            'building' => function ($query) {
+                $query->withTrashed();
+            },
             'images' => function ($query) {
                 $query->orderBy('sort_order');
             },
@@ -221,6 +221,9 @@ class TrainingRoomController extends Controller
             ->get();
 
         $trainingRoom->load([
+            'building' => function ($query) {
+                $query->withTrashed();
+            },
             'images' => function ($query) {
                 $query->orderBy('sort_order');
             },
@@ -241,7 +244,8 @@ class TrainingRoomController extends Controller
             'building_id' => [
                 'required',
                 'integer',
-                'exists:buildings,id',
+                Rule::exists('buildings', 'id')
+                    ->whereNull('deleted_at'),
             ],
             'name' => [
                 'required',
@@ -272,7 +276,6 @@ class TrainingRoomController extends Controller
             'images' => [
                 'nullable',
                 'array',
-                'max:10',
             ],
             'images.*' => [
                 'file',
@@ -310,24 +313,10 @@ class TrainingRoomController extends Controller
     }
 
     public function destroy(
-        TrainingRoom $trainingRoom,
-        ResourceImageService $imageService
+        TrainingRoom $trainingRoom
     ): RedirectResponse {
-        if ($trainingRoom->reservations()->exists()) {
-            return redirect()
-                ->route('training-rooms.index')
-                ->with(
-                    'error',
-                    'This training room cannot be deleted because it has existing reservations.'
-                );
-        }
-
-        $trainingRoom->load('images');
-
-        foreach ($trainingRoom->images as $image) {
-            $imageService->delete($image);
-        }
-
+        // Soft delete only.
+        // Existing images and reservations are preserved.
         $trainingRoom->delete();
 
         return redirect()
@@ -347,7 +336,20 @@ class TrainingRoomController extends Controller
             ->whereKey($image)
             ->firstOrFail();
 
+        // Only the selected image is permanently deleted.
         $imageService->delete($resourceImage);
+
+        $remainingImages = $trainingRoom->images()
+            ->orderBy('sort_order')
+            ->get();
+
+        foreach ($remainingImages as $index => $remainingImage) {
+            if ($remainingImage->sort_order !== $index) {
+                $remainingImage->update([
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         return redirect()
             ->route('training-rooms.edit', $trainingRoom)

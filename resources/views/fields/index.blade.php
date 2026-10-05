@@ -42,7 +42,7 @@
 
 <div class="content-card">
 
-    <div class="card-header">
+    {{-- <div class="card-header">
 
         <div>
             <h3>Field List</h3>
@@ -52,7 +52,7 @@
             </p>
         </div>
 
-    </div>
+    </div> --}}
 
     {{-- Search & Filter --}}
 

@@ -70,11 +70,16 @@
         method="POST"
         enctype="multipart/form-data"
         class="form"
+        id="news-form"
     >
 
         @csrf
 
         <div class="form-grid">
+
+            {{-- =====================================================
+                 TITLE
+            ====================================================== --}}
 
             <div class="form-group">
 
@@ -94,6 +99,11 @@
                 >
 
             </div>
+
+
+            {{-- =====================================================
+                 STATUS
+            ====================================================== --}}
 
             <div class="form-group">
 
@@ -159,41 +169,140 @@
 
             </div>
 
+
+            {{-- =====================================================
+                 START DATE
+            ====================================================== --}}
+
             <div class="form-group">
 
-                <label for="starts_at">
-                    Start Date & Time
+                <label for="start_date">
+                    Start Date
                     <span class="required">*</span>
                 </label>
 
                 <input
-                    type="datetime-local"
-                    id="starts_at"
-                    name="starts_at"
+                    type="date"
+                    id="start_date"
+                    name="start_date"
                     class="form-control"
-                    value="{{ old('starts_at') }}"
+                    value="{{ old('start_date', old('starts_at') ? \Carbon\Carbon::parse(old('starts_at'))->format('Y-m-d') : '') }}"
                     required
                 >
 
+                <span class="field-hint">
+                    Select the date when the news starts.
+                </span>
+
             </div>
+
+
+            {{-- =====================================================
+                 START TIME
+            ====================================================== --}}
 
             <div class="form-group">
 
-                <label for="ends_at">
-                    End Date & Time
+                <label for="start_time">
+                    Start Time
                     <span class="required">*</span>
                 </label>
 
                 <input
-                    type="datetime-local"
-                    id="ends_at"
-                    name="ends_at"
+                    type="time"
+                    id="start_time"
+                    name="start_time"
                     class="form-control"
-                    value="{{ old('ends_at') }}"
+                    value="{{ old('start_time', old('starts_at') ? \Carbon\Carbon::parse(old('starts_at'))->format('H:i') : '') }}"
                     required
                 >
 
+                <span class="field-hint">
+                    Select the time when the news starts.
+                </span>
+
             </div>
+
+
+            {{-- =====================================================
+                 END DATE
+            ====================================================== --}}
+
+            <div class="form-group">
+
+                <label for="end_date">
+                    End Date
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="date"
+                    id="end_date"
+                    name="end_date"
+                    class="form-control"
+                    value="{{ old('end_date', old('ends_at') ? \Carbon\Carbon::parse(old('ends_at'))->format('Y-m-d') : '') }}"
+                    required
+                >
+
+                <span class="field-hint">
+                    Select the date when the news ends.
+                </span>
+
+            </div>
+
+
+            {{-- =====================================================
+                 END TIME
+            ====================================================== --}}
+
+            <div class="form-group">
+
+                <label for="end_time">
+                    End Time
+                    <span class="required">*</span>
+                </label>
+
+                <input
+                    type="time"
+                    id="end_time"
+                    name="end_time"
+                    class="form-control"
+                    value="{{ old('end_time', old('ends_at') ? \Carbon\Carbon::parse(old('ends_at'))->format('H:i') : '') }}"
+                    required
+                >
+
+                <span class="field-hint">
+                    Select the time when the news ends.
+                </span>
+
+            </div>
+
+
+            {{-- =====================================================
+                 HIDDEN DATETIME VALUES
+                 
+                 These preserve the existing backend fields:
+                 starts_at / ends_at
+            ====================================================== --}}
+
+            <input
+                type="hidden"
+                id="starts_at"
+                name="starts_at"
+                value="{{ old('starts_at') }}"
+            >
+
+            <input
+                type="hidden"
+                id="ends_at"
+                name="ends_at"
+                value="{{ old('ends_at') }}"
+            >
+
+
+            {{-- =====================================================
+                 CONTENT
+            ====================================================== --}}
 
             <div class="form-group form-group-full">
 
@@ -213,6 +322,11 @@
             </div>
 
         </div>
+
+
+        {{-- =========================================================
+             NEWS IMAGES
+        ========================================================== --}}
 
         <div class="image-section">
 
@@ -271,6 +385,11 @@
 
         </div>
 
+
+        {{-- =========================================================
+             FORM ACTIONS
+        ========================================================== --}}
+
         <div class="form-actions">
 
             <a
@@ -294,6 +413,7 @@
 </div>
 
 @endsection
+
 
 @push('styles')
 
@@ -320,6 +440,11 @@
         font-size: 14px;
     }
 
+
+    /* =========================================================
+       CONTENT CARD
+    ========================================================= */
+
     .content-card {
         overflow: hidden;
         background: #ffffff;
@@ -344,6 +469,11 @@
         color: #668096;
         font-size: 13px;
     }
+
+
+    /* =========================================================
+       FORM
+    ========================================================= */
 
     .form {
         padding: 24px;
@@ -375,6 +505,11 @@
         color: #b33a3a;
     }
 
+
+    /* =========================================================
+       INPUTS
+    ========================================================= */
+
     .form-control {
         width: 100%;
         min-height: 42px;
@@ -397,11 +532,46 @@
         box-shadow: 0 0 0 3px rgba(0, 111, 174, .10);
     }
 
+    .field-hint {
+        color: #8294a2;
+        font-size: 11px;
+        line-height: 1.4;
+    }
+
     .textarea-control {
         min-height: 180px;
         resize: vertical;
         line-height: 1.6;
     }
+
+
+    /* =========================================================
+       DATE / TIME VISUAL GROUPING
+    ========================================================= */
+
+    #start_date,
+    #start_time,
+    #end_date,
+    #end_time {
+        cursor: pointer;
+    }
+
+    #start_date::-webkit-calendar-picker-indicator,
+    #end_date::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: .7;
+    }
+
+    #start_time::-webkit-calendar-picker-indicator,
+    #end_time::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: .7;
+    }
+
+
+    /* =========================================================
+       IMAGES
+    ========================================================= */
 
     .image-section {
         margin-top: 28px;
@@ -548,6 +718,11 @@
         border-color: #b33a3a;
     }
 
+
+    /* =========================================================
+       ACTIONS
+    ========================================================= */
+
     .form-actions {
         display: flex;
         align-items: center;
@@ -599,6 +774,11 @@
         color: #006fae;
     }
 
+
+    /* =========================================================
+       ALERT
+    ========================================================= */
+
     .alert {
         margin-bottom: 20px;
         padding: 14px 16px;
@@ -620,6 +800,11 @@
     .error-list li {
         margin-bottom: 3px;
     }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
 
     @media (max-width: 800px) {
 
@@ -673,23 +858,236 @@
 
 @endpush
 
+
 @push('scripts')
 
 <script>
+
     (() => {
 
-        const input = document.getElementById('images');
-        const preview = document.getElementById('image-preview');
-        const errorBox = document.getElementById('image-upload-error');
+        const form = document.getElementById('news-form');
+
+        const startDateInput =
+            document.getElementById('start_date');
+
+        const startTimeInput =
+            document.getElementById('start_time');
+
+        const endDateInput =
+            document.getElementById('end_date');
+
+        const endTimeInput =
+            document.getElementById('end_time');
+
+        const startsAtInput =
+            document.getElementById('starts_at');
+
+        const endsAtInput =
+            document.getElementById('ends_at');
+
+
+        if (
+            form &&
+            startDateInput &&
+            startTimeInput &&
+            endDateInput &&
+            endTimeInput &&
+            startsAtInput &&
+            endsAtInput
+        ) {
+
+            const combineDateTime = (
+                date,
+                time
+            ) => {
+
+                if (!date || !time) {
+                    return '';
+                }
+
+                return `${date}T${time}`;
+
+            };
+
+
+            const updateHiddenValues = () => {
+
+                startsAtInput.value =
+                    combineDateTime(
+                        startDateInput.value,
+                        startTimeInput.value
+                    );
+
+                endsAtInput.value =
+                    combineDateTime(
+                        endDateInput.value,
+                        endTimeInput.value
+                    );
+
+            };
+
+
+            const updateEndMinimum = () => {
+
+                if (
+                    startDateInput.value &&
+                    startTimeInput.value
+                ) {
+
+                    endDateInput.min =
+                        startDateInput.value;
+
+                }
+
+            };
+
+
+            startDateInput.addEventListener(
+                'change',
+                () => {
+
+                    updateHiddenValues();
+                    updateEndMinimum();
+
+                }
+            );
+
+
+            startTimeInput.addEventListener(
+                'change',
+                () => {
+
+                    updateHiddenValues();
+
+                }
+            );
+
+
+            endDateInput.addEventListener(
+                'change',
+                () => {
+
+                    updateHiddenValues();
+
+                }
+            );
+
+
+            endTimeInput.addEventListener(
+                'change',
+                () => {
+
+                    updateHiddenValues();
+
+                }
+            );
+
+
+            form.addEventListener(
+                'submit',
+                (event) => {
+
+                    updateHiddenValues();
+
+
+                    if (
+                        !startsAtInput.value ||
+                        !endsAtInput.value
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Please complete the start and end date and time.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    const start =
+                        new Date(
+                            startsAtInput.value
+                        );
+
+                    const end =
+                        new Date(
+                            endsAtInput.value
+                        );
+
+
+                    if (
+                        Number.isNaN(start.getTime()) ||
+                        Number.isNaN(end.getTime())
+                    ) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'Please enter a valid date and time.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (end <= start) {
+
+                        event.preventDefault();
+
+                        alert(
+                            'End date and time must be later than the start date and time.'
+                        );
+
+                        return;
+
+                    }
+
+                }
+            );
+
+
+            updateHiddenValues();
+            updateEndMinimum();
+
+        }
+
+    })();
+
+
+    /* =========================================================
+       IMAGE UPLOAD
+    ========================================================= */
+
+    (() => {
+
+        const input =
+            document.getElementById('images');
+
+        const preview =
+            document.getElementById('image-preview');
+
+        const errorBox =
+            document.getElementById(
+                'image-upload-error'
+            );
+
 
         if (!input || !preview || !errorBox) {
             return;
         }
 
+
         let selectedFiles = [];
 
+
         const maxFiles = 10;
-        const maxFileSize = 5 * 1024 * 1024;
+
+        const maxFileSize =
+            5 * 1024 * 1024;
+
 
         const allowedTypes = [
             'image/jpeg',
@@ -697,159 +1095,289 @@
             'image/webp',
         ];
 
+
         const updateInput = () => {
 
-            const dataTransfer = new DataTransfer();
+            const dataTransfer =
+                new DataTransfer();
 
-            selectedFiles.forEach(file => {
-                dataTransfer.items.add(file);
-            });
 
-            input.files = dataTransfer.files;
+            selectedFiles.forEach(
+                file => {
+
+                    dataTransfer.items.add(
+                        file
+                    );
+
+                }
+            );
+
+
+            input.files =
+                dataTransfer.files;
 
         };
 
-        const showError = (message) => {
 
-            errorBox.textContent = message;
-            errorBox.style.display = 'block';
+        const showError = (
+            message
+        ) => {
+
+            errorBox.textContent =
+                message;
+
+            errorBox.style.display =
+                'block';
 
         };
+
 
         const clearError = () => {
 
             errorBox.textContent = '';
-            errorBox.style.display = 'none';
+
+            errorBox.style.display =
+                'none';
 
         };
+
 
         const renderPreview = () => {
 
             preview.innerHTML = '';
 
-            selectedFiles.forEach((file, index) => {
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'image-preview';
+            selectedFiles.forEach(
+                (file, index) => {
 
-                const image = document.createElement('img');
-                image.alt = file.name;
+                    const wrapper =
+                        document.createElement(
+                            'div'
+                        );
 
-                const badge = document.createElement('span');
-                badge.className = 'primary-badge';
-                badge.textContent =
-                    index === 0
-                        ? 'Primary'
-                        : `Image ${index + 1}`;
+                    wrapper.className =
+                        'image-preview';
 
-                const remove = document.createElement('button');
 
-                remove.type = 'button';
-                remove.className = 'remove-preview';
-                remove.textContent = '×';
+                    const image =
+                        document.createElement(
+                            'img'
+                        );
 
-                remove.setAttribute(
-                    'aria-label',
-                    `Remove ${file.name}`
-                );
+                    image.alt =
+                        file.name;
 
-                remove.addEventListener('click', () => {
 
-                    selectedFiles.splice(index, 1);
+                    const badge =
+                        document.createElement(
+                            'span'
+                        );
 
-                    updateInput();
-                    renderPreview();
+                    badge.className =
+                        'primary-badge';
 
-                });
+                    badge.textContent =
+                        index === 0
+                            ? 'Primary'
+                            : `Image ${index + 1}`;
 
-                const reader = new FileReader();
 
-                reader.addEventListener('load', () => {
-                    image.src = reader.result;
-                });
+                    const remove =
+                        document.createElement(
+                            'button'
+                        );
 
-                reader.readAsDataURL(file);
 
-                wrapper.appendChild(image);
-                wrapper.appendChild(badge);
-                wrapper.appendChild(remove);
+                    remove.type =
+                        'button';
 
-                preview.appendChild(wrapper);
+                    remove.className =
+                        'remove-preview';
 
-            });
+                    remove.textContent =
+                        '×';
+
+
+                    remove.setAttribute(
+                        'aria-label',
+                        `Remove ${file.name}`
+                    );
+
+
+                    remove.addEventListener(
+                        'click',
+                        () => {
+
+                            selectedFiles.splice(
+                                index,
+                                1
+                            );
+
+                            updateInput();
+                            renderPreview();
+
+                        }
+                    );
+
+
+                    const reader =
+                        new FileReader();
+
+
+                    reader.addEventListener(
+                        'load',
+                        () => {
+
+                            image.src =
+                                reader.result;
+
+                        }
+                    );
+
+
+                    reader.readAsDataURL(
+                        file
+                    );
+
+
+                    wrapper.appendChild(
+                        image
+                    );
+
+                    wrapper.appendChild(
+                        badge
+                    );
+
+                    wrapper.appendChild(
+                        remove
+                    );
+
+
+                    preview.appendChild(
+                        wrapper
+                    );
+
+                }
+            );
 
         };
 
-        input.addEventListener('change', () => {
 
-            clearError();
+        input.addEventListener(
+            'change',
+            () => {
 
-            const incomingFiles = Array.from(input.files);
+                clearError();
 
-            for (const file of incomingFiles) {
 
-                if (!allowedTypes.includes(file.type)) {
+                const incomingFiles =
+                    Array.from(
+                        input.files
+                    );
+
+
+                for (
+                    const file
+                    of incomingFiles
+                ) {
+
+                    if (
+                        !allowedTypes.includes(
+                            file.type
+                        )
+                    ) {
+
+                        showError(
+                            'Only JPG, JPEG, PNG, or WEBP images are allowed.'
+                        );
+
+                        return;
+
+                    }
+
+
+                    if (
+                        file.size >
+                        maxFileSize
+                    ) {
+
+                        showError(
+                            'Each image must not exceed 5 MB.'
+                        );
+
+                        return;
+
+                    }
+
+                }
+
+
+                const combinedFiles = [
+                    ...selectedFiles,
+                    ...incomingFiles,
+                ];
+
+
+                const uniqueFiles = [];
+
+                const signatures =
+                    new Set();
+
+
+                for (
+                    const file
+                    of combinedFiles
+                ) {
+
+                    const signature =
+                        `${file.name}-${file.size}-${file.lastModified}`;
+
+
+                    if (
+                        !signatures.has(
+                            signature
+                        )
+                    ) {
+
+                        signatures.add(
+                            signature
+                        );
+
+                        uniqueFiles.push(
+                            file
+                        );
+
+                    }
+
+                }
+
+
+                if (
+                    uniqueFiles.length >
+                    maxFiles
+                ) {
 
                     showError(
-                        'Only JPG, JPEG, PNG, or WEBP images are allowed.'
+                        'You can upload a maximum of 10 images.'
                     );
 
                     return;
 
                 }
 
-                if (file.size > maxFileSize) {
 
-                    showError(
-                        'Each image must not exceed 5 MB.'
-                    );
+                selectedFiles =
+                    uniqueFiles;
 
-                    return;
 
-                }
+                updateInput();
+                renderPreview();
 
             }
-
-            const combinedFiles = [
-                ...selectedFiles,
-                ...incomingFiles,
-            ];
-
-            const uniqueFiles = [];
-            const signatures = new Set();
-
-            for (const file of combinedFiles) {
-
-                const signature =
-                    `${file.name}-${file.size}-${file.lastModified}`;
-
-                if (!signatures.has(signature)) {
-
-                    signatures.add(signature);
-                    uniqueFiles.push(file);
-
-                }
-
-            }
-
-            if (uniqueFiles.length > maxFiles) {
-
-                showError(
-                    'You can upload a maximum of 10 images.'
-                );
-
-                return;
-
-            }
-
-            selectedFiles = uniqueFiles;
-
-            updateInput();
-            renderPreview();
-
-        });
+        );
 
     })();
+
 </script>
 
 @endpush

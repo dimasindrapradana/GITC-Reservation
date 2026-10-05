@@ -21,8 +21,9 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function read(Notification $notification): RedirectResponse
-    {
+    public function read(
+        Notification $notification
+    ): RedirectResponse {
         abort_unless(
             $notification->user_id === auth()->id(),
             403
@@ -38,13 +39,36 @@ class NotificationController extends Controller
             $notification->target_type === 'reservation' &&
             $notification->target_id !== null
         ) {
-            return redirect()->route(
-                'coordinator.reservations.show',
-                $notification->target_id
-            );
+            $roleName = auth()
+                ->user()
+                ?->role
+                ?->name;
+
+            if ($roleName === 'Coordinator') {
+                return redirect()->route(
+                    'coordinator.reservations.show',
+                    $notification->target_id
+                );
+            }
+
+            if ($roleName === 'Building Coordinator') {
+                return redirect()->route(
+                    'building-coordinator.reservations.show',
+                    $notification->target_id
+                );
+            }
+
+            if ($roleName === 'Field Coordinator') {
+                return redirect()->route(
+                    'field-coordinator.reservations.show',
+                    $notification->target_id
+                );
+            }
         }
 
-        return redirect()->route('notifications.index');
+        return redirect()->route(
+            'notifications.index'
+        );
     }
 
     public function readAll(): RedirectResponse

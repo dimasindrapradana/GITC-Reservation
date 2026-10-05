@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Field;
+use App\Models\Notification;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\TrainingRoom;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -384,18 +386,46 @@ class TrainingOfficerReservationController extends Controller
 
         /*
          * Create reservation rows.
+         *
+         * We keep the created reservations so we can send the
+         * correct notifications only after the transaction succeeds.
          */
-        DB::transaction(function () use (
+        $createdReservations = DB::transaction(function () use (
             $request,
             $reservationData
         ) {
+            $reservations = collect();
+
             foreach ($reservationData as $data) {
-                $this->createReservation(
+                $reservation = $this->createReservation(
                     $request,
                     $data
                 );
+
+                $reservations->push($reservation);
             }
+
+            return $reservations;
         });
+
+        /*
+         * Send notifications for every newly created reservation.
+         *
+         * Coordinator:
+         * - receives every new Pending Reservation.
+         *
+         * Building Coordinator:
+         * - receives Room / Training Media reservations only
+         *   for their assigned building.
+         *
+         * Field Coordinator:
+         * - receives Field reservations.
+         */
+        foreach ($createdReservations as $reservation) {
+            $this->sendReservationNotifications(
+                $reservation
+            );
+        }
 
         /*
          * Clear temporary session data.
@@ -410,6 +440,180 @@ class TrainingOfficerReservationController extends Controller
             ->with(
                 'success',
                 'Your reservation requests have been submitted successfully.'
+            );
+    }
+
+    /**
+     * Send in-app notifications for one new reservation.
+     */
+    private function sendReservationNotifications(
+        Reservation $reservation
+    ): void {
+        $recipients = collect();
+
+        /*
+         * Coordinator receives every Pending Reservation.
+         */
+        $coordinators = User::query()
+            ->whereHas(
+                'role',
+                function ($query) {
+                    $query->where(
+                        'name',
+                        'Coordinator'
+                    );
+                }
+            )
+            ->get();
+
+        $recipients = $recipients->merge(
+            $coordinators
+        );
+
+        /*
+         * Room / Training Media:
+         * notify only Building Coordinators assigned to
+         * the resource's building.
+         */
+        if ($reservation->room_id !== null) {
+            $buildingId = $reservation->room?->building_id;
+
+            if ($buildingId !== null) {
+                $buildingCoordinators = User::query()
+                    ->whereHas(
+                        'role',
+                        function ($query) {
+                            $query->where(
+                                'name',
+                                'Building Coordinator'
+                            );
+                        }
+                    )
+                    ->whereHas(
+                        'buildings',
+                        function ($query) use (
+                            $buildingId
+                        ) {
+                            $query->where(
+                                'buildings.id',
+                                $buildingId
+                            );
+                        }
+                    )
+                    ->get();
+
+                $recipients = $recipients->merge(
+                    $buildingCoordinators
+                );
+            }
+        } elseif ($reservation->training_room_id !== null) {
+            $buildingId =
+                $reservation->trainingRoom?->building_id;
+
+            if ($buildingId !== null) {
+                $buildingCoordinators = User::query()
+                    ->whereHas(
+                        'role',
+                        function ($query) {
+                            $query->where(
+                                'name',
+                                'Building Coordinator'
+                            );
+                        }
+                    )
+                    ->whereHas(
+                        'buildings',
+                        function ($query) use (
+                            $buildingId
+                        ) {
+                            $query->where(
+                                'buildings.id',
+                                $buildingId
+                            );
+                        }
+                    )
+                    ->get();
+
+                $recipients = $recipients->merge(
+                    $buildingCoordinators
+                );
+            }
+        }
+
+        /*
+         * Field:
+         * notify all Field Coordinators.
+         */
+        if ($reservation->field_id !== null) {
+            $fieldCoordinators = User::query()
+                ->whereHas(
+                    'role',
+                    function ($query) {
+                        $query->where(
+                            'name',
+                            'Field Coordinator'
+                        );
+                    }
+                )
+                ->get();
+
+            $recipients = $recipients->merge(
+                $fieldCoordinators
+            );
+        }
+
+        /*
+         * Avoid duplicate notifications when one user somehow
+         * matches more than one recipient group.
+         */
+        $recipients
+            ->unique('id')
+            ->each(
+                function (User $recipient) use (
+                    $reservation
+                ) {
+                    $resourceLabel = match (true) {
+                        $reservation->room_id !== null =>
+                            'Room ' . $reservation->room?->name,
+
+                        $reservation->training_room_id !== null =>
+                            'Training Media '
+                            . $reservation->trainingRoom?->name,
+
+                        $reservation->field_id !== null =>
+                            'Field ' . $reservation->field?->name,
+
+                        default => 'the requested resource',
+                    };
+
+                    $bookerName = trim((string) $reservation->booker_name);
+
+                    if ($bookerName === '') {
+                        $bookerName =
+                            $reservation->user?->name
+                            ?? 'A user';
+                    }
+
+                    Notification::create([
+                        'user_id' => $recipient->id,
+
+                        'type' => 'RESERVATION_PENDING',
+
+                        'title' => 'New Reservation Request',
+
+                        'message' =>
+                            $bookerName
+                            . ' has requested '
+                            . $resourceLabel
+                            . '. Your approval is required.',
+
+                        'target_type' => 'reservation',
+
+                        'target_id' => $reservation->id,
+
+                        'read_at' => null,
+                    ]);
+                }
             );
     }
 

@@ -7,9 +7,6 @@
 
 <div class="page-header">
     <div>
-        <a href="{{ route('training-rooms.index') }}" class="back-link">
-            ← Back to Media Training
-        </a>
 
         <h2>Edit Media Training</h2>
 

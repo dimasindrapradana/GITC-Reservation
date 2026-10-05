@@ -50,8 +50,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
         flex-shrink: 0;
+    }
+
+    .stat-icon img {
+        width: 20px;
+        height: 20px;
+        display: block;
     }
 
     .dashboard-grid {
@@ -178,6 +183,12 @@
         flex-shrink: 0;
     }
 
+    .quick-icon img {
+        width: 18px;
+        height: 18px;
+        display: block;
+    }
+
     .quick-info {
         min-width: 0;
     }
@@ -257,7 +268,10 @@
             </div>
 
             <div class="stat-icon">
-                ◷
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -274,7 +288,10 @@
             </div>
 
             <div class="stat-icon">
-                ✓
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/approved.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -291,7 +308,10 @@
             </div>
 
             <div class="stat-icon">
-                ▣
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/today.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -308,7 +328,10 @@
             </div>
 
             <div class="stat-icon">
-                ◫
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/upcoming.svg') }}"
+                    alt=""
+                >
             </div>
         </div>
 
@@ -414,7 +437,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◷
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">
@@ -433,7 +459,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ✓
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/approved.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">
@@ -452,7 +481,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ▣
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/today.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">
@@ -471,7 +503,10 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◫
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/upcoming.svg') }}"
+                            alt=""
+                        >
                     </div>
 
                     <div class="quick-info">

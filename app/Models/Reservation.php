@@ -38,21 +38,25 @@ class Reservation extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)
+            ->withTrashed();
     }
 
     public function room(): BelongsTo
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(Room::class)
+            ->withTrashed();
     }
 
     public function trainingRoom(): BelongsTo
     {
-        return $this->belongsTo(TrainingRoom::class);
+        return $this->belongsTo(TrainingRoom::class)
+            ->withTrashed();
     }
 
     public function field(): BelongsTo
     {
-        return $this->belongsTo(Field::class);
+        return $this->belongsTo(Field::class)
+            ->withTrashed();
     }
 }

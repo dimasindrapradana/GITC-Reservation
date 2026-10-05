@@ -20,51 +20,165 @@ use Illuminate\View\View;
 
 class ReservationController extends Controller
 {
-    public function myReservations(Request $request): View
-    {
+    /*
+    |--------------------------------------------------------------------------
+    | MY RESERVATIONS
+    |--------------------------------------------------------------------------
+    */
+
+    public function myReservations(
+        Request $request
+    ): View {
         $reservations = Reservation::query()
             ->with([
-                'room.building',
-                'trainingRoom.building',
+                'user',
+
+                'room' => function ($query) {
+                    $query->with([
+                        'building' => function ($query) {
+                            $query->withTrashed();
+                        },
+                    ]);
+                },
+
+                'trainingRoom' => function ($query) {
+                    $query->with([
+                        'building' => function ($query) {
+                            $query->withTrashed();
+                        },
+                    ]);
+                },
+
                 'field',
             ])
-            ->where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
+            ->where(
+                'user_id',
+                auth()->id()
+            )
+            ->orderBy(
+                'created_at',
+                'desc'
+            )
             ->paginate(10)
             ->withQueryString();
 
-        return view('reservations.my-index', [
-            'reservations' => $reservations,
-        ]);
+        return view(
+            'reservations.my-index',
+            [
+                'reservations' => $reservations,
+            ]
+        );
     }
 
-    public function index(Request $request): View
-    {
-        $search = $request->string('search')
+    /*
+    |--------------------------------------------------------------------------
+    | MY RESERVATION DETAIL
+    |--------------------------------------------------------------------------
+    |
+    | This method is for the regular Training Officer
+    | "My Reservations" flow.
+    |
+    | Training Officer Classroom uses its own controller/flow
+    | and is not affected by this method.
+    |
+    */
+
+    public function myShow(
+        Reservation $reservation
+    ): View {
+        /*
+         * A user may only view their own reservations.
+         */
+        abort_unless(
+            $reservation->user_id === auth()->id(),
+            403
+        );
+
+        /*
+         * Load historical relations, including soft-deleted
+         * User, Room, Training Media, and Building.
+         */
+        $reservation->load([
+            'user',
+
+            'room' => function ($query) {
+                $query->with([
+                    'building' => function ($query) {
+                        $query->withTrashed();
+                    },
+
+                    'images' => function ($query) {
+                        $query->orderBy('sort_order');
+                    },
+                ]);
+            },
+
+            'trainingRoom' => function ($query) {
+                $query->with([
+                    'building' => function ($query) {
+                        $query->withTrashed();
+                    },
+
+                    'images' => function ($query) {
+                        $query->orderBy('sort_order');
+                    },
+                ]);
+            },
+
+            'field',
+
+        ]);
+
+        return view(
+            'reservations.my-show',
+            [
+                'reservation' => $reservation,
+            ]
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | ADMIN / RESERVATION INDEX
+    |--------------------------------------------------------------------------
+    */
+
+    public function index(
+        Request $request
+    ): View {
+        $search = $request
+            ->string('search')
             ->trim()
             ->toString();
 
-        $building = $request->string('building')
+        $building = $request
+            ->string('building')
             ->toString();
 
-        $status = $request->string('status')
+        $status = $request
+            ->string('status')
             ->toString();
 
-        $resourceType = $request->string('resource_type')
+        $resourceType = $request
+            ->string('resource_type')
             ->toString();
 
-        $sort = $request->string('sort')
+        $sort = $request
+            ->string('sort')
             ->toString();
 
-        $dateFrom = $request->string('date_from')
+        $dateFrom = $request
+            ->string('date_from')
             ->trim()
             ->toString();
 
-        $dateTo = $request->string('date_to')
+        $dateTo = $request
+            ->string('date_to')
             ->trim()
             ->toString();
 
-        $isFieldCoordinator = $this->isFieldCoordinator();
+        $isFieldCoordinator =
+            $this->isFieldCoordinator();
 
         if ($isFieldCoordinator) {
             $resourceType = 'field';
@@ -75,7 +189,13 @@ class ReservationController extends Controller
             'created_asc',
         ];
 
-        if (!in_array($sort, $allowedSorts, true)) {
+        if (
+            !in_array(
+                $sort,
+                $allowedSorts,
+                true
+            )
+        ) {
             $sort = 'created_desc';
         }
 
@@ -96,7 +216,9 @@ class ReservationController extends Controller
             ->when(
                 $isFieldCoordinator,
                 function ($query) {
-                    $query->whereNotNull('field_id');
+                    $query->whereNotNull(
+                        'field_id'
+                    );
                 }
             )
 
@@ -106,70 +228,87 @@ class ReservationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(function ($query) use ($search) {
-                    $query
-                        ->where(
-                            'reservation_number',
-                            'like',
-                            '%' . $search . '%'
-                        )
-                        ->orWhere(
-                            'event_name',
-                            'like',
-                            '%' . $search . '%'
-                        )
-                        ->orWhere(
-                            'booker_name',
-                            'like',
-                            '%' . $search . '%'
-                        )
-                        ->orWhere(
-                            'instructor',
-                            'like',
-                            '%' . $search . '%'
-                        )
-                        ->orWhere(
-                            'description',
-                            'like',
-                            '%' . $search . '%'
-                        )
-                        ->orWhereHas('user', function ($query) use ($search) {
+            ->when(
+                $search !== '',
+                function ($query) use ($search) {
+                    $query->where(
+                        function ($query) use ($search) {
                             $query
                                 ->where(
-                                    'name',
+                                    'reservation_number',
                                     'like',
                                     '%' . $search . '%'
                                 )
                                 ->orWhere(
-                                    'employee_number',
+                                    'event_name',
                                     'like',
                                     '%' . $search . '%'
+                                )
+                                ->orWhere(
+                                    'booker_name',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
+                                ->orWhere(
+                                    'instructor',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
+                                ->orWhere(
+                                    'description',
+                                    'like',
+                                    '%' . $search . '%'
+                                )
+                                ->orWhereHas(
+                                    'user',
+                                    function ($query) use ($search) {
+                                        $query
+                                            ->where(
+                                                'name',
+                                                'like',
+                                                '%' . $search . '%'
+                                            )
+                                            ->orWhere(
+                                                'employee_number',
+                                                'like',
+                                                '%' . $search . '%'
+                                            );
+                                    }
+                                )
+                                ->orWhereHas(
+                                    'room',
+                                    function ($query) use ($search) {
+                                        $query->where(
+                                            'name',
+                                            'like',
+                                            '%' . $search . '%'
+                                        );
+                                    }
+                                )
+                                ->orWhereHas(
+                                    'trainingRoom',
+                                    function ($query) use ($search) {
+                                        $query->where(
+                                            'name',
+                                            'like',
+                                            '%' . $search . '%'
+                                        );
+                                    }
+                                )
+                                ->orWhereHas(
+                                    'field',
+                                    function ($query) use ($search) {
+                                        $query->where(
+                                            'name',
+                                            'like',
+                                            '%' . $search . '%'
+                                        );
+                                    }
                                 );
-                        })
-                        ->orWhereHas('room', function ($query) use ($search) {
-                            $query->where(
-                                'name',
-                                'like',
-                                '%' . $search . '%'
-                            );
-                        })
-                        ->orWhereHas('trainingRoom', function ($query) use ($search) {
-                            $query->where(
-                                'name',
-                                'like',
-                                '%' . $search . '%'
-                            );
-                        })
-                        ->orWhereHas('field', function ($query) use ($search) {
-                            $query->where(
-                                'name',
-                                'like',
-                                '%' . $search . '%'
-                            );
-                        });
-                });
-            })
+                        }
+                    );
+                }
+            )
 
             /*
             |--------------------------------------------------------------------------
@@ -178,23 +317,32 @@ class ReservationController extends Controller
             */
 
             ->when(
-                !$isFieldCoordinator && $building !== '',
+                !$isFieldCoordinator &&
+                $building !== '',
                 function ($query) use ($building) {
-                    $query->where(function ($query) use ($building) {
-                        $query
-                            ->whereHas('room', function ($query) use ($building) {
-                                $query->where(
-                                    'building_id',
-                                    $building
+                    $query->where(
+                        function ($query) use ($building) {
+                            $query
+                                ->whereHas(
+                                    'room',
+                                    function ($query) use ($building) {
+                                        $query->where(
+                                            'building_id',
+                                            $building
+                                        );
+                                    }
+                                )
+                                ->orWhereHas(
+                                    'trainingRoom',
+                                    function ($query) use ($building) {
+                                        $query->where(
+                                            'building_id',
+                                            $building
+                                        );
+                                    }
                                 );
-                            })
-                            ->orWhereHas('trainingRoom', function ($query) use ($building) {
-                                $query->where(
-                                    'building_id',
-                                    $building
-                                );
-                            });
-                    });
+                        }
+                    );
                 }
             )
 
@@ -204,12 +352,15 @@ class ReservationController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            ->when($status !== '', function ($query) use ($status) {
-                $query->where(
-                    'status',
-                    $status
-                );
-            })
+            ->when(
+                $status !== '',
+                function ($query) use ($status) {
+                    $query->where(
+                        'status',
+                        $status
+                    );
+                }
+            )
 
             /*
             |--------------------------------------------------------------------------
@@ -220,48 +371,60 @@ class ReservationController extends Controller
             ->when(
                 $resourceType === 'room',
                 function ($query) {
-                    $query->whereNotNull('room_id');
+                    $query->whereNotNull(
+                        'room_id'
+                    );
                 }
             )
 
             ->when(
                 $resourceType === 'training_room',
                 function ($query) {
-                    $query->whereNotNull('training_room_id');
+                    $query->whereNotNull(
+                        'training_room_id'
+                    );
                 }
             )
 
             ->when(
                 $resourceType === 'field',
                 function ($query) {
-                    $query->whereNotNull('field_id');
+                    $query->whereNotNull(
+                        'field_id'
+                    );
                 }
             )
 
             /*
             |--------------------------------------------------------------------------
             | Date From
+            |--------------------------------------------------------------------------
             |
             | Reservation must end on or after Date From.
-            |--------------------------------------------------------------------------
+            |
             */
 
             ->when(
                 $dateFrom !== '',
                 function ($query) use ($dateFrom) {
                     try {
-                        $from = Carbon::createFromFormat(
-                            'Y-m-d',
-                            $dateFrom,
-                            config('app.timezone')
-                        )->startOfDay();
+                        $from =
+                            Carbon::createFromFormat(
+                                'Y-m-d',
+                                $dateFrom,
+                                config(
+                                    'app.timezone'
+                                )
+                            )->startOfDay();
 
                         $query->where(
                             'ends_at',
                             '>=',
                             $from
                         );
-                    } catch (\Throwable $e) {
+                    } catch (
+                        \Throwable $e
+                    ) {
                         // Ignore invalid date input.
                     }
                 }
@@ -270,27 +433,33 @@ class ReservationController extends Controller
             /*
             |--------------------------------------------------------------------------
             | Date To
+            |--------------------------------------------------------------------------
             |
             | Reservation must start before the end of Date To.
-            |--------------------------------------------------------------------------
+            |
             */
 
             ->when(
                 $dateTo !== '',
                 function ($query) use ($dateTo) {
                     try {
-                        $to = Carbon::createFromFormat(
-                            'Y-m-d',
-                            $dateTo,
-                            config('app.timezone')
-                        )->endOfDay();
+                        $to =
+                            Carbon::createFromFormat(
+                                'Y-m-d',
+                                $dateTo,
+                                config(
+                                    'app.timezone'
+                                )
+                            )->endOfDay();
 
                         $query->where(
                             'starts_at',
                             '<=',
                             $to
                         );
-                    } catch (\Throwable $e) {
+                    } catch (
+                        \Throwable $e
+                    ) {
                         // Ignore invalid date input.
                     }
                 }
@@ -304,18 +473,22 @@ class ReservationController extends Controller
 
         switch ($sort) {
             case 'created_asc':
+
                 $reservations->orderBy(
                     'created_at',
                     'asc'
                 );
+
                 break;
 
             case 'created_desc':
             default:
+
                 $reservations->orderBy(
                     'created_at',
                     'desc'
                 );
+
                 break;
         }
 
@@ -327,18 +500,44 @@ class ReservationController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('reservations.index', [
-            'reservations' => $reservations,
-            'buildings' => $buildings,
-            'search' => $search,
-            'building' => $building,
-            'status' => $status,
-            'resourceType' => $resourceType,
-            'sort' => $sort,
-            'dateFrom' => $dateFrom,
-            'dateTo' => $dateTo,
-        ]);
+        return view(
+            'reservations.index',
+            [
+                'reservations' =>
+                    $reservations,
+
+                'buildings' =>
+                    $buildings,
+
+                'search' =>
+                    $search,
+
+                'building' =>
+                    $building,
+
+                'status' =>
+                    $status,
+
+                'resourceType' =>
+                    $resourceType,
+
+                'sort' =>
+                    $sort,
+
+                'dateFrom' =>
+                    $dateFrom,
+
+                'dateTo' =>
+                    $dateTo,
+            ]
+        );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE
+    |--------------------------------------------------------------------------
+    */
 
     public function create(): View
     {
@@ -346,48 +545,85 @@ class ReservationController extends Controller
             ->orderBy('name')
             ->get();
 
-        $isFieldCoordinator = $this->isFieldCoordinator();
+        $isFieldCoordinator =
+            $this->isFieldCoordinator();
 
         $rooms = collect();
 
         $trainingRooms = collect();
 
         $fields = Field::query()
-            ->where('status', 'AVAILABLE')
+            ->where(
+                'status',
+                'AVAILABLE'
+            )
             ->orderBy('name')
             ->get();
 
-        if (!$isFieldCoordinator) {
+        if (
+            !$isFieldCoordinator
+        ) {
             $rooms = Room::query()
                 ->with('building')
-                ->where('status', 'AVAILABLE')
+                ->whereHas('building')
+                ->where(
+                    'status',
+                    'AVAILABLE'
+                )
                 ->orderBy('building_id')
                 ->orderBy('name')
                 ->get();
 
-            $trainingRooms = TrainingRoom::query()
-                ->with('building')
-                ->where('status', 'AVAILABLE')
-                ->orderBy('building_id')
-                ->orderBy('name')
-                ->get();
+            $trainingRooms =
+                TrainingRoom::query()
+                    ->with('building')
+                    ->whereHas('building')
+                    ->where(
+                        'status',
+                        'AVAILABLE'
+                    )
+                    ->orderBy('building_id')
+                    ->orderBy('name')
+                    ->get();
         }
 
-        return view('reservations.create', [
-            'users' => $users,
-            'rooms' => $rooms,
-            'trainingRooms' => $trainingRooms,
-            'fields' => $fields,
-        ]);
+        return view(
+            'reservations.create',
+            [
+                'users' =>
+                    $users,
+
+                'rooms' =>
+                    $rooms,
+
+                'trainingRooms' =>
+                    $trainingRooms,
+
+                'fields' =>
+                    $fields,
+            ]
+        );
     }
 
-    public function store(Request $request): RedirectResponse
-    {
+    /*
+    |--------------------------------------------------------------------------
+    | STORE
+    |--------------------------------------------------------------------------
+    */
+
+    public function store(
+        Request $request
+    ): RedirectResponse {
         $validated = $request->validate([
             'user_id' => [
                 'required',
                 'integer',
-                'exists:users,id',
+                Rule::exists(
+                    'users',
+                    'id'
+                )->whereNull(
+                    'deleted_at'
+                ),
             ],
 
             'resource_type' => [
@@ -444,11 +680,13 @@ class ReservationController extends Controller
             ],
         ]);
 
-        $resourceType = $validated['resource_type'];
+        $resourceType =
+            $validated['resource_type'];
 
         if (
             $this->isFieldCoordinator()
-            && $resourceType !== 'field'
+            &&
+            $resourceType !== 'field'
         ) {
             abort(
                 403,
@@ -468,7 +706,9 @@ class ReservationController extends Controller
             config('app.timezone')
         );
 
-        if (!$startsAt->lt($endsAt)) {
+        if (
+            !$startsAt->lt($endsAt)
+        ) {
             return back()
                 ->withInput()
                 ->withErrors([
@@ -477,12 +717,38 @@ class ReservationController extends Controller
                 ]);
         }
 
-        $resourceId = (int) $validated['resource_id'];
+        $resourceId =
+            (int) $validated['resource_id'];
 
-        $resource = match ($resourceType) {
-            'room' => Room::find($resourceId),
-            'training_room' => TrainingRoom::find($resourceId),
-            'field' => Field::find($resourceId),
+        $resource = match (
+            $resourceType
+        ) {
+            'room' =>
+                Room::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->whereHas(
+                        'building'
+                    )
+                    ->first(),
+
+            'training_room' =>
+                TrainingRoom::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->whereHas(
+                        'building'
+                    )
+                    ->first(),
+
+            'field' =>
+                Field::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->first(),
         };
 
         if (!$resource) {
@@ -490,11 +756,13 @@ class ReservationController extends Controller
                 ->withInput()
                 ->withErrors([
                     'resource_id' =>
-                        'The selected resource could not be found.',
+                        'The selected resource could not be found or is no longer active.',
                 ]);
         }
 
-        if ($resource->status !== 'AVAILABLE') {
+        if (
+            $resource->status !== 'AVAILABLE'
+        ) {
             return back()
                 ->withInput()
                 ->withErrors([
@@ -503,10 +771,17 @@ class ReservationController extends Controller
                 ]);
         }
 
-        $resourceColumn = match ($resourceType) {
-            'room' => 'room_id',
-            'training_room' => 'training_room_id',
-            'field' => 'field_id',
+        $resourceColumn = match (
+            $resourceType
+        ) {
+            'room' =>
+                'room_id',
+
+            'training_room' =>
+                'training_room_id',
+
+            'field' =>
+                'field_id',
         };
 
         $hasOverlap = Reservation::query()
@@ -514,26 +789,31 @@ class ReservationController extends Controller
                 $resourceColumn,
                 $resourceId
             )
-            ->whereIn('status', [
-                'PENDING',
-                'APPROVED',
-            ])
-            ->where(function ($query) use (
-                $startsAt,
-                $endsAt
-            ) {
-                $query
-                    ->where(
-                        'starts_at',
-                        '<',
-                        $endsAt
-                    )
-                    ->where(
-                        'ends_at',
-                        '>',
-                        $startsAt
-                    );
-            })
+            ->whereIn(
+                'status',
+                [
+                    'PENDING',
+                    'APPROVED',
+                ]
+            )
+            ->where(
+                function ($query) use (
+                    $startsAt,
+                    $endsAt
+                ) {
+                    $query
+                        ->where(
+                            'starts_at',
+                            '<',
+                            $endsAt
+                        )
+                        ->where(
+                            'ends_at',
+                            '>',
+                            $startsAt
+                        );
+                }
+            )
             ->exists();
 
         if ($hasOverlap) {
@@ -556,55 +836,56 @@ class ReservationController extends Controller
                 $reservationNumber =
                     $this->generateReservationNumber();
 
-                $reservation = Reservation::create([
-                    'reservation_number' =>
-                        $reservationNumber,
+                $reservation =
+                    Reservation::create([
+                        'reservation_number' =>
+                            $reservationNumber,
 
-                    'user_id' =>
-                        $validated['user_id'],
+                        'user_id' =>
+                            $validated['user_id'],
 
-                    'room_id' =>
-                        $resourceType === 'room'
-                            ? $resourceId
-                            : null,
+                        'room_id' =>
+                            $resourceType === 'room'
+                                ? $resourceId
+                                : null,
 
-                    'training_room_id' =>
-                        $resourceType === 'training_room'
-                            ? $resourceId
-                            : null,
+                        'training_room_id' =>
+                            $resourceType === 'training_room'
+                                ? $resourceId
+                                : null,
 
-                    'field_id' =>
-                        $resourceType === 'field'
-                            ? $resourceId
-                            : null,
+                        'field_id' =>
+                            $resourceType === 'field'
+                                ? $resourceId
+                                : null,
 
-                    'starts_at' =>
-                        $startsAt,
+                        'starts_at' =>
+                            $startsAt,
 
-                    'ends_at' =>
-                        $endsAt,
+                        'ends_at' =>
+                            $endsAt,
 
-                    'total_person' =>
-                        $validated['total_person'],
+                        'total_person' =>
+                            $validated['total_person'],
 
-                    'event_name' =>
-                        $validated['event_name'],
+                        'event_name' =>
+                            $validated['event_name'],
 
-                    'booker_name' =>
-                        $validated['booker_name'],
+                        'booker_name' =>
+                            $validated['booker_name'],
 
-                    'instructor' =>
-                        $validated['instructor'] ?? null,
+                        'instructor' =>
+                            $validated['instructor'] ?? null,
 
-                    'description' =>
-                        $validated['description'],
+                        'description' =>
+                            $validated['description'],
 
-                    'status' =>
-                        'PENDING',
+                        'status' =>
+                            'PENDING',
 
-                    'rejection_reason' =>
-                        null,
-                ]);
+                        'rejection_reason' =>
+                            null,
+                    ]);
 
                 AuditLog::create([
                     'user_id' =>
@@ -647,10 +928,12 @@ class ReservationController extends Controller
                             $reservation->field_id,
 
                         'starts_at' =>
-                            $reservation->starts_at?->toDateTimeString(),
+                            $reservation->starts_at
+                                ?->toDateTimeString(),
 
                         'ends_at' =>
-                            $reservation->ends_at?->toDateTimeString(),
+                            $reservation->ends_at
+                                ?->toDateTimeString(),
 
                         'total_person' =>
                             $reservation->total_person,
@@ -676,51 +959,180 @@ class ReservationController extends Controller
             }
         );
 
-        $notificationRoleNames = [
-            'Coordinator',
-        ];
+        /*
+         * =========================================================
+         * SEND NOTIFICATIONS
+         * =========================================================
+         *
+         * Coordinator:
+         * - receives every new Pending Reservation.
+         *
+         * Building Coordinator:
+         * - receives Room / Training Media reservations only
+         *   when the resource belongs to one of their assigned
+         *   buildings.
+         *
+         * Field Coordinator:
+         * - receives Field reservations only.
+         */
 
-        if ($resourceType === 'field') {
-            $notificationRoleNames[] = 'Field Coordinator';
-        }
+        $notificationRecipients = collect();
 
-        $coordinators = User::query()
-            ->whereHas('role', function ($query) use (
-                $notificationRoleNames
-            ) {
-                $query->whereIn(
-                    'name',
-                    $notificationRoleNames
-                );
-            })
+        /*
+         * =========================================================
+         * COORDINATOR
+         * =========================================================
+         */
+
+        $coordinatorUsers = User::query()
+            ->whereHas(
+                'role',
+                function ($query) {
+                    $query->where(
+                        'name',
+                        'Coordinator'
+                    );
+                }
+            )
             ->get();
 
-        foreach ($coordinators as $coordinator) {
-            Notification::create([
-                'user_id' =>
-                    $coordinator->id,
+        $notificationRecipients =
+            $notificationRecipients->merge(
+                $coordinatorUsers
+            );
 
-                'type' =>
-                    'RESERVATION_PENDING',
+        /*
+         * =========================================================
+         * BUILDING COORDINATOR
+         * =========================================================
+         */
 
-                'title' =>
-                    'New Reservation Pending',
+        if (
+            in_array(
+                $resourceType,
+                [
+                    'room',
+                    'training_room',
+                ],
+                true
+            )
+        ) {
+            $buildingId = null;
 
-                'message' =>
-                    'Reservation '
-                    . $reservation->reservation_number
-                    . ' is waiting for your review.',
+            if (
+                $resourceType === 'room'
+            ) {
+                $buildingId =
+                    $reservation
+                        ->room
+                        ?->building_id;
+            } elseif (
+                $resourceType === 'training_room'
+            ) {
+                $buildingId =
+                    $reservation
+                        ->trainingRoom
+                        ?->building_id;
+            }
 
-                'target_type' =>
-                    'reservation',
+            if ($buildingId !== null) {
+                $buildingCoordinators =
+                    User::query()
+                        ->whereHas(
+                            'role',
+                            function ($query) {
+                                $query->where(
+                                    'name',
+                                    'Building Coordinator'
+                                );
+                            }
+                        )
+                        ->whereHas(
+                            'buildings',
+                            function ($query) use (
+                                $buildingId
+                            ) {
+                                $query->where(
+                                    'buildings.id',
+                                    $buildingId
+                                );
+                            }
+                        )
+                        ->get();
 
-                'target_id' =>
-                    $reservation->id,
-
-                'read_at' =>
-                    null,
-            ]);
+                $notificationRecipients =
+                    $notificationRecipients->merge(
+                        $buildingCoordinators
+                    );
+            }
         }
+
+        /*
+         * =========================================================
+         * FIELD COORDINATOR
+         * =========================================================
+         */
+
+        if (
+            $resourceType === 'field'
+        ) {
+            $fieldCoordinators =
+                User::query()
+                    ->whereHas(
+                        'role',
+                        function ($query) {
+                            $query->where(
+                                'name',
+                                'Field Coordinator'
+                            );
+                        }
+                    )
+                    ->get();
+
+            $notificationRecipients =
+                $notificationRecipients->merge(
+                    $fieldCoordinators
+                );
+        }
+
+        /*
+         * =========================================================
+         * CREATE NOTIFICATIONS
+         * =========================================================
+         */
+
+        $notificationRecipients
+            ->unique('id')
+            ->each(
+                function (User $recipient) use (
+                    $reservation
+                ) {
+                    Notification::create([
+                        'user_id' =>
+                            $recipient->id,
+
+                        'type' =>
+                            'RESERVATION_PENDING',
+
+                        'title' =>
+                            'New Reservation Pending',
+
+                        'message' =>
+                            'Reservation '
+                            . $reservation->reservation_number
+                            . ' is waiting for your review.',
+
+                        'target_type' =>
+                            'reservation',
+
+                        'target_id' =>
+                            $reservation->id,
+
+                        'read_at' =>
+                            null,
+                    ]);
+                }
+            );
 
         return redirect()
             ->route(
@@ -733,12 +1145,19 @@ class ReservationController extends Controller
             );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | SHOW
+    |--------------------------------------------------------------------------
+    */
+
     public function show(
         Reservation $reservation
     ): View {
         if (
             $this->isFieldCoordinator()
-            && $reservation->field_id === null
+            &&
+            $reservation->field_id === null
         ) {
             abort(
                 403,
@@ -756,17 +1175,25 @@ class ReservationController extends Controller
         return view(
             'reservations.show',
             [
-                'reservation' => $reservation,
+                'reservation' =>
+                    $reservation,
             ]
         );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT
+    |--------------------------------------------------------------------------
+    */
 
     public function edit(
         Reservation $reservation
     ): View {
         if (
             $this->isFieldCoordinator()
-            && $reservation->field_id === null
+            &&
+            $reservation->field_id === null
         ) {
             abort(
                 403,
@@ -805,67 +1232,99 @@ class ReservationController extends Controller
         $trainingRooms = collect();
 
         $fields = Field::query()
-            ->where(function ($query) use ($reservation) {
-                $query
-                    ->where(
-                        'status',
-                        'AVAILABLE'
-                    )
-                    ->orWhere(
-                        'id',
-                        $reservation->field_id
-                    );
-            })
+            ->where(
+                function ($query) use (
+                    $reservation
+                ) {
+                    $query
+                        ->where(
+                            'status',
+                            'AVAILABLE'
+                        )
+                        ->orWhere(
+                            'id',
+                            $reservation->field_id
+                        );
+                }
+            )
             ->orderBy('name')
             ->get();
 
-        if (!$this->isFieldCoordinator()) {
+        if (
+            !$this->isFieldCoordinator()
+        ) {
             $rooms = Room::query()
                 ->with('building')
-                ->where(function ($query) use ($reservation) {
-                    $query
-                        ->where(
-                            'status',
-                            'AVAILABLE'
-                        )
-                        ->orWhere(
-                            'id',
-                            $reservation->room_id
-                        );
-                })
+                ->whereHas('building')
+                ->where(
+                    function ($query) use (
+                        $reservation
+                    ) {
+                        $query
+                            ->where(
+                                'status',
+                                'AVAILABLE'
+                            )
+                            ->orWhere(
+                                'id',
+                                $reservation->room_id
+                            );
+                    }
+                )
                 ->orderBy('building_id')
                 ->orderBy('name')
                 ->get();
 
-            $trainingRooms = TrainingRoom::query()
-                ->with('building')
-                ->where(function ($query) use ($reservation) {
-                    $query
-                        ->where(
-                            'status',
-                            'AVAILABLE'
-                        )
-                        ->orWhere(
-                            'id',
-                            $reservation->training_room_id
-                        );
-                })
-                ->orderBy('building_id')
-                ->orderBy('name')
-                ->get();
+            $trainingRooms =
+                TrainingRoom::query()
+                    ->with('building')
+                    ->whereHas('building')
+                    ->where(
+                        function ($query) use (
+                            $reservation
+                        ) {
+                            $query
+                                ->where(
+                                    'status',
+                                    'AVAILABLE'
+                                )
+                                ->orWhere(
+                                    'id',
+                                    $reservation->training_room_id
+                                );
+                        }
+                    )
+                    ->orderBy('building_id')
+                    ->orderBy('name')
+                    ->get();
         }
 
         return view(
             'reservations.edit',
             [
-                'reservation' => $reservation,
-                'users' => $users,
-                'rooms' => $rooms,
-                'trainingRooms' => $trainingRooms,
-                'fields' => $fields,
+                'reservation' =>
+                    $reservation,
+
+                'users' =>
+                    $users,
+
+                'rooms' =>
+                    $rooms,
+
+                'trainingRooms' =>
+                    $trainingRooms,
+
+                'fields' =>
+                    $fields,
             ]
         );
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE
+    |--------------------------------------------------------------------------
+    */
 
     public function update(
         Request $request,
@@ -873,7 +1332,8 @@ class ReservationController extends Controller
     ): RedirectResponse {
         if (
             $this->isFieldCoordinator()
-            && $reservation->field_id === null
+            &&
+            $reservation->field_id === null
         ) {
             abort(
                 403,
@@ -901,7 +1361,12 @@ class ReservationController extends Controller
             'user_id' => [
                 'required',
                 'integer',
-                'exists:users,id',
+                Rule::exists(
+                    'users',
+                    'id'
+                )->whereNull(
+                    'deleted_at'
+                ),
             ],
 
             'resource_type' => [
@@ -958,11 +1423,13 @@ class ReservationController extends Controller
             ],
         ]);
 
-        $resourceType = $validated['resource_type'];
+        $resourceType =
+            $validated['resource_type'];
 
         if (
             $this->isFieldCoordinator()
-            && $resourceType !== 'field'
+            &&
+            $resourceType !== 'field'
         ) {
             abort(
                 403,
@@ -973,16 +1440,22 @@ class ReservationController extends Controller
         $startsAt = Carbon::parse(
             $validated['starts_at']
         )->setTimezone(
-            config('app.timezone')
+            config(
+                'app.timezone'
+            )
         );
 
         $endsAt = Carbon::parse(
             $validated['ends_at']
         )->setTimezone(
-            config('app.timezone')
+            config(
+                'app.timezone'
+            )
         );
 
-        if (!$startsAt->lt($endsAt)) {
+        if (
+            !$startsAt->lt($endsAt)
+        ) {
             return back()
                 ->withInput()
                 ->withErrors([
@@ -994,15 +1467,35 @@ class ReservationController extends Controller
         $resourceId =
             (int) $validated['resource_id'];
 
-        $resource = match ($resourceType) {
+        $resource = match (
+            $resourceType
+        ) {
             'room' =>
-                Room::find($resourceId),
+                Room::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->whereHas(
+                        'building'
+                    )
+                    ->first(),
 
             'training_room' =>
-                TrainingRoom::find($resourceId),
+                TrainingRoom::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->whereHas(
+                        'building'
+                    )
+                    ->first(),
 
             'field' =>
-                Field::find($resourceId),
+                Field::query()
+                    ->whereKey(
+                        $resourceId
+                    )
+                    ->first(),
         };
 
         if (!$resource) {
@@ -1010,30 +1503,36 @@ class ReservationController extends Controller
                 ->withInput()
                 ->withErrors([
                     'resource_id' =>
-                        'The selected resource could not be found.',
+                        'The selected resource could not be found or is no longer active.',
                 ]);
         }
 
         $isCurrentResource =
             (
                 $resourceType === 'room'
-                && $reservation->room_id
+                &&
+                $reservation->room_id
                     === $resourceId
             )
-            || (
+            ||
+            (
                 $resourceType === 'training_room'
-                && $reservation->training_room_id
+                &&
+                $reservation->training_room_id
                     === $resourceId
             )
-            || (
+            ||
+            (
                 $resourceType === 'field'
-                && $reservation->field_id
+                &&
+                $reservation->field_id
                     === $resourceId
             );
 
         if (
             $resource->status !== 'AVAILABLE'
-            && !$isCurrentResource
+            &&
+            !$isCurrentResource
         ) {
             return back()
                 ->withInput()
@@ -1043,7 +1542,9 @@ class ReservationController extends Controller
                 ]);
         }
 
-        $resourceColumn = match ($resourceType) {
+        $resourceColumn = match (
+            $resourceType
+        ) {
             'room' =>
                 'room_id',
 
@@ -1054,31 +1555,35 @@ class ReservationController extends Controller
                 'field_id',
         };
 
-        $hasOverlap = Reservation::query()
-            ->where(
-                $resourceColumn,
-                $resourceId
-            )
-            ->whereIn('status', [
-                'PENDING',
-                'APPROVED',
-            ])
-            ->where(
-                'id',
-                '!=',
-                $reservation->id
-            )
-            ->where(
-                'starts_at',
-                '<',
-                $endsAt
-            )
-            ->where(
-                'ends_at',
-                '>',
-                $startsAt
-            )
-            ->exists();
+        $hasOverlap =
+            Reservation::query()
+                ->where(
+                    $resourceColumn,
+                    $resourceId
+                )
+                ->whereIn(
+                    'status',
+                    [
+                        'PENDING',
+                        'APPROVED',
+                    ]
+                )
+                ->where(
+                    'id',
+                    '!=',
+                    $reservation->id
+                )
+                ->where(
+                    'starts_at',
+                    '<',
+                    $endsAt
+                )
+                ->where(
+                    'ends_at',
+                    '>',
+                    $startsAt
+                )
+                ->exists();
 
         if ($hasOverlap) {
             return back()
@@ -1103,10 +1608,12 @@ class ReservationController extends Controller
                 $reservation->field_id,
 
             'starts_at' =>
-                $reservation->starts_at?->toDateTimeString(),
+                $reservation->starts_at
+                    ?->toDateTimeString(),
 
             'ends_at' =>
-                $reservation->ends_at?->toDateTimeString(),
+                $reservation->ends_at
+                    ?->toDateTimeString(),
 
             'total_person' =>
                 $reservation->total_person,
@@ -1253,12 +1760,19 @@ class ReservationController extends Controller
             );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | CANCEL
+    |--------------------------------------------------------------------------
+    */
+
     public function destroy(
         Reservation $reservation
     ): RedirectResponse {
         if (
             $this->isFieldCoordinator()
-            && $reservation->field_id === null
+            &&
+            $reservation->field_id === null
         ) {
             abort(
                 403,
@@ -1277,68 +1791,88 @@ class ReservationController extends Controller
             )
         ) {
             return redirect()
-                ->route('reservations.index')
+                ->route(
+                    'reservations.index'
+                )
                 ->with(
                     'error',
                     'This reservation cannot be cancelled.'
                 );
         }
 
-        DB::transaction(function () use ($reservation) {
-            $oldValue = [
-                'status' =>
-                    $reservation->status,
-            ];
+        DB::transaction(
+            function () use (
+                $reservation
+            ) {
+                $oldValue = [
+                    'status' =>
+                        $reservation->status,
+                ];
 
-            $reservation->update([
-                'status' =>
-                    'CANCELLED',
-            ]);
-
-            AuditLog::create([
-                'user_id' =>
-                    auth()->id(),
-
-                'action' =>
-                    'CANCEL',
-
-                'module' =>
-                    'Reservation',
-
-                'target_type' =>
-                    Reservation::class,
-
-                'target_id' =>
-                    $reservation->id,
-
-                'description' =>
-                    'Reservation '
-                    . $reservation->reservation_number
-                    . ' was cancelled.',
-
-                'old_value' =>
-                    $oldValue,
-
-                'new_value' => [
+                $reservation->update([
                     'status' =>
                         'CANCELLED',
-                ],
-            ]);
-        });
+                ]);
+
+                AuditLog::create([
+                    'user_id' =>
+                        auth()->id(),
+
+                    'action' =>
+                        'CANCEL',
+
+                    'module' =>
+                        'Reservation',
+
+                    'target_type' =>
+                        Reservation::class,
+
+                    'target_id' =>
+                        $reservation->id,
+
+                    'description' =>
+                        'Reservation '
+                        . $reservation->reservation_number
+                        . ' was cancelled.',
+
+                    'old_value' =>
+                        $oldValue,
+
+                    'new_value' => [
+                        'status' =>
+                            'CANCELLED',
+                    ],
+                ]);
+            }
+        );
 
         return redirect()
-            ->route('reservations.index')
+            ->route(
+                'reservations.index'
+            )
             ->with(
                 'success',
                 'Reservation has been successfully cancelled.'
             );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | FIELD COORDINATOR HELPER
+    |--------------------------------------------------------------------------
+    */
+
     private function isFieldCoordinator(): bool
     {
         return auth()->user()?->role?->name
             === 'Field Coordinator';
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESERVATION NUMBER
+    |--------------------------------------------------------------------------
+    */
 
     private function generateReservationNumber(): string
     {

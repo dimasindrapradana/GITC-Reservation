@@ -11,10 +11,22 @@ use Illuminate\View\View;
 
 class BuildingController extends Controller
 {
+    /*
+     * =========================================================
+     * BUILDING INDEX
+     * =========================================================
+     */
+
     public function index(Request $request): View
     {
-        $search = $request->string('search')->trim()->toString();
-        $filter = $request->string('filter')->toString();
+        $search = $request
+            ->string('search')
+            ->trim()
+            ->toString();
+
+        $filter = $request
+            ->string('filter')
+            ->toString();
 
         $buildings = Building::query()
             ->withCount([
@@ -24,24 +36,36 @@ class BuildingController extends Controller
             ->with([
                 'images',
             ])
-            ->when($search !== '', function ($query) use ($search) {
-                $query->where(
-                    'name',
-                    'like',
-                    '%' . $search . '%'
-                );
-            })
-            ->when($filter === 'with_rooms', function ($query) {
-                $query->has('rooms');
-            })
-            ->when($filter === 'with_training_rooms', function ($query) {
-                $query->has('trainingRooms');
-            })
-            ->when($filter === 'empty', function ($query) {
-                $query
-                    ->doesntHave('rooms')
-                    ->doesntHave('trainingRooms');
-            })
+            ->when(
+                $search !== '',
+                function ($query) use ($search) {
+                    $query->where(
+                        'name',
+                        'like',
+                        '%' . $search . '%'
+                    );
+                }
+            )
+            ->when(
+                $filter === 'with_rooms',
+                function ($query) {
+                    $query->has('rooms');
+                }
+            )
+            ->when(
+                $filter === 'with_training_rooms',
+                function ($query) {
+                    $query->has('trainingRooms');
+                }
+            )
+            ->when(
+                $filter === 'empty',
+                function ($query) {
+                    $query
+                        ->doesntHave('rooms')
+                        ->doesntHave('trainingRooms');
+                }
+            )
             ->orderBy('name')
             ->paginate(10)
             ->withQueryString();
@@ -53,19 +77,38 @@ class BuildingController extends Controller
         ]);
     }
 
+
+    /*
+     * =========================================================
+     * CREATE
+     * =========================================================
+     */
+
     public function create(): View
     {
         return view('buildings.create');
     }
 
-    public function store(Request $request): RedirectResponse
-    {
+
+    /*
+     * =========================================================
+     * STORE
+     * =========================================================
+     */
+
+    public function store(
+        Request $request
+    ): RedirectResponse {
+
         $validated = $request->validate([
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                'unique:buildings,name',
+                Rule::unique(
+                    'buildings',
+                    'name'
+                )->whereNull('deleted_at'),
             ],
 
             'images' => [
@@ -81,9 +124,17 @@ class BuildingController extends Controller
             ],
         ]);
 
+
+        /*
+         * =====================================================
+         * CREATE BUILDING
+         * =====================================================
+         */
+
         $building = Building::create([
             'name' => $validated['name'],
         ]);
+
 
         /*
          * =====================================================
@@ -91,7 +142,9 @@ class BuildingController extends Controller
          * =====================================================
          */
 
-        if ($request->hasFile('images')) {
+        if (
+            $request->hasFile('images')
+        ) {
 
             foreach (
                 $request->file('images')
@@ -110,6 +163,7 @@ class BuildingController extends Controller
             }
         }
 
+
         return redirect()
             ->route('buildings.index')
             ->with(
@@ -118,8 +172,17 @@ class BuildingController extends Controller
             );
     }
 
-    public function edit(Building $building): View
-    {
+
+    /*
+     * =========================================================
+     * EDIT
+     * =========================================================
+     */
+
+    public function edit(
+        Building $building
+    ): View {
+
         $building->load([
             'images',
         ]);
@@ -129,16 +192,28 @@ class BuildingController extends Controller
         ]);
     }
 
+
+    /*
+     * =========================================================
+     * UPDATE
+     * =========================================================
+     */
+
     public function update(
         Request $request,
         Building $building
     ): RedirectResponse {
+
         $validated = $request->validate([
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('buildings', 'name')
+                Rule::unique(
+                    'buildings',
+                    'name'
+                )
+                    ->whereNull('deleted_at')
                     ->ignore($building->id),
             ],
 
@@ -154,6 +229,7 @@ class BuildingController extends Controller
             ],
         ]);
 
+
         /*
          * =====================================================
          * UPDATE BUILDING INFORMATION
@@ -164,38 +240,58 @@ class BuildingController extends Controller
             'name' => $validated['name'],
         ]);
 
+
+        /*
+         * =====================================================
+         * CHECK IMAGE LIMIT
+         * =====================================================
+         */
+
+        $existingImageCount =
+            $building->images()->count();
+
+        $newImages =
+            $request->file('images', []);
+
+        $newImageCount =
+            count($newImages);
+
+
+        if (
+            $existingImageCount +
+            $newImageCount >
+            10
+        ) {
+
+            return back()
+                ->withErrors([
+                    'images' =>
+                        'A building can have a maximum of 10 images.',
+                ])
+                ->withInput();
+        }
+
+
         /*
          * =====================================================
          * SAVE NEW IMAGES
          * =====================================================
          */
 
-        $existingImageCount = $building->images()->count();
-
-        $newImages = $request->file('images', []);
-
-        $newImageCount = count($newImages);
-
         if (
-            $existingImageCount + $newImageCount > 10
+            $newImageCount > 0
         ) {
-            return back()
-                ->withErrors([
-                    'images' =>
-                        'A building can have a maximum of 10 images.'
-                ])
-                ->withInput();
-        }
 
-        if ($newImageCount > 0) {
+            $nextSortOrder =
+                $building->images()
+                    ->max('sort_order');
 
-            $nextSortOrder = $building->images()
-                ->max('sort_order');
 
             $nextSortOrder =
                 is_null($nextSortOrder)
                     ? 0
                     : $nextSortOrder + 1;
+
 
             foreach (
                 $newImages
@@ -216,6 +312,7 @@ class BuildingController extends Controller
             }
         }
 
+
         return redirect()
             ->route(
                 'buildings.edit',
@@ -227,9 +324,13 @@ class BuildingController extends Controller
             );
     }
 
+
     /*
      * =========================================================
      * DELETE BUILDING IMAGE
+     *
+     * This permanently deletes only the selected image.
+     * The Building itself is NOT deleted.
      * =========================================================
      */
 
@@ -238,99 +339,109 @@ class BuildingController extends Controller
         $image
     ): RedirectResponse {
 
-    $building->load('images');
+        $building->load([
+            'images',
+        ]);
 
-        $buildingImage = $building->images()
-            ->where('id', $image)
-            ->firstOrFail();
 
         /*
-         * Delete physical image file
+         * =====================================================
+         * FIND BUILDING IMAGE
+         * =====================================================
+         */
+
+        $buildingImage =
+            $building->images()
+                ->where(
+                    'id',
+                    $image
+                )
+                ->firstOrFail();
+
+
+        /*
+         * =====================================================
+         * DELETE PHYSICAL IMAGE FILE
+         * =====================================================
          */
 
         if (
             Storage::disk('public')
-                ->exists($buildingImage->file)
+                ->exists(
+                    $buildingImage->file
+                )
         ) {
+
             Storage::disk('public')
-                ->delete($buildingImage->file);
+                ->delete(
+                    $buildingImage->file
+                );
         }
 
+
         /*
-         * Delete image database record
+         * =====================================================
+         * DELETE IMAGE DATABASE RECORD
+         * =====================================================
          */
 
         $buildingImage->delete();
 
-           $remainingImages = $building->images()
-        ->orderBy('sort_order')
-        ->get();
 
-    foreach ($remainingImages as $index => $remainingImage) {
+        /*
+         * =====================================================
+         * REORDER REMAINING IMAGES
+         * =====================================================
+         */
 
-        $remainingImage->update([
-            'sort_order' => $index,
-        ]);
+        $remainingImages =
+            $building->images()
+                ->orderBy('sort_order')
+                ->get();
+
+
+        foreach (
+            $remainingImages
+            as $index => $remainingImage
+        ) {
+
+            $remainingImage->update([
+                'sort_order' => $index,
+            ]);
+        }
+
+
+        return redirect()
+            ->route(
+                'buildings.edit',
+                $building
+            )
+            ->with(
+                'success',
+                'Building image has been successfully deleted.'
+            );
     }
 
-    return redirect()
-        ->route(
-            'buildings.edit',
-            $building
-        )
-        ->with(
-            'success',
-            'Building image has been successfully deleted.'
-        );
-}
+
+    /*
+     * =========================================================
+     * SOFT DELETE BUILDING
+     *
+     * The Building record remains in database.
+     * Existing reservations and images remain intact.
+     * =========================================================
+     */
 
     public function destroy(
         Building $building
     ): RedirectResponse {
 
-        if (
-            $building->rooms()->exists()
-            || $building->trainingRooms()->exists()
-        ) {
-            return redirect()
-                ->route('buildings.index')
-                ->with(
-                    'error',
-                    'This building cannot be deleted because it still has rooms or training rooms.'
-                );
-        }
-
-        /*
-         * =====================================================
-         * DELETE BUILDING IMAGES
-         * =====================================================
-         */
-
-        $building->load('images');
-
-        foreach ($building->images as $image) {
-
-            if (
-                Storage::disk('public')
-                    ->exists($image->file)
-            ) {
-                Storage::disk('public')
-                    ->delete($image->file);
-            }
-
-            $image->delete();
-        }
-
-        /*
-         * =====================================================
-         * DELETE BUILDING
-         * =====================================================
-         */
-
         $building->delete();
 
         return redirect()
-            ->route('buildings.index')
+            ->route(
+                'buildings.index'
+            )
             ->with(
                 'success',
                 'Building has been successfully deleted.'

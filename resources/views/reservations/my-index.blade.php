@@ -160,7 +160,7 @@
 
                                     {{-- Detail is always available --}}
                                    <a
-                                        href="{{ route('my-reservations.show', $reservation) }}"
+                                       href="{{ route('training-officer.my-reservations.show', $reservation) }}"
                                         class="action-link detail"
                                     >
                                         Detail

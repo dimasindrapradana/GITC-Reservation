@@ -15,7 +15,7 @@
         </div>
 
         <a
-            href="{{ route('reservations.my') }}"
+            href="{{ route('training-officer.my-reservations.index') }}"
             class="back-button"
         >
             ← My Reservations
@@ -44,13 +44,13 @@
 
             $resourceType = 'Room';
             $resourceName = $reservation->room->name;
-            $buildingName = $reservation->room->building->name ?? '—';
+            $buildingName = $reservation->room->building?->name ?? 'Building deleted';
 
         } elseif ($reservation->trainingRoom) {
 
             $resourceType = 'Training Media';
             $resourceName = $reservation->trainingRoom->name;
-            $buildingName = $reservation->trainingRoom->building->name ?? '—';
+            $buildingName = $reservation->trainingRoom->building?->name ?? 'Building deleted';
 
         } elseif ($reservation->field) {
 
@@ -400,7 +400,7 @@
         <div class="detail-footer">
 
             <a
-                href="{{ route('reservations.my') }}"
+                href="{{ route('training-officer.my-reservations.index') }}"
                 class="back-button"
             >
                 Back to My Reservations

@@ -15,11 +15,18 @@
             </p>
         </div>
 
-        <a
-            href="{{ route('coordinator.reports.reservations') }}"
-            class="button button-secondary"
-        >
-            Back
+        @php
+            $isFieldCoordinator =
+                auth()->user()?->role?->name === 'Field Coordinator';
+
+            $reportRoute = $isFieldCoordinator
+                ? 'field-coordinator.reports.reservations'
+                : 'coordinator.reports.reservations';
+        @endphp
+
+        <a href="{{ route($reportRoute) }}"
+        class="button button-secondary">
+            Back to Reservation Report
         </a>
 
     </div>

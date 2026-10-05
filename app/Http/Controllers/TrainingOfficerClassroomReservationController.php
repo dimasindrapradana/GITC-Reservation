@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Notification;
 use App\Models\Reservation;
 use App\Models\Room;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,26 +28,26 @@ class TrainingOfficerClassroomReservationController extends Controller
         'training_officer_classroom_reservations';
 
     public function myReservations(Request $request): View
-{
-    $reservations = Reservation::query()
-        ->with([
-            'room.building',
-        ])
-        ->where('user_id', auth()->id())
-        ->whereNotNull('room_id')
-        ->orderBy('created_at', 'desc')
-        ->paginate(10)
-        ->withQueryString();
+    {
+        $reservations = Reservation::query()
+            ->with([
+                'room.building',
+            ])
+            ->where('user_id', auth()->id())
+            ->whereNotNull('room_id')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->withQueryString();
 
-    return view(
-        'training-officer-classroom.reservation.my-index',
-        [
-            'reservations' => $reservations,
-        ]
-    );
-}
+        return view(
+            'training-officer-classroom.reservation.my-index',
+            [
+                'reservations' => $reservations,
+            ]
+        );
+    }
 
-        /**
+    /**
      * Show one reservation detail.
      */
     public function show(
@@ -74,6 +76,7 @@ class TrainingOfficerClassroomReservationController extends Controller
             ]
         );
     }
+
     /**
      * Start classroom reservation process.
      */
@@ -99,7 +102,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ]
         );
     }
-
 
     /**
      * Show reservation form for one classroom room.
@@ -172,7 +174,6 @@ class TrainingOfficerClassroomReservationController extends Controller
         );
     }
 
-
     /**
      * Store reservation data for one classroom room.
      */
@@ -211,7 +212,6 @@ class TrainingOfficerClassroomReservationController extends Controller
         }
 
         $selectedResource = $resources->get($currentIndex);
-
 
         /*
          * Validate reservation form.
@@ -258,7 +258,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ],
         ]);
 
-
         /*
          * Validate room capacity.
          */
@@ -268,7 +267,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             $selectedResource['name']
         );
 
-
         /*
          * Get current temporary reservation data.
          */
@@ -276,7 +274,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             self::RESERVATION_SESSION_KEY,
             []
         );
-
 
         /*
          * If editing an existing reservation entry,
@@ -290,7 +287,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 ?? null;
         }
 
-
         /*
          * Validate schedule conflict.
          */
@@ -302,14 +298,12 @@ class TrainingOfficerClassroomReservationController extends Controller
             $ignoreReservationId
         );
 
-
         /*
          * Preserve existing reservation ID
          * when editing.
          */
         $existingData =
             $reservationData[$currentIndex] ?? [];
-
 
         /*
          * Save reservation data into session.
@@ -356,7 +350,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 $validated['description'],
         ];
 
-
         /*
          * Save temporary reservation data.
          */
@@ -364,7 +357,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             self::RESERVATION_SESSION_KEY,
             $reservationData
         );
-
 
         /*
          * If editing from review,
@@ -381,13 +373,11 @@ class TrainingOfficerClassroomReservationController extends Controller
                 );
         }
 
-
         /*
          * Find next room.
          */
         $nextResource =
             $resources->get($currentIndex + 1);
-
 
         /*
          * Continue to next room.
@@ -401,7 +391,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             );
         }
 
-
         /*
          * All rooms completed.
          */
@@ -410,7 +399,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 'training-officer.classroom.reservation.review'
             );
     }
-
 
     /**
      * Show reservation review page.
@@ -431,7 +419,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 );
         }
 
-
         /*
          * Get temporary reservation data.
          */
@@ -439,7 +426,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             self::RESERVATION_SESSION_KEY,
             []
         );
-
 
         /*
          * Make sure every room has
@@ -458,7 +444,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                     'Please complete all classroom reservation forms before reviewing.'
                 );
         }
-
 
         /*
          * Make sure reservation indexes
@@ -482,7 +467,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             }
         }
 
-
         return view(
             'training-officer-classroom.reservation.review',
             [
@@ -494,7 +478,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ]
         );
     }
-
 
     /**
      * Final reservation submission.
@@ -515,7 +498,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 );
         }
 
-
         /*
          * Get temporary reservation data.
          */
@@ -523,7 +505,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             self::RESERVATION_SESSION_KEY,
             []
         );
-
 
         /*
          * Make sure every room has
@@ -543,19 +524,16 @@ class TrainingOfficerClassroomReservationController extends Controller
                 );
         }
 
-
         /*
          * Re-check every room before creating
          * permanent reservation records.
          */
         foreach ($reservationData as $data) {
-
             $roomId = (int) ($data['resource_id'] ?? 0);
 
             $room = Room::query()
                 ->where('id', $roomId)
                 ->first();
-
 
             /*
              * Room must still exist and be available.
@@ -576,7 +554,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                     );
             }
 
-
             /*
              * Capacity check.
              */
@@ -585,7 +562,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 $room->capacity,
                 $room->name
             );
-
 
             /*
              * Schedule conflict check.
@@ -599,25 +575,47 @@ class TrainingOfficerClassroomReservationController extends Controller
             );
         }
 
-
         /*
          * Create all reservation records
          * inside one database transaction.
+         *
+         * Keep the created reservations so notifications
+         * can be sent only after the transaction succeeds.
          */
-        DB::transaction(
+        $createdReservations = DB::transaction(
             function () use (
                 $request,
                 $reservationData
             ) {
+                $reservations = collect();
+
                 foreach ($reservationData as $data) {
-                    $this->createReservation(
+                    $reservation = $this->createReservation(
                         $request,
                         $data
                     );
+
+                    $reservations->push($reservation);
                 }
+
+                return $reservations;
             }
         );
 
+        /*
+         * Send notifications for every newly created classroom reservation.
+         *
+         * Coordinator:
+         * - receives every new Pending Reservation.
+         *
+         * Building Coordinator:
+         * - receives Room reservations only for their assigned building.
+         */
+        foreach ($createdReservations as $reservation) {
+            $this->sendReservationNotifications(
+                $reservation
+            );
+        }
 
         /*
          * Clear temporary classroom
@@ -627,7 +625,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             self::RESERVATION_SESSION_KEY,
             self::CART_SESSION_KEY,
         ]);
-
 
         /*
          * Return to classroom home.
@@ -642,6 +639,118 @@ class TrainingOfficerClassroomReservationController extends Controller
             );
     }
 
+    /**
+     * Send in-app notifications for one new classroom reservation.
+     */
+    private function sendReservationNotifications(
+        Reservation $reservation
+    ): void {
+        $recipients = collect();
+
+        /*
+         * Coordinator receives every Pending Reservation.
+         */
+        $coordinators = User::query()
+            ->whereHas(
+                'role',
+                function ($query) {
+                    $query->where(
+                        'name',
+                        'Coordinator'
+                    );
+                }
+            )
+            ->get();
+
+        $recipients = $recipients->merge(
+            $coordinators
+        );
+
+        /*
+         * Classroom Room:
+         * notify only Building Coordinators assigned to
+         * the room's building.
+         */
+        if ($reservation->room_id !== null) {
+            $buildingId = $reservation->room?->building_id;
+
+            if ($buildingId !== null) {
+                $buildingCoordinators = User::query()
+                    ->whereHas(
+                        'role',
+                        function ($query) {
+                            $query->where(
+                                'name',
+                                'Building Coordinator'
+                            );
+                        }
+                    )
+                    ->whereHas(
+                        'buildings',
+                        function ($query) use (
+                            $buildingId
+                        ) {
+                            $query->where(
+                                'buildings.id',
+                                $buildingId
+                            );
+                        }
+                    )
+                    ->get();
+
+                $recipients = $recipients->merge(
+                    $buildingCoordinators
+                );
+            }
+        }
+
+        /*
+         * Avoid duplicate notifications.
+         */
+        $recipients
+            ->unique('id')
+            ->each(
+                function (User $recipient) use (
+                    $reservation
+                ) {
+                    $bookerName =
+                        $reservation->booker_name
+                        ?: $reservation->user?->name
+                        ?: 'A user';
+
+                    $roomName =
+                        $reservation->room?->name
+                        ?: 'the selected room';
+
+                    Notification::create([
+                        'user_id' =>
+                            $recipient->id,
+
+                        'type' =>
+                            'RESERVATION_PENDING',
+
+                        'title' =>
+                            'New Reservation Request',
+
+                        'message' =>
+                            $bookerName
+                            . ' has requested '
+                            . 'Room '
+                            . $roomName
+                            . '. Your approval is required.',
+
+                        'target_type' =>
+                            'reservation',
+
+                        'target_id' =>
+                            $reservation->id,
+
+                        'read_at' =>
+                            null,
+                    ]);
+                }
+            );
+    }
 
     /**
      * Get all rooms from classroom booking cart.
@@ -658,7 +767,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ]
         );
 
-
         /*
          * Get room IDs only.
          */
@@ -673,11 +781,9 @@ class TrainingOfficerClassroomReservationController extends Controller
             )
             ->values();
 
-
         if ($roomIds->isEmpty()) {
             return collect();
         }
-
 
         /*
          * Get rooms from database.
@@ -700,24 +806,20 @@ class TrainingOfficerClassroomReservationController extends Controller
             )
             ->get();
 
-
         /*
          * Preserve cart order.
          */
         return $roomIds
             ->map(
                 function ($id) use ($rooms) {
-
                     $room = $rooms->firstWhere(
                         'id',
                         $id
                     );
 
-
                     if (!$room) {
                         return null;
                     }
-
 
                     return [
                         'type' =>
@@ -747,7 +849,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ->filter()
             ->values();
     }
-
 
     /**
      * Create one reservation row.
@@ -802,14 +903,12 @@ class TrainingOfficerClassroomReservationController extends Controller
         ]);
     }
 
-
     /**
      * Generate unique reservation number.
      */
     private function generateReservationNumber(): string
     {
         do {
-
             $number =
                 'GITC-'
                 . now()->format('Ymd')
@@ -817,7 +916,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 . strtoupper(
                     Str::random(6)
                 );
-
         } while (
             Reservation::query()
                 ->where(
@@ -827,10 +925,8 @@ class TrainingOfficerClassroomReservationController extends Controller
                 ->exists()
         );
 
-
         return $number;
     }
-
 
     /**
      * Validate room capacity.
@@ -855,7 +951,6 @@ class TrainingOfficerClassroomReservationController extends Controller
             ]);
         }
     }
-
 
     /**
      * Validate room schedule conflict.
@@ -890,7 +985,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 $startsAt
             );
 
-
         /*
          * Ignore current reservation
          * when editing.
@@ -902,7 +996,6 @@ class TrainingOfficerClassroomReservationController extends Controller
                 $ignoreReservationId
             );
         }
-
 
         if ($query->exists()) {
             throw ValidationException::withMessages([

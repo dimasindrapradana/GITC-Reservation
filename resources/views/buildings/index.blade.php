@@ -42,17 +42,6 @@
 
 <div class="content-card">
 
-    <div class="card-header">
-
-        <div>
-            <h3>Building List</h3>
-
-            <p>
-                All registered buildings.
-            </p>
-        </div>
-
-    </div>
 
     <form
         action="{{ route('buildings.index') }}"

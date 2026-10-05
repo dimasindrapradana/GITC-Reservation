@@ -155,23 +155,6 @@ Route::middleware('auth')->group(function () {
         [NotificationController::class, 'readAll']
     )->name('notifications.read-all');
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | My Reservations
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get(
-        '/my-reservations',
-        [ReservationController::class, 'myReservations']
-    )->name('reservations.my');
-
-    Route::get(
-        '/my-reservations/{reservation}',
-        [ReservationController::class, 'myShow']
-    )->name('my-reservations.show');
-
 });
 
 
@@ -703,6 +686,23 @@ Route::middleware([
             '/',
             [TrainingOfficerController::class, 'index']
         )->name('home');
+
+
+         /*
+    |--------------------------------------------------------------------------
+    | My Reservations
+    |--------------------------------------------------------------------------
+    */
+
+       Route::get(
+            '/my-reservations',
+            [ReservationController::class, 'myReservations']
+        )->name('my-reservations.index');
+
+        Route::get(
+            '/my-reservations/{reservation}',
+            [ReservationController::class, 'myShow']
+        )->name('my-reservations.show');
 
 
         /*

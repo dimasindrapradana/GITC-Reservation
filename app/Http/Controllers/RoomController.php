@@ -32,13 +32,15 @@ class RoomController extends Controller
         }
 
         $rooms = Room::query()
-            ->with('building')
+            ->with([
+                'building' => function ($query) {
+                    $query->withTrashed();
+                },
+            ])
             ->withCount('reservations')
 
             ->when($search !== '', function ($query) use ($search) {
-
                 $query->where(function ($query) use ($search) {
-
                     $query
                         ->where(
                             'rooms.name',
@@ -46,60 +48,46 @@ class RoomController extends Controller
                             '%' . $search . '%'
                         )
                         ->orWhereHas('building', function ($query) use ($search) {
-
                             $query->where(
                                 'name',
                                 'like',
                                 '%' . $search . '%'
                             );
-
                         });
-
                 });
-
             })
 
             ->when($building !== '', function ($query) use ($building) {
-
                 $query->where(
                     'building_id',
                     $building
                 );
-
             })
 
             ->when($filter === 'available', function ($query) {
-
                 $query->where(
                     'status',
                     'AVAILABLE'
                 );
-
             })
 
             ->when($filter === 'maintenance', function ($query) {
-
                 $query->where(
                     'status',
                     'MAINTENANCE'
                 );
-
             })
 
             ->when($sort === 'oldest', function ($query) {
-
                 $query
                     ->orderBy('created_at', 'asc')
                     ->orderBy('id', 'asc');
-
             })
 
             ->when($sort === 'newest', function ($query) {
-
                 $query
                     ->orderBy('created_at', 'desc')
                     ->orderBy('id', 'desc');
-
             })
 
             ->paginate(10)
@@ -138,7 +126,8 @@ class RoomController extends Controller
             'building_id' => [
                 'required',
                 'integer',
-                'exists:buildings,id',
+                Rule::exists('buildings', 'id')
+                    ->whereNull('deleted_at'),
             ],
             'name' => [
                 'required',
@@ -189,14 +178,12 @@ class RoomController extends Controller
         ]);
 
         foreach ($request->file('images', []) as $index => $image) {
-
             $imageService->store(
                 $image,
                 'rooms',
                 $room->id,
                 $index
             );
-
         }
 
         return redirect()
@@ -210,7 +197,9 @@ class RoomController extends Controller
     public function show(Room $room): View
     {
         $room->load([
-            'building',
+            'building' => function ($query) {
+                $query->withTrashed();
+            },
             'images' => function ($query) {
                 $query->orderBy('sort_order');
             },
@@ -228,6 +217,9 @@ class RoomController extends Controller
             ->get();
 
         $room->load([
+            'building' => function ($query) {
+                $query->withTrashed();
+            },
             'images' => function ($query) {
                 $query->orderBy('sort_order');
             },
@@ -248,7 +240,8 @@ class RoomController extends Controller
             'building_id' => [
                 'required',
                 'integer',
-                'exists:buildings,id',
+                Rule::exists('buildings', 'id')
+                    ->whereNull('deleted_at'),
             ],
             'name' => [
                 'required',
@@ -301,14 +294,12 @@ class RoomController extends Controller
         $lastSortOrder = $room->images()->max('sort_order');
 
         foreach ($request->file('images', []) as $index => $image) {
-
             $imageService->store(
                 $image,
                 'rooms',
                 $room->id,
                 ($lastSortOrder ?? -1) + $index + 1
             );
-
         }
 
         return redirect()
@@ -319,24 +310,10 @@ class RoomController extends Controller
             );
     }
 
-    public function destroy(
-        Room $room,
-        ResourceImageService $imageService
-    ): RedirectResponse {
-        if ($room->reservations()->exists()) {
-
-            return redirect()
-                ->route('rooms.index')
-                ->with(
-                    'error',
-                    'This room cannot be deleted because it has existing reservations.'
-                );
-        }
-
-        foreach ($room->images as $image) {
-            $imageService->delete($image);
-        }
-
+    public function destroy(Room $room): RedirectResponse
+    {
+        // Soft delete only.
+        // Existing images and reservations are preserved.
         $room->delete();
 
         return redirect()
@@ -356,7 +333,20 @@ class RoomController extends Controller
             ->whereKey($image)
             ->firstOrFail();
 
+        // Only the selected image is permanently deleted.
         $imageService->delete($resourceImage);
+
+        $remainingImages = $room->images()
+            ->orderBy('sort_order')
+            ->get();
+
+        foreach ($remainingImages as $index => $remainingImage) {
+            if ($remainingImage->sort_order !== $index) {
+                $remainingImage->update([
+                    'sort_order' => $index,
+                ]);
+            }
+        }
 
         return redirect()
             ->route('rooms.edit', $room)

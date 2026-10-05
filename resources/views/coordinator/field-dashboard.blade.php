@@ -50,8 +50,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
         flex-shrink: 0;
+    }
+
+    .stat-icon img {
+        width: 20px;
+        height: 20px;
+        display: block;
     }
 
     .dashboard-grid {
@@ -178,6 +183,12 @@
         flex-shrink: 0;
     }
 
+    .quick-icon img {
+        width: 18px;
+        height: 18px;
+        display: block;
+    }
+
     .quick-info {
         min-width: 0;
     }
@@ -241,11 +252,14 @@
         </p>
     </div>
 
+
     {{-- STATISTICS --}}
     <div class="stats-grid">
 
         <div class="stat-card">
+
             <div class="stat-info">
+
                 <div class="stat-label">
                     Pending Reservations
                 </div>
@@ -253,13 +267,25 @@
                 <div class="stat-value">
                     {{ $stats['pending_reservations'] }}
                 </div>
+
             </div>
 
-            <div class="stat-icon">◷</div>
+            <div class="stat-icon">
+
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                    alt=""
+                >
+
+            </div>
+
         </div>
 
+
         <div class="stat-card">
+
             <div class="stat-info">
+
                 <div class="stat-label">
                     Approved Reservations
                 </div>
@@ -267,13 +293,25 @@
                 <div class="stat-value">
                     {{ $stats['approved_reservations'] }}
                 </div>
+
             </div>
 
-            <div class="stat-icon">✓</div>
+            <div class="stat-icon">
+
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/approved.svg') }}"
+                    alt=""
+                >
+
+            </div>
+
         </div>
 
+
         <div class="stat-card">
+
             <div class="stat-info">
+
                 <div class="stat-label">
                     Today's Reservations
                 </div>
@@ -281,13 +319,25 @@
                 <div class="stat-value">
                     {{ $stats['today_reservations'] }}
                 </div>
+
             </div>
 
-            <div class="stat-icon">▣</div>
+            <div class="stat-icon">
+
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/today.svg') }}"
+                    alt=""
+                >
+
+            </div>
+
         </div>
 
+
         <div class="stat-card">
+
             <div class="stat-info">
+
                 <div class="stat-label">
                     Upcoming Reservations
                 </div>
@@ -295,12 +345,22 @@
                 <div class="stat-value">
                     {{ $stats['upcoming_reservations'] }}
                 </div>
+
             </div>
 
-            <div class="stat-icon">◫</div>
+            <div class="stat-icon">
+
+                <img
+                    src="{{ asset('assets/icons/navigation/blue/upcoming.svg') }}"
+                    alt=""
+                >
+
+            </div>
+
         </div>
 
     </div>
+
 
     {{-- LOWER CONTENT --}}
     <div class="dashboard-grid">
@@ -309,14 +369,21 @@
         <section class="section-card">
 
             <div class="section-header">
-                <h3>Pending Field Reservations</h3>
+
+                <h3>
+                    Pending Field Reservations
+                </h3>
 
                 <a
-                    href="{{ route('field-coordinator.reservations.index', ['status' => 'PENDING', 'resource_type' => 'field']) }}"
+                    href="{{ route('field-coordinator.reservations.index', [
+                        'status' => 'PENDING',
+                        'resource_type' => 'field'
+                    ]) }}"
                     class="section-action"
                 >
                     View All
                 </a>
+
             </div>
 
             <div class="section-body">
@@ -346,13 +413,21 @@
                         </div>
 
                         <div class="reservation-meta">
+
                             {{ $reservation->user->name }}
+
                             ·
+
                             Field
+
                             ·
+
                             {{ $reservation->starts_at->format('d M Y, H:i') }}
+
                             -
+
                             {{ $reservation->ends_at->format('H:i') }}
+
                         </div>
 
                     </div>
@@ -369,13 +444,20 @@
 
         </section>
 
+
         {{-- RESERVATION SUMMARY --}}
         <section class="section-card">
 
             <div class="section-header">
-                <h3>Field Reservation Summary</h3>
 
-                <span>Current</span>
+                <h3>
+                    Field Reservation Summary
+                </h3>
+
+                <span>
+                    Current
+                </span>
+
             </div>
 
             <div class="section-body">
@@ -383,7 +465,12 @@
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◷
+
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/pending.svg') }}"
+                            alt=""
+                        >
+
                     </div>
 
                     <div class="quick-info">
@@ -400,10 +487,16 @@
 
                 </div>
 
+
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ✓
+
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/approved.svg') }}"
+                            alt=""
+                        >
+
                     </div>
 
                     <div class="quick-info">
@@ -420,10 +513,16 @@
 
                 </div>
 
+
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ▣
+
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/today.svg') }}"
+                            alt=""
+                        >
+
                     </div>
 
                     <div class="quick-info">
@@ -440,10 +539,16 @@
 
                 </div>
 
+
                 <div class="quick-item">
 
                     <div class="quick-icon">
-                        ◫
+
+                        <img
+                            src="{{ asset('assets/icons/navigation/blue/upcoming.svg') }}"
+                            alt=""
+                        >
+
                     </div>
 
                     <div class="quick-info">
@@ -464,14 +569,19 @@
 
         </section>
 
+
         {{-- UPCOMING RESERVATIONS --}}
         <section class="section-card">
 
             <div class="section-header">
 
-                <h3>Upcoming Field Reservations</h3>
+                <h3>
+                    Upcoming Field Reservations
+                </h3>
 
-                <span>Approved</span>
+                <span>
+                    Approved
+                </span>
 
             </div>
 
@@ -502,11 +612,17 @@
                         </div>
 
                         <div class="reservation-meta">
+
                             {{ $reservation->starts_at->format('d M Y, H:i') }}
+
                             -
+
                             {{ $reservation->ends_at->format('H:i') }}
+
                             ·
+
                             {{ $reservation->user->name }}
+
                         </div>
 
                     </div>

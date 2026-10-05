@@ -21,7 +21,6 @@ return new class extends Migration
             $table->text('simulation_facilities');
             $table->string('status', 20)->default('AVAILABLE');
             $table->softDeletes();
-
             $table->timestamps();
         });
     }

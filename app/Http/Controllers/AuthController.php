@@ -22,9 +22,21 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        if (! Auth::attempt($credentials)) {
+        /*
+         * Only active users are allowed to log in.
+         *
+         * Users with deleted_at IS NOT NULL are
+         * considered soft deleted and cannot authenticate.
+         */
+        $loginCredentials = [
+            'username' => $credentials['username'],
+            'password' => $credentials['password'],
+            'deleted_at' => null,
+        ];
+
+        if (! Auth::attempt($loginCredentials)) {
             throw ValidationException::withMessages([
-                'username' => 'Username atau password salah.',
+                'username' => 'Invalid username or password.',
             ]);
         }
 
@@ -44,7 +56,6 @@ class AuthController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Training Officer
@@ -56,7 +67,6 @@ class AuthController extends Controller
                 'training-officer.home'
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -70,7 +80,6 @@ class AuthController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Building Coordinator
@@ -83,7 +92,6 @@ class AuthController extends Controller
             );
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Field Coordinator
@@ -95,7 +103,6 @@ class AuthController extends Controller
                 'field-coordinator.reservations.index'
             );
         }
-
 
         /*
         |--------------------------------------------------------------------------

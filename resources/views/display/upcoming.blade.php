@@ -1643,7 +1643,7 @@
 
                 <img
                 
-                src="{{ asset('images/logo/gitc-logo.png') }}"
+                src="{{ asset('assets/icons/logo/logo.png') }}"
                 alt="GITC Logo"
     
                     alt="Garuda Indonesia Training Center"

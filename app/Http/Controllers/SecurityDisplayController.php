@@ -8,7 +8,7 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 
 class SecurityDisplayController extends Controller
 {
@@ -38,7 +38,7 @@ class SecurityDisplayController extends Controller
      * - tomorrow's reservations
      * - active published news
      */
-    public function data(): JsonResponse
+    public function data(Request $request): JsonResponse
     {
         $now = Carbon::now('Asia/Jakarta');
 
@@ -67,6 +67,7 @@ class SecurityDisplayController extends Controller
                             'status',
                         ]);
                 },
+
                 'trainingRooms' => function ($query) {
                     $query
                         ->orderBy('name')
@@ -90,12 +91,6 @@ class SecurityDisplayController extends Controller
          * =========================================================
          * RESERVATIONS
          * =========================================================
-         *
-         * Security needs operational schedule information, so only
-         * PENDING and APPROVED reservations are included here.
-         * REJECTED and CANCELLED do not represent active schedule
-         * information and therefore are not shown on the public
-         * Security Display.
          */
 
         $reservations = Reservation::query()
@@ -109,55 +104,63 @@ class SecurityDisplayController extends Controller
                 'PENDING',
                 'APPROVED',
             ])
-            ->where('starts_at', '<', $tomorrowEnd)
-            ->where('ends_at', '>', $todayStart)
+            ->where(
+                'starts_at',
+                '<',
+                $tomorrowEnd
+            )
+            ->where(
+                'ends_at',
+                '>',
+                $todayStart
+            )
             ->where(function ($query) {
 
                 /*
-                * ROOM
-                *
-                * Room harus aktif
-                * dan Building-nya juga harus aktif.
-                */
+                 * ROOM
+                 */
+
                 $query->whereHas('room', function ($query) {
 
                     $query
                         ->whereNull('rooms.deleted_at')
                         ->whereHas('building', function ($query) {
 
-                            $query->whereNull('buildings.deleted_at');
+                            $query->whereNull(
+                                'buildings.deleted_at'
+                            );
 
                         });
 
                 })
 
                 /*
-                * TRAINING MEDIA
-                *
-                * Training Media harus aktif
-                * dan Building-nya juga harus aktif.
-                */
+                 * TRAINING MEDIA
+                 */
+
                 ->orWhereHas('trainingRoom', function ($query) {
 
                     $query
                         ->whereNull('training_rooms.deleted_at')
                         ->whereHas('building', function ($query) {
 
-                            $query->whereNull('buildings.deleted_at');
+                            $query->whereNull(
+                                'buildings.deleted_at'
+                            );
 
                         });
 
                 })
 
                 /*
-                * FIELD
-                *
-                * Field tidak memiliki Building.
-                * Cukup pastikan Field masih aktif.
-                */
+                 * FIELD
+                 */
+
                 ->orWhereHas('field', function ($query) {
 
-                    $query->whereNull('fields.deleted_at');
+                    $query->whereNull(
+                        'fields.deleted_at'
+                    );
 
                 });
 
@@ -169,73 +172,217 @@ class SecurityDisplayController extends Controller
          * =========================================================
          * RESERVATION FORMATTER
          * =========================================================
+         *
+         * Display structure:
+         *
+         * BUILDING
+         * LOCATION
+         * EVENT
+         * TIME
+         * STATUS
+         *
+         * Resource is intentionally NOT returned.
          */
 
-        $formatReservation = function (Reservation $reservation): array {
-            $resourceType = null;
-            $resourceName = null;
+        $formatReservation = function (
+            Reservation $reservation
+        ): array {
+
             $buildingId = null;
             $buildingName = null;
+            $locationName = null;
+
+            /*
+             * ROOM
+             */
 
             if ($reservation->room) {
-                $resourceType = 'ROOM';
-                $resourceName = $reservation->room->name;
+
+                $locationName =
+                    $reservation->room->name;
 
                 if ($reservation->room->building) {
-                    $buildingId = $reservation->room->building->id;
-                    $buildingName = $reservation->room->building->name;
-                }
-            } elseif ($reservation->trainingRoom) {
-                $resourceType = 'TRAINING MEDIA';
-                $resourceName = $reservation->trainingRoom->name;
 
-                if ($reservation->trainingRoom->building) {
-                    $buildingId = $reservation->trainingRoom->building->id;
-                    $buildingName = $reservation->trainingRoom->building->name;
+                    $buildingId =
+                        $reservation
+                            ->room
+                            ->building
+                            ->id;
+
+                    $buildingName =
+                        $reservation
+                            ->room
+                            ->building
+                            ->name;
                 }
-            } elseif ($reservation->field) {
-                $resourceType = 'FIELD';
-                $resourceName = $reservation->field->name;
+            }
+
+            /*
+             * TRAINING MEDIA
+             */
+
+            elseif ($reservation->trainingRoom) {
+
+                $locationName =
+                    $reservation
+                        ->trainingRoom
+                        ->name;
+
+                if (
+                    $reservation
+                        ->trainingRoom
+                        ->building
+                ) {
+
+                    $buildingId =
+                        $reservation
+                            ->trainingRoom
+                            ->building
+                            ->id;
+
+                    $buildingName =
+                        $reservation
+                            ->trainingRoom
+                            ->building
+                            ->name;
+                }
+            }
+
+            /*
+             * FIELD
+             *
+             * Field does not have a Building.
+             */
+
+            elseif ($reservation->field) {
+
+                $locationName =
+                    $reservation->field->name;
+
+                /*
+                 * FIELD identifier for display.
+                 *
+                 * The frontend can use this as the compact
+                 * building/location marker.
+                 */
+                $buildingId = null;
+                $buildingName = 'FD';
             }
 
             return [
-                'id' => $reservation->id,
-                'reservation_number' => $reservation->reservation_number,
-                'user_id' => $reservation->user_id,
-                'event_name' => $reservation->event_name,
-                'booker_name' => $reservation->booker_name,
-                'user_name' => $reservation->user?->name,
-                'instructor' => $reservation->instructor,
-                'description' => $reservation->description,
-                'starts_at' => $reservation->starts_at?->toIso8601String(),
-                'ends_at' => $reservation->ends_at?->toIso8601String(),
-                'total_person' => $reservation->total_person,
-                'status' => $reservation->status,
+
+                'id' =>
+                    $reservation->id,
+
+                'reservation_number' =>
+                    $reservation->reservation_number,
+
+                'user_id' =>
+                    $reservation->user_id,
+
+                'event_name' =>
+                    $reservation->event_name,
+
+                'booker_name' =>
+                    $reservation->booker_name,
+
+                'user_name' =>
+                    $reservation->user?->name,
+
+                'instructor' =>
+                    $reservation->instructor,
+
+                'description' =>
+                    $reservation->description,
+
+                'starts_at' =>
+                    $reservation
+                        ->starts_at
+                        ?->toIso8601String(),
+
+                'ends_at' =>
+                    $reservation
+                        ->ends_at
+                        ?->toIso8601String(),
+
+                'total_person' =>
+                    $reservation->total_person,
+
+                'status' =>
+                    $reservation->status,
+
+                /*
+                 * Building
+                 */
+
                 'building' => [
-                    'id' => $buildingId,
-                    'name' => $buildingName,
+
+                    'id' =>
+                        $buildingId,
+
+                    'name' =>
+                        $buildingName,
+
                 ],
-                'resource' => [
-                    'type' => $resourceType,
-                    'name' => $resourceName,
-                ],
-                'location_name' => $resourceName,
+
+                /*
+                 * Location
+                 */
+
+                'location_name' =>
+                    $locationName,
             ];
         };
 
+        /*
+         * =========================================================
+         * TODAY RESERVATIONS
+         * =========================================================
+         */
+
         $todayReservations = $reservations
-            ->filter(function (Reservation $reservation) use ($todayStart, $todayEnd) {
-                return $reservation->starts_at < $todayEnd
-                    && $reservation->ends_at > $todayStart;
-            })
+            ->filter(
+                function (
+                    Reservation $reservation
+                ) use (
+                    $todayStart,
+                    $todayEnd
+                ) {
+
+                    return
+                        $reservation->starts_at
+                            < $todayEnd
+                        &&
+                        $reservation->ends_at
+                            > $todayStart;
+                }
+            )
             ->map($formatReservation)
             ->values();
 
+        /*
+         * =========================================================
+         * TOMORROW RESERVATIONS
+         * =========================================================
+         */
+
         $tomorrowReservations = $reservations
-            ->filter(function (Reservation $reservation) use ($tomorrowStart, $tomorrowEnd) {
-                return $reservation->starts_at < $tomorrowEnd
-                    && $reservation->ends_at > $tomorrowStart;
-            })
+            ->filter(
+                function (
+                    Reservation $reservation
+                ) use (
+                    $tomorrowStart,
+                    $tomorrowEnd
+                ) {
+
+                    return
+                        $reservation->starts_at
+                            < $tomorrowEnd
+                        &&
+                        $reservation->ends_at
+                            > $tomorrowStart;
+                }
+            )
             ->map($formatReservation)
             ->values();
 
@@ -248,40 +395,126 @@ class SecurityDisplayController extends Controller
         $news = News::query()
             ->with([
                 'images' => function ($query) {
-                    $query->orderBy('sort_order');
+
+                    $query->orderBy(
+                        'sort_order'
+                    );
+
                 },
             ])
-            ->where('status', 'PUBLISHED')
-            ->where('starts_at', '<=', $now)
-            ->where('ends_at', '>=', $now)
-            ->orderByDesc('created_at')
+            ->where(
+                'status',
+                'PUBLISHED'
+            )
+            ->where(
+                'starts_at',
+                '<=',
+                $now
+            )
+            ->where(
+                'ends_at',
+                '>=',
+                $now
+            )
+            ->orderByDesc(
+                'created_at'
+            )
             ->get();
 
-        $newsData = $news
-            ->map(function (News $item): array {
-                $images = $item->images
-                    ->map(function ($image): array {
-                        return [
-                            'id' => $image->id,
-                            'file' => $image->file,
-                            'url' => Storage::disk('public')->url($image->file),
-                            'sort_order' => $image->sort_order,
-                        ];
-                    })
-                    ->values();
+        /*
+         * =========================================================
+         * NEWS FORMAT
+         * =========================================================
+         *
+         * IMPORTANT:
+         *
+         * Keep image URLs relative so they work from:
+         * - Laptop
+         * - Desktop
+         * - Mobile
+         * - Tablet
+         * - Other devices
+         */
 
-                return [
-                    'id' => $item->id,
-                    'title' => $item->title,
-                    'content' => $item->content,
-                    'starts_at' => $item->starts_at?->toIso8601String(),
-                    'ends_at' => $item->ends_at?->toIso8601String(),
-                    'status' => $item->status,
-                    'created_at' => $item->created_at?->toIso8601String(),
-                    'images' => $images,
-                    'image_url' => $images->first()['url'] ?? null,
-                ];
-            })
+        $newsData = $news
+            ->map(
+                function (
+                    News $item
+                ): array {
+
+                    $images = $item
+                        ->images
+                        ->map(
+                            function (
+                                $image
+                            ): array {
+
+                                $imageUrl =
+                                    '/storage/' .
+                                    ltrim(
+                                        $image->file,
+                                        '/'
+                                    );
+
+                                return [
+
+                                    'id' =>
+                                        $image->id,
+
+                                    'file' =>
+                                        $image->file,
+
+                                    'url' =>
+                                        $imageUrl,
+
+                                    'sort_order' =>
+                                        $image->sort_order,
+
+                                ];
+                            }
+                        )
+                        ->values();
+
+                    return [
+
+                        'id' =>
+                            $item->id,
+
+                        'title' =>
+                            $item->title,
+
+                        'content' =>
+                            $item->content,
+
+                        'starts_at' =>
+                            $item
+                                ->starts_at
+                                ?->toIso8601String(),
+
+                        'ends_at' =>
+                            $item
+                                ->ends_at
+                                ?->toIso8601String(),
+
+                        'status' =>
+                            $item->status,
+
+                        'created_at' =>
+                            $item
+                                ->created_at
+                                ?->toIso8601String(),
+
+                        'images' =>
+                            $images,
+
+                        'image_url' =>
+                            $images
+                                ->first()['url']
+                                ?? null,
+
+                    ];
+                }
+            )
             ->values();
 
         /*
@@ -291,62 +524,185 @@ class SecurityDisplayController extends Controller
          */
 
         $buildingData = $buildings
-            ->map(function ($building): array {
-                return [
-                    'id' => $building->id,
-                    'name' => $building->name,
-                    'rooms' => $building->rooms
-                        ->map(function ($room): array {
-                            return [
-                                'id' => $room->id,
-                                'name' => $room->name,
-                                'capacity' => $room->capacity,
-                                'status' => $room->status,
-                            ];
-                        })
-                        ->values(),
-                    'training_media' => $building->trainingRooms
-                        ->map(function ($trainingRoom): array {
-                            return [
-                                'id' => $trainingRoom->id,
-                                'name' => $trainingRoom->name,
-                                'capacity' => $trainingRoom->capacity,
-                                'simulation_type' => $trainingRoom->simulation_type,
-                                'status' => $trainingRoom->status,
-                            ];
-                        })
-                        ->values(),
-                ];
-            })
+            ->map(
+                function (
+                    $building
+                ): array {
+
+                    return [
+
+                        'id' =>
+                            $building->id,
+
+                        'name' =>
+                            $building->name,
+
+                        'rooms' =>
+                            $building
+                                ->rooms
+                                ->map(
+                                    function (
+                                        $room
+                                    ): array {
+
+                                        return [
+
+                                            'id' =>
+                                                $room->id,
+
+                                            'name' =>
+                                                $room->name,
+
+                                            'capacity' =>
+                                                $room->capacity,
+
+                                            'status' =>
+                                                $room->status,
+
+                                        ];
+                                    }
+                                )
+                                ->values(),
+
+                        'training_media' =>
+                            $building
+                                ->trainingRooms
+                                ->map(
+                                    function (
+                                        $trainingRoom
+                                    ): array {
+
+                                        return [
+
+                                            'id' =>
+                                                $trainingRoom->id,
+
+                                            'name' =>
+                                                $trainingRoom->name,
+
+                                            'capacity' =>
+                                                $trainingRoom->capacity,
+
+                                            'simulation_type' =>
+                                                $trainingRoom
+                                                    ->simulation_type,
+
+                                            'status' =>
+                                                $trainingRoom
+                                                    ->status,
+
+                                        ];
+                                    }
+                                )
+                                ->values(),
+
+                    ];
+                }
+            )
             ->values();
 
+        /*
+         * =========================================================
+         * RESPONSE
+         * =========================================================
+         */
+
         return response()->json([
-            'current_time' => $now->toIso8601String(),
+
+            /*
+             * CURRENT TIME
+             */
+
+            'current_time' =>
+                $now->toIso8601String(),
+
+            /*
+             * TODAY
+             */
 
             'today' => [
-                'date' => $todayStart->toDateString(),
-                'reservations' => $todayReservations,
+
+                'date' =>
+                    $todayStart->toDateString(),
+
+                'reservations' =>
+                    $todayReservations,
+
             ],
+
+            /*
+             * TOMORROW
+             */
 
             'tomorrow' => [
-                'date' => $tomorrowStart->toDateString(),
-                'reservations' => $tomorrowReservations,
+
+                'date' =>
+                    $tomorrowStart->toDateString(),
+
+                'reservations' =>
+                    $tomorrowReservations,
+
             ],
 
-            'buildings' => $buildingData,
+            /*
+             * BUILDINGS
+             */
 
-            'news' => $newsData,
+            'buildings' =>
+                $buildingData,
+
+            /*
+             * NEWS
+             */
+
+            'news' =>
+                $newsData,
+
+            /*
+             * COUNTS
+             */
 
             'counts' => [
-                'today' => $todayReservations->count(),
-                'tomorrow' => $tomorrowReservations->count(),
-                'today_live' => $todayReservations->filter(function (array $reservation) use ($now) {
-                    $start = Carbon::parse($reservation['starts_at']);
-                    $end = Carbon::parse($reservation['ends_at']);
 
-                    return $start <= $now && $end >= $now;
-                })->count(),
+                'today' =>
+                    $todayReservations->count(),
+
+                'tomorrow' =>
+                    $tomorrowReservations->count(),
+
+                'today_live' =>
+                    $todayReservations
+                        ->filter(
+                            function (
+                                array $reservation
+                            ) use (
+                                $now
+                            ) {
+
+                                $start =
+                                    Carbon::parse(
+                                        $reservation[
+                                            'starts_at'
+                                        ]
+                                    );
+
+                                $end =
+                                    Carbon::parse(
+                                        $reservation[
+                                            'ends_at'
+                                        ]
+                                    );
+
+                                return
+                                    $start <= $now
+                                    &&
+                                    $end >= $now;
+                            }
+                        )
+                        ->count(),
+
             ],
+
         ]);
     }
 }

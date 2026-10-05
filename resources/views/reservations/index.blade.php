@@ -38,14 +38,14 @@
 
     <div class="content-card">
 
-        <div class="card-header">
+        {{-- <div class="card-header">
             <div>
                 <h2>Reservation List</h2>
                 <p>
                     View and manage reservation records.
                 </p>
             </div>
-        </div>
+        </div> --}}
 
 
         {{-- ==========================================================

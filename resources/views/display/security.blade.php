@@ -7,6 +7,8 @@
     <title>GITC Info - Security Monitoring</title>
 
     <style>
+
+  
         :root {
             --navy-dark: #00294f;
             --navy: #003b6f;
@@ -77,6 +79,29 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* =========================================================
+        HIDE SCROLLBAR
+        Content tetap bisa di-scroll secara programmatic
+        ========================================================= */
+
+        ::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: transparent;
+        }
+
+        /* Firefox */
+        * {
+            scrollbar-width: none;
         }
 
         /* =========================================================
@@ -506,18 +531,17 @@
         }
 
         .schedule-grid-header,
-        .schedule-row {
-            display: grid;
-            grid-template-columns:
-                70px
-                minmax(145px, 0.98fr)
-                minmax(125px, 0.92fr)
-                minmax(220px, 1.85fr)
-                132px
-                96px;
-            gap: 10px;
-            align-items: center;
-        }
+            .schedule-row {
+                display: grid;
+                grid-template-columns:
+                    70px
+                    minmax(150px, 1fr)
+                    minmax(220px, 1.8fr)
+                    132px
+                    96px;
+                gap: 10px;
+                align-items: center;
+            }
 
         .schedule-grid-header {
             flex: 0 0 auto;
@@ -619,7 +643,7 @@
 
         .schedule-location {
             color: var(--text);
-            font-size: clamp(11px, 0.7vw, 15px);
+            font-size: clamp(15px, 0.7vw, 15px);
             font-weight: 700;
             /* line-height: 1.25; */
             overflow-wrap: anywhere;
@@ -628,7 +652,7 @@
 
         .schedule-event {
             color: var(--navy-dark);
-            font-size: clamp(13px, 0.8vw, 17px);
+            font-size: clamp(16px, 0.8vw, 17px);
             font-weight: 800;
             /* line-height: 1.25; */
             overflow-wrap: anywhere;
@@ -1348,13 +1372,12 @@
                 grid-template-columns: minmax(0, 2fr) minmax(430px, 1fr);
             }
 
-            .schedule-grid-header,
+           .schedule-grid-header,
             .schedule-row {
                 grid-template-columns:
                     70px
-                    minmax(135px, 0.9fr)
-                    minmax(120px, 0.82fr)
-                    minmax(195px, 1.55fr)
+                    minmax(135px, 0.95fr)
+                    minmax(195px, 1.6fr)
                     132px
                     100px;
             }
@@ -1474,6 +1497,1456 @@
                 grid-column: auto;
             }
         }
+
+
+        /* =========================================================
+           RESPONSIVE ENHANCEMENT
+           Desktop layout remains unchanged.
+        ========================================================= */
+
+        @media (max-width: 980px) {
+
+            html,
+            body {
+                overflow: auto;
+            }
+
+            .security-app {
+                width: 100%;
+                min-height: 100vh;
+                height: auto;
+                overflow: visible;
+            }
+
+            .display-header {
+                min-height: 82px;
+                padding: 12px 22px;
+            }
+
+            .header-left {
+                gap: 12px;
+            }
+
+            .header-building-name {
+                max-width: 32vw;
+            }
+
+            .header-right {
+                gap: 12px;
+            }
+
+            .security-main {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+                overflow: visible;
+                padding: 12px 16px 10px;
+                gap: 12px;
+            }
+
+            .monitor-area {
+                min-height: 0;
+            }
+
+            .security-side {
+                min-height: 520px;
+            }
+
+            .news-panel {
+                min-height: 520px;
+            }
+
+            .schedule-list {
+                overflow-x: hidden;
+            }
+
+        }
+
+        @media (max-width: 760px) {
+
+            .display-header {
+                flex: 0 0 auto;
+                min-height: 76px;
+                padding: 10px 16px;
+            }
+
+            .header-subtitle,
+            .header-divider,
+            .header-building-code,
+            .logo-area {
+                display: none;
+            }
+
+            .header-title {
+                font-size: 22px;
+            }
+
+            .header-building-name {
+                max-width: 42vw;
+                font-size: 18px;
+            }
+
+            .header-date {
+                font-size: 9px;
+            }
+
+            .header-clock {
+                font-size: 20px;
+            }
+
+            .security-main {
+                padding: 10px 10px 8px;
+                gap: 10px;
+            }
+
+            .security-toolbar {
+                padding: 13px;
+            }
+
+            .toolbar-head {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .section-title {
+                font-size: 23px;
+            }
+
+            .toolbar-actions {
+                width: 100%;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .visitor-lookup-button {
+                width: 100%;
+                min-height: 46px;
+            }
+
+            .toolbar-summary {
+                width: 100%;
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 6px;
+            }
+
+            .summary-chip {
+                min-width: 0;
+                min-height: 52px;
+                padding: 7px 5px;
+            }
+
+            .toolbar-controls {
+                margin-top: 11px;
+                align-items: stretch;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .control-group {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .control-divider {
+                display: none;
+            }
+
+            .day-switch,
+            .location-switch {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .day-button,
+            .location-button,
+            .clear-scope-button {
+                min-height: 38px;
+                padding: 0 12px;
+            }
+
+            .location-switch .location-button,
+            .location-switch .clear-scope-button {
+                flex: 1 1 auto;
+            }
+
+            .schedule-panel {
+                min-height: 0;
+            }
+
+            .panel-header {
+                padding: 11px 13px;
+                align-items: center;
+            }
+
+            .panel-title {
+                font-size: 18px;
+            }
+
+            .panel-count {
+                font-size: 9px;
+            }
+
+            .schedule-grid-header {
+                display: none;
+            }
+
+            .schedule-list {
+                padding: 8px;
+                overflow: visible;
+            }
+
+            
+
+            .schedule-row .schedule-cell:nth-child(1) {
+                grid-area: building;
+            }
+
+            .schedule-row .schedule-cell:nth-child(2) {
+                grid-area: location;
+            }
+
+            .schedule-row .schedule-cell:nth-child(3) {
+                grid-area: event;
+            }
+
+            .schedule-row .schedule-cell:nth-child(4) {
+                grid-area: time;
+            }
+
+            .schedule-row .schedule-cell:nth-child(5) {
+                grid-area: status;
+                justify-self: end;
+            }
+
+            .schedule-building {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+
+            .schedule-building.field {
+                min-width: 66px;
+                height: 34px;
+            }
+
+            .schedule-type {
+                font-size: 8px;
+            }
+
+            .schedule-resource {
+                margin-top: 2px;
+                font-size: 14px;
+            }
+
+            .schedule-location {
+                padding-top: 3px;
+                border-top: 1px solid var(--border);
+                text-align: left;
+                font-size: 11px;
+            }
+
+            .schedule-event {
+                padding-top: 2px;
+                font-size: 14px;
+                line-height: 1.3;
+            }
+
+            .schedule-time {
+                text-align: right;
+                font-size: 11px;
+            }
+
+            .schedule-status {
+                min-width: 76px;
+                padding: 6px 9px;
+                font-size: 8px;
+            }
+
+            .schedule-footer {
+                padding: 9px 11px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .security-side,
+            .news-panel {
+                min-height: 480px;
+            }
+
+            .news-header {
+                padding: 11px 13px;
+            }
+
+            .news-title {
+                font-size: 19px;
+            }
+
+            .news-body {
+                padding: 10px;
+            }
+
+            .news-post {
+                gap: 10px;
+            }
+
+            .news-image-wrap {
+                width: min(58vw, 280px);
+                height: min(64vw, 350px);
+                aspect-ratio: 4 / 5;
+            }
+
+            .news-content-title {
+                font-size: 19px;
+            }
+
+            .news-scroll-content {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .display-footer {
+                min-height: 38px !important;
+                flex: 0 0 auto !important;
+                padding: 8px 12px !important;
+            }
+
+            .display-footer > div:last-child {
+                display: none;
+            }
+
+            .visitor-lookup-modal,
+            .reservation-modal {
+                padding: 8px;
+                align-items: stretch;
+            }
+
+            .visitor-lookup-modal-card,
+            .reservation-modal-card {
+                width: 100%;
+                max-width: none;
+                height: calc(100vh - 16px);
+                max-height: calc(100vh - 16px);
+                border-radius: 16px;
+            }
+
+            .visitor-lookup-header,
+            .reservation-modal-header {
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .visitor-lookup-title,
+            .reservation-modal-title {
+                font-size: 22px;
+            }
+
+            .visitor-lookup-body {
+                padding: 12px;
+                gap: 10px;
+                overflow-y: auto;
+            }
+
+            .visitor-lookup-controls {
+                grid-template-columns: 1fr;
+                gap: 9px;
+            }
+
+            .lookup-day-switch {
+                width: 100%;
+            }
+
+            .lookup-day-button {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .lookup-location-wrap {
+                width: 100%;
+            }
+
+            .lookup-location-switch {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .lookup-location-button {
+                min-height: 38px;
+                padding: 0 12px;
+            }
+
+            #lookupSearch {
+                height: 50px;
+                font-size: 14px;
+            }
+
+            .lookup-result {
+                padding: 12px;
+            }
+
+            .lookup-result-top {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .lookup-result-time {
+                font-size: 11px;
+            }
+
+            .lookup-result-event {
+                font-size: 15px;
+            }
+
+            .reservation-modal-body {
+                padding: 13px;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .detail-item.full {
+                grid-column: auto;
+            }
+
+        }
+
+        @media (max-width: 480px) {
+
+            .display-header {
+                min-height: 70px;
+                padding: 9px 12px;
+            }
+
+            .header-title {
+                font-size: 19px;
+            }
+
+            .header-building-name {
+                max-width: 34vw;
+                font-size: 15px;
+            }
+
+            .header-date {
+                font-size: 8px;
+            }
+
+            .header-clock {
+                margin-top: 2px;
+                font-size: 17px;
+            }
+
+            .security-main {
+                padding: 8px;
+                gap: 8px;
+            }
+
+            .security-toolbar {
+                padding: 11px;
+                border-radius: 14px;
+            }
+
+            .section-title {
+                font-size: 20px;
+            }
+
+            .summary-chip {
+                min-height: 48px;
+            }
+
+            .summary-chip-value {
+                font-size: 15px;
+            }
+
+            .summary-chip-label {
+                font-size: 7px;
+            }
+
+            .day-switch,
+            .location-switch {
+                gap: 5px;
+            }
+
+            .day-button,
+            .location-button,
+            .clear-scope-button {
+                min-height: 36px;
+                padding: 0 9px;
+                font-size: 8px;
+            }
+
+            .schedule-row {
+                padding: 10px;
+                gap: 6px 8px;
+            }
+
+            .schedule-resource,
+            .schedule-event {
+                font-size: 13px;
+            }
+
+            .schedule-location {
+                font-size: 10px;
+            }
+
+            .schedule-time {
+                font-size: 10px;
+            }
+
+            .schedule-status {
+                min-width: 68px;
+                padding: 5px 7px;
+                font-size: 7px;
+            }
+
+            .security-side,
+            .news-panel {
+                min-height: 430px;
+            }
+
+            .news-image-wrap {
+                width: min(65vw, 240px);
+                height: min(76vw, 300px);
+            }
+
+            .news-content-title {
+                font-size: 17px;
+            }
+
+            .news-scroll-content {
+                font-size: 12px;
+            }
+
+            .visitor-lookup-modal,
+            .reservation-modal {
+                padding: 5px;
+            }
+
+            .visitor-lookup-modal-card,
+            .reservation-modal-card {
+                height: calc(100vh - 10px);
+                max-height: calc(100vh - 10px);
+                border-radius: 13px;
+            }
+
+            .visitor-lookup-header,
+            .reservation-modal-header {
+                padding: 12px;
+            }
+
+            .visitor-lookup-kicker,
+            .reservation-modal-kicker {
+                font-size: 8px;
+            }
+
+            .visitor-lookup-title,
+            .reservation-modal-title {
+                font-size: 19px;
+            }
+
+            .visitor-lookup-close,
+            .reservation-modal-close {
+                width: 38px;
+                height: 38px;
+                flex-basis: 38px;
+                font-size: 22px;
+            }
+
+            .lookup-result-footer {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 7px;
+            }
+
+        }
+
+        @media (max-height: 700px) and (min-width: 761px) {
+
+            .display-header {
+                flex-basis: 11vh;
+                min-height: 76px;
+            }
+
+            .security-main {
+                padding-top: 8px;
+                padding-bottom: 6px;
+            }
+
+            .security-toolbar {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .schedule-row {
+                min-height: 58px;
+                padding-top: 7px;
+                padding-bottom: 7px;
+            }
+
+            .news-image-wrap {
+                height: clamp(220px, 48%, 330px);
+            }
+
+        }
+
+        @media (orientation: landscape) and (max-width: 900px) {
+
+            .display-header {
+                min-height: 64px;
+            }
+
+            .header-subtitle,
+            .header-divider,
+            .logo-area {
+                display: none;
+            }
+
+            .security-main {
+                grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.8fr);
+                grid-template-rows: minmax(0, 1fr);
+                overflow: hidden;
+                min-height: calc(100vh - 64px);
+                padding: 8px 10px 6px;
+            }
+
+            .monitor-area,
+            .security-side {
+                min-height: 0;
+            }
+
+            .security-side,
+            .news-panel {
+                min-height: 0;
+            }
+
+            .toolbar-head {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .toolbar-actions {
+                width: auto;
+                display: flex;
+            }
+
+            .toolbar-controls {
+                margin-top: 7px;
+            }
+
+            .security-toolbar {
+                padding: 8px 10px;
+            }
+
+            .section-title {
+                font-size: 19px;
+            }
+
+            .schedule-row {
+                min-height: 54px;
+                padding: 7px 9px;
+            }
+
+            .news-image-wrap {
+                height: clamp(170px, 45%, 250px);
+                width: auto;
+            }
+
+            .news-content-title {
+                font-size: 16px;
+            }
+
+            .news-scroll-content {
+                font-size: 11px;
+            }
+
+            .display-footer {
+                min-height: 28px !important;
+                flex-basis: 28px !important;
+            }
+
+        }
+
+        /* =========================================================
+   RESPONSIVE SECURITY DISPLAY
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .security-main {
+        grid-template-columns:
+            minmax(0, 1.55fr)
+            minmax(320px, 0.9fr);
+
+        gap: 10px;
+        padding: 10px 14px 8px;
+    }
+
+    .schedule-grid-header,
+    .schedule-row {
+        grid-template-columns:
+            52px
+            minmax(105px, 0.9fr)
+            minmax(100px, 0.85fr)
+            minmax(150px, 1.4fr)
+            105px
+            80px;
+
+        gap: 7px;
+    }
+
+    .schedule-row {
+        min-height: 60px;
+        padding: 8px;
+    }
+
+    .schedule-resource {
+        font-size: 13px;
+    }
+
+    .schedule-event {
+        font-size: 12px;
+    }
+
+    .schedule-location {
+        font-size: 10px;
+    }
+
+    .schedule-time {
+        font-size: 10px;
+    }
+
+    .schedule-status {
+        min-width: 70px;
+        padding: 6px 8px;
+        font-size: 8px;
+    }
+
+    .news-image-wrap {
+        height: clamp(240px, 52%, 360px);
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .display-header {
+        min-height: 72px;
+        flex-basis: 10vh;
+        padding: 0 14px;
+    }
+
+    .header-subtitle,
+    .header-divider,
+    .logo-area {
+        display: none;
+    }
+
+    .header-building-name {
+        max-width: 40vw;
+        font-size: 20px;
+    }
+
+    .header-date {
+        font-size: 10px;
+    }
+
+    .header-clock {
+        font-size: 24px;
+    }
+
+    .security-main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) auto;
+
+        overflow: hidden;
+
+        padding:
+            8px
+            10px
+            6px;
+    }
+
+    .monitor-area {
+        min-height: 0;
+    }
+
+    .security-side {
+        min-height: 0;
+        max-height: 42vh;
+    }
+
+    .news-panel {
+        min-height: 0;
+    }
+
+    .news-image-wrap {
+        height: min(38vh, 280px);
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .display-header {
+        min-height: 64px;
+        flex-basis: 64px;
+    }
+
+    .header-title {
+        font-size: 20px;
+    }
+
+    .header-building {
+        display: none;
+    }
+
+    .header-right {
+        gap: 8px;
+    }
+
+    .header-date {
+        font-size: 9px;
+    }
+
+    .header-clock {
+        margin-top: 2px;
+        font-size: 21px;
+    }
+
+
+    .security-main {
+        display: flex;
+        flex-direction: column;
+
+        gap: 8px;
+
+        padding:
+            7px
+            8px
+            5px;
+    }
+
+
+    .monitor-area {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+
+
+    .security-side {
+        flex: 0 0 38vh;
+        max-height: 38vh;
+        min-height: 220px;
+    }
+
+
+    /* TOOLBAR */
+
+    .security-toolbar {
+        border-radius: 14px;
+        padding: 9px;
+    }
+
+    .toolbar-head {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .toolbar-head-main {
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+
+    .toolbar-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .visitor-lookup-button {
+        width: 100%;
+        min-height: 40px;
+    }
+
+
+    .toolbar-summary {
+        width: 100%;
+    }
+
+    .summary-chip {
+        flex: 1;
+        min-width: 0;
+    }
+
+
+    .toolbar-controls {
+        margin-top: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 7px;
+    }
+
+    .control-group {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .control-divider {
+        display: none;
+    }
+
+    .day-switch,
+    .location-switch {
+        flex: 1;
+    }
+
+    .day-button,
+    .location-button,
+    .clear-scope-button {
+        min-height: 32px;
+        font-size: 9px;
+    }
+
+
+    /* SCHEDULE */
+
+    .schedule-panel {
+        border-radius: 14px;
+    }
+
+    .panel-header {
+        padding: 9px 10px;
+    }
+
+    .panel-title {
+        font-size: 17px;
+    }
+
+    .panel-count {
+        font-size: 9px;
+    }
+
+
+    .schedule-grid-header {
+        display: none;
+    }
+
+
+    .schedule-list {
+        padding: 7px;
+    }
+
+
+    .schedule-row {
+        display: grid;
+
+        grid-template-columns:
+            38px
+            minmax(0, 1fr)
+            auto;
+
+        grid-template-areas:
+            "building event status"
+            "building resource time";
+
+        gap:
+            5px
+            8px;
+
+        min-height: 72px;
+
+        margin-bottom: 7px;
+
+        padding: 9px;
+    }
+
+
+    .schedule-row > .schedule-cell:nth-child(1) {
+        grid-area: building;
+    }
+
+    .schedule-row > .schedule-cell:nth-child(2) {
+        grid-area: resource;
+    }
+
+    .schedule-row > .schedule-cell:nth-child(3) {
+        grid-area: location;
+    }
+
+    .schedule-row > .schedule-cell:nth-child(4) {
+        grid-area: event;
+    }
+
+    .schedule-row > .schedule-cell:nth-child(5) {
+        grid-area: time;
+        align-self: end;
+    }
+
+    .schedule-row > .schedule-cell:nth-child(6) {
+        grid-area: status;
+        align-self: start;
+        justify-self: end;
+    }
+
+
+    .schedule-building {
+        width: 36px;
+        height: 36px;
+        border-radius: 9px;
+        font-size: 12px;
+    }
+
+    .schedule-building.field {
+        min-width: 55px;
+        width: auto;
+        padding: 0 6px;
+        font-size: 8px;
+    }
+
+    .schedule-type {
+        font-size: 7px;
+    }
+
+    .schedule-resource {
+        margin-top: 2px;
+        font-size: 12px;
+    }
+
+    .schedule-location {
+    display: block;
+    font-size: 11px;
+    color: var(--text);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+    .schedule-event {
+        font-size: 13px;
+        line-height: 1.2;
+    }
+
+    .schedule-time {
+        font-size: 9px;
+    }
+
+    .schedule-time-date {
+        font-size: 8px;
+    }
+
+    .schedule-status {
+        min-width: 62px;
+        padding: 5px 7px;
+        font-size: 7px;
+    }
+
+
+    .schedule-footer {
+        padding: 6px 9px;
+        font-size: 8px;
+    }
+
+
+    /* NEWS */
+
+    .news-header {
+        padding: 8px 10px;
+    }
+
+    .news-title {
+        font-size: 18px;
+    }
+
+    .news-counter {
+        min-width: 48px;
+        padding: 6px 7px;
+        font-size: 8px;
+    }
+
+    .news-body {
+        padding: 8px;
+    }
+
+    .news-post {
+        gap: 8px;
+    }
+
+    .news-image-wrap {
+        width: min(58vw, 210px);
+        height: min(48vw, 250px);
+        aspect-ratio: 4 / 5;
+    }
+
+    .news-content-title {
+        font-size: 17px;
+    }
+
+    .news-content-date {
+        font-size: 9px;
+    }
+
+    .news-scroll-content {
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .display-header {
+        min-height: 58px;
+        flex-basis: 58px;
+        padding: 0 10px;
+    }
+
+    .header-title {
+        font-size: 18px;
+    }
+
+    .header-clock {
+        font-size: 19px;
+    }
+
+    .header-date {
+        display: none;
+    }
+
+
+    .security-main {
+        padding:
+            5px
+            6px
+            4px;
+
+        gap: 6px;
+    }
+
+
+    .security-toolbar {
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .section-kicker {
+        font-size: 8px;
+    }
+
+    .section-title {
+        margin-top: 3px;
+        font-size: 19px;
+    }
+
+
+    .summary-chip {
+        min-height: 38px;
+        padding: 4px 6px;
+    }
+
+    .summary-chip-value {
+        font-size: 14px;
+    }
+
+    .summary-chip-label {
+        margin-top: 2px;
+        font-size: 7px;
+    }
+
+
+    .day-button {
+        min-width: 0;
+        flex: 1;
+        padding: 0 8px;
+    }
+
+    .location-button {
+        min-width: 0;
+        flex: 1;
+        padding: 0 8px;
+    }
+
+    .clear-scope-button {
+        min-width: 0;
+        padding: 0 8px;
+    }
+
+
+    .security-side {
+        flex-basis: 36vh;
+        max-height: 36vh;
+        min-height: 200px;
+    }
+
+
+    .schedule-row {
+        grid-template-columns:
+            32px
+            minmax(0, 1fr)
+            auto;
+
+        min-height: 67px;
+        padding: 8px;
+        gap: 4px 7px;
+    }
+
+
+    .schedule-building {
+        width: 31px;
+        height: 31px;
+        border-radius: 8px;
+        font-size: 10px;
+    }
+
+    .schedule-resource {
+        font-size: 11px;
+    }
+
+    .schedule-event {
+        font-size: 12px;
+    }
+
+    .schedule-time {
+        font-size: 8px;
+    }
+
+    .schedule-status {
+        min-width: 56px;
+        padding: 4px 6px;
+        font-size: 6.5px;
+    }
+
+
+    .news-image-wrap {
+        width: min(54vw, 180px);
+        height: min(44vw, 210px);
+    }
+
+    .news-content-title {
+        font-size: 15px;
+    }
+
+    .news-scroll-content {
+        font-size: 10px;
+    }
+
+
+    /* MODAL */
+
+    .visitor-lookup-modal,
+    .reservation-modal {
+        padding: 5px;
+    }
+
+    .visitor-lookup-modal-card,
+    .reservation-modal-card {
+        width: 100%;
+        height: calc(100vh - 10px);
+        max-height: calc(100vh - 10px);
+        border-radius: 13px;
+    }
+
+    .visitor-lookup-header,
+    .reservation-modal-header {
+        padding: 12px;
+    }
+
+    .visitor-lookup-title,
+    .reservation-modal-title {
+        font-size: 19px;
+    }
+
+    .visitor-lookup-close,
+    .reservation-modal-close {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 22px;
+    }
+
+}
+
+
+@media (orientation: landscape) and (max-width: 900px) {
+
+    .display-header {
+        min-height: 58px;
+        flex-basis: 58px;
+    }
+
+    .header-subtitle,
+    .header-divider,
+    .logo-area,
+    .header-building {
+        display: none;
+    }
+
+    .header-title {
+        font-size: 19px;
+    }
+
+    .header-clock {
+        font-size: 21px;
+    }
+
+
+    .security-main {
+        display: grid;
+
+        grid-template-columns:
+            minmax(0, 1.45fr)
+            minmax(240px, 0.8fr);
+
+        grid-template-rows:
+            minmax(0, 1fr);
+
+        min-height:
+            calc(100vh - 58px);
+
+        padding:
+            6px
+            8px
+            4px;
+
+        gap: 7px;
+    }
+
+
+    .monitor-area,
+    .security-side {
+        min-height: 0;
+    }
+
+
+    .security-side {
+        max-height: none;
+    }
+
+
+    .security-toolbar {
+        padding: 7px;
+    }
+
+    .toolbar-head {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .toolbar-actions {
+        width: auto;
+    }
+
+    .visitor-lookup-button {
+        width: auto;
+        min-height: 36px;
+    }
+
+
+    .section-title {
+        font-size: 19px;
+    }
+
+
+    .toolbar-controls {
+        margin-top: 5px;
+    }
+
+
+    .schedule-grid-header {
+        display: grid;
+
+        grid-template-columns:
+            42px
+            minmax(90px, 0.9fr)
+            minmax(80px, 0.8fr)
+            minmax(120px, 1.4fr)
+            90px
+            68px;
+
+        gap: 5px;
+
+        padding:
+            6px
+            8px;
+
+        font-size: 7px;
+    }
+
+
+    .schedule-row {
+        grid-template-columns:
+            42px
+            minmax(90px, 0.9fr)
+            minmax(80px, 0.8fr)
+            minmax(120px, 1.4fr)
+            90px
+            68px;
+
+        gap: 5px;
+
+        min-height: 55px;
+        padding: 6px 8px;
+    }
+
+
+    .schedule-row > .schedule-cell {
+        grid-area: auto;
+    }
+
+
+    .schedule-building {
+        width: 34px;
+        height: 34px;
+        font-size: 11px;
+    }
+
+    .schedule-resource {
+        font-size: 10px;
+    }
+
+    .schedule-location {
+        display: block;
+        font-size: 8px;
+    }
+
+    .schedule-event {
+        font-size: 10px;
+    }
+
+    .schedule-time {
+        font-size: 8px;
+    }
+
+    .schedule-status {
+        min-width: 58px;
+        padding: 5px 6px;
+        font-size: 6px;
+    }
+
+
+    .news-image-wrap {
+        height: clamp(150px, 48%, 240px);
+    }
+
+    .news-content-title {
+        font-size: 15px;
+    }
+
+    .news-scroll-content {
+        font-size: 10px;
+    }
+
+}
+
     </style>
 </head>
 
@@ -1489,7 +2962,7 @@
             <div class="header-brand">
                 <div class="header-title">GITC Info</div>
                 <div class="header-subtitle">
-                    Garuda Training &amp; Classroom System
+                    Garuda Training System, Media & Business
                 </div>
             </div>
 
@@ -1653,7 +3126,6 @@
 
                 <div class="schedule-grid-header">
                     <div>Building</div>
-                    <div>Resource</div>
                     <div>Location</div>
                     <div>Event</div>
                     <div>Time</div>
@@ -1736,7 +3208,7 @@
             font-weight: 900;
             letter-spacing: 0.08em;
         ">
-            GITC INFO
+            Garuda Indonesia Training Center Information
         </div>
 
         <div style="
@@ -2199,28 +3671,26 @@
     }
 
     function matchesSearch(reservation) {
-        const keyword = searchKeyword.trim().toLowerCase();
+    const keyword = searchKeyword
+        .trim()
+        .toLowerCase();
 
-        if (!keyword) {
-            return true;
-        }
-
-        const haystack = [
-            reservation.event_name,
-            reservation.reservation_number,
-            reservation.booker_name,
-            reservation.user_name,
-            reservation.resource?.type,
-            reservation.resource?.name,
-            reservation.building?.name,
-            reservation.location_name,
-        ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
-
-        return haystack.includes(keyword);
+    if (!keyword) {
+        return true;
     }
+
+    const haystack = [
+        reservation.event_name,
+        reservation.reservation_number,
+        reservation.building?.name,
+        reservation.location_name,
+    ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+    return haystack.includes(keyword);
+}
 
     /* =========================================================
        INTERACTION MODE / AUTO RESET
@@ -2392,81 +3862,84 @@
     }
 
     function renderScheduleRow(reservation) {
-        const status = getReservationStatus(reservation);
-        const statusClass = getStatusClass(status);
+    const status = getReservationStatus(reservation);
+    const statusClass = getStatusClass(status);
 
-        const rowClass = [
-            'schedule-row',
-            status === 'LIVE' ? 'current' : '',
-            status === 'PENDING' ? 'pending' : '',
-        ]
-            .filter(Boolean)
-            .join(' ');
+    const rowClass = [
+        'schedule-row',
+        status === 'LIVE' ? 'current' : '',
+        status === 'PENDING' ? 'pending' : '',
+    ]
+        .filter(Boolean)
+        .join(' ');
 
-        const isField = reservation.resource?.type === 'FIELD';
-        const buildingLabel = reservation.building?.name
-            ? getBuildingLabel(reservation.building.name)
-            : 'FIELD';
+    const isField = reservation.resource?.type === 'FIELD';
 
-        const resourceType = reservation.resource?.type === 'TRAINING MEDIA'
-            ? 'TRAINING MEDIA'
-            : (reservation.resource?.type || 'RESOURCE');
+    const buildingLabel = reservation.building?.name
+        ? getBuildingLabel(reservation.building.name)
+        : 'FIELD';
 
-        const resourceName = reservation.resource?.name || '—';
-        const locationName = reservation.location_name || resourceName;
+    const locationName = reservation.location_name
+        || reservation.resource?.name
+        || '—';
 
-        return `
-            <div
-                class="${rowClass}"
-                data-reservation-id="${escapeHtml(reservation.id)}"
-                tabindex="0"
-                role="button"
-                aria-label="View reservation details for ${escapeHtml(reservation.event_name || resourceName)}"
-            >
-                <div class="schedule-cell">
-                    <div class="schedule-building ${isField ? 'field' : ''}">
-                        ${escapeHtml(buildingLabel)}
-                    </div>
-                </div>
+    return `
+        <div
+            class="${rowClass}"
+            data-reservation-id="${escapeHtml(reservation.id)}"
+            tabindex="0"
+            role="button"
+            aria-label="View reservation details for ${escapeHtml(
+                reservation.event_name || locationName
+            )}"
+        >
 
-                <div class="schedule-cell">
-                    <div class="schedule-type">
-                        ${escapeHtml(resourceType)}
-                    </div>
-                    <div class="schedule-resource">
-                        ${escapeHtml(resourceName)}
-                    </div>
-                </div>
-
-                <div class="schedule-cell">
-                    <div class="schedule-location">
-                        ${escapeHtml(locationName)}
-                    </div>
-                </div>
-
-                <div class="schedule-cell">
-                    <div class="schedule-event">
-                        ${escapeHtml(reservation.event_name || 'Untitled event')}
-                    </div>
-                </div>
-
-                <div class="schedule-cell">
-                    <div class="schedule-time">
-                        ${escapeHtml(formatTimeRange(reservation))}
-                    </div>
-                    <div class="schedule-time-date">
-                        ${escapeHtml(formatShortDate(reservation.starts_at))}
-                    </div>
-                </div>
-
-                <div class="schedule-cell">
-                    <span class="schedule-status ${statusClass}">
-                        ${escapeHtml(status)}
-                    </span>
+            <!-- BUILDING -->
+            <div class="schedule-cell">
+                <div class="schedule-building ${isField ? 'field' : ''}">
+                    ${escapeHtml(buildingLabel)}
                 </div>
             </div>
-        `;
-    }
+
+            <!-- LOCATION -->
+            <div class="schedule-cell">
+                <div class="schedule-location">
+                    ${escapeHtml(locationName)}
+                </div>
+            </div>
+
+            <!-- EVENT -->
+            <div class="schedule-cell">
+                <div class="schedule-event">
+                    ${escapeHtml(
+                        reservation.event_name || 'Untitled event'
+                    )}
+                </div>
+            </div>
+
+            <!-- TIME -->
+            <div class="schedule-cell">
+                <div class="schedule-time">
+                    ${escapeHtml(formatTimeRange(reservation))}
+                </div>
+
+                <div class="schedule-time-date">
+                    ${escapeHtml(
+                        formatShortDate(reservation.starts_at)
+                    )}
+                </div>
+            </div>
+
+            <!-- STATUS -->
+            <div class="schedule-cell">
+                <span class="schedule-status ${statusClass}">
+                    ${escapeHtml(status)}
+                </span>
+            </div>
+
+        </div>
+    `;
+}
 
     /* =========================================================
        VISITOR LOOKUP
@@ -2500,67 +3973,50 @@
             .join('');
     }
 
-    function renderLookupResult(reservation) {
-        const status = getReservationStatus(reservation);
-        const statusClass = getStatusClass(status);
+   function renderLookupResult(reservation) {
+    const status = getReservationStatus(reservation);
+    const statusClass = getStatusClass(status);
 
-        const locationLabel = reservation.building?.name
-            ? reservation.building.name
-            : 'Field';
+    const locationLabel = reservation.location_name
+        || reservation.building?.name
+        || 'Field';
 
-        const resourceLabel = [
-            reservation.resource?.type,
-            reservation.resource?.name,
-        ]
-            .filter(Boolean)
-            .join(' • ');
+    return `
+        <button
+            type="button"
+            class="lookup-result"
+            data-reservation-id="${escapeHtml(reservation.id)}"
+        >
 
-        const bookedBy = reservation.booker_name
-            || reservation.user_name
-            || '';
-
-        return `
-            <button
-                type="button"
-                class="lookup-result"
-                data-reservation-id="${escapeHtml(reservation.id)}"
-            >
-                <div class="lookup-result-top">
-                    <div class="lookup-result-location">
-                        ${escapeHtml(locationLabel)}
-                    </div>
-
-                    <div class="lookup-result-time">
-                        ${escapeHtml(formatTimeRange(reservation))}
-                    </div>
+            <div class="lookup-result-top">
+                <div class="lookup-result-location">
+                    ${escapeHtml(locationLabel)}
                 </div>
 
-                <div class="lookup-result-event">
-                    ${escapeHtml(reservation.event_name || 'Untitled event')}
+                <div class="lookup-result-time">
+                    ${escapeHtml(formatTimeRange(reservation))}
                 </div>
+            </div>
 
-                <div class="lookup-result-resource">
-                    ${escapeHtml(resourceLabel || 'Resource information unavailable')}
-                </div>
+            <div class="lookup-result-event">
+                ${escapeHtml(
+                    reservation.event_name || 'Untitled event'
+                )}
+            </div>
 
-                ${bookedBy ? `
-                    <div class="lookup-result-booker">
-                        Booked by: ${escapeHtml(bookedBy)}
-                    </div>
-                ` : ''}
+            <div class="lookup-result-footer">
+                <span class="lookup-view-label">
+                    View Details
+                </span>
 
-                <div class="lookup-result-footer">
-                    <span class="lookup-view-label">
-                        View Details
-                    </span>
+                <span class="schedule-status ${statusClass}">
+                    ${escapeHtml(status)}
+                </span>
+            </div>
 
-                    <span class="schedule-status ${statusClass}">
-                        ${escapeHtml(status)}
-                    </span>
-                </div>
-            </button>
-        `;
-    }
+        </button>
+    `;
+}
 
     /* =========================================================
        RESERVATION DETAIL
@@ -2578,40 +4034,72 @@
     }
 
     function openReservationModal(reservation) {
-        if (!reservation) return;
+    if (!reservation) return;
 
-        enterInteractionMode();
+    enterInteractionMode();
 
-        const status = getReservationStatus(reservation);
-        const resourceType = reservation.resource?.type || 'RESOURCE';
-        const resourceName = reservation.resource?.name || '—';
-        const buildingName = reservation.building?.name || 'Field';
-        const bookedBy = reservation.booker_name
-            || reservation.user_name
-            || 'Not specified';
+    const status = getReservationStatus(reservation);
 
-        reservationModalTitle.textContent = reservation.event_name || 'Reservation Detail';
-        reservationModalContext.textContent = `${buildingName} • ${resourceType}`;
+    const locationName =
+        reservation.location_name
+        || reservation.resource?.name
+        || '—';
 
-        reservationModalStatus.textContent = status;
-        reservationModalStatus.className = `modal-status ${getStatusClass(status)}`;
+    const buildingName =
+        reservation.building?.name
+        || 'Field';
 
-        reservationModalDetails.innerHTML = `
-            ${createDetailItem('Date', formatDate(reservation.starts_at))}
-            ${createDetailItem('Time', `${formatTime(reservation.starts_at)} – ${formatTime(reservation.ends_at)} WIB`)}
-            ${createDetailItem('Building', buildingName)}
-            ${createDetailItem('Resource', resourceType)}
-            ${createDetailItem('Location', resourceName)}
-            ${createDetailItem('Booked By', bookedBy)}
-            ${reservation.total_person !== null && reservation.total_person !== undefined
-                ? createDetailItem('Participants', reservation.total_person)
-                : ''}
-        `;
+    reservationModalTitle.textContent =
+        reservation.event_name
+        || 'Reservation Detail';
 
-        reservationModal.classList.add('open');
-        reservationModal.setAttribute('aria-hidden', 'false');
-    }
+    reservationModalContext.textContent =
+        `${buildingName} • ${locationName}`;
 
+    reservationModalStatus.textContent = status;
+
+    reservationModalStatus.className =
+        `modal-status ${getStatusClass(status)}`;
+
+    reservationModalDetails.innerHTML = `
+        ${createDetailItem(
+            'Date',
+            formatDate(reservation.starts_at)
+        )}
+
+        ${createDetailItem(
+            'Time',
+            `${formatTime(reservation.starts_at)} – ${formatTime(reservation.ends_at)} WIB`
+        )}
+
+        ${createDetailItem(
+            'Building',
+            buildingName
+        )}
+
+        ${createDetailItem(
+            'Location',
+            locationName
+        )}
+
+        ${
+            reservation.total_person !== null &&
+            reservation.total_person !== undefined
+                ? createDetailItem(
+                    'Participants',
+                    reservation.total_person
+                )
+                : ''
+        }
+    `;
+
+    reservationModal.classList.add('open');
+
+    reservationModal.setAttribute(
+        'aria-hidden',
+        'false'
+    );
+}
     function createDetailItem(label, value, full = false) {
         return `
             <div class="detail-item ${full ? 'full' : ''}">

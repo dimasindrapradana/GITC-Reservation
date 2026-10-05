@@ -1596,7 +1596,7 @@
                 </div>
 
                 <div class="brand-subtitle">
-                    Garuda Training & Classroom System
+                    Garuda Training System, Media & Business
                 </div>
 
             </div>

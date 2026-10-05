@@ -356,8 +356,6 @@
             font-weight:
                 800;
 
-           
-
         }
 
 
@@ -569,11 +567,6 @@
 
             color:
                 var(--cyan);
-
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
 
             font-size:
                 clamp(
@@ -888,6 +881,11 @@
             display:
                 grid;
 
+            /*
+             * NUMBER
+             * TIME + ROOM
+             * EVENT
+             */
             grid-template-columns:
                 42px
                 122px
@@ -986,28 +984,41 @@
                     0.35
                 );
 
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
-
             font-size:
                 15px;
 
             font-weight:
                 800;
 
+            align-self:
+                start;
+
+            padding-top:
+                3px;
+
         }
 
 
         /* =========================================================
-           TIME
+           TIME + ROOM COLUMN
         ========================================================= */
 
         .schedule-time {
 
             min-width:
                 0;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                center;
+
+            align-self:
+                stretch;
 
         }
 
@@ -1017,20 +1028,18 @@
             color:
                 var(--navy);
 
-            font-family:
-                "Segoe UI",
-                Arial,
-                sans-serif;
-
             font-size:
                 clamp(
-                    14px,
-                    0.95vw,
-                    19px
+                    12px,
+                    0.82vw,
+                    17px
                 );
 
             font-weight:
-                800;
+                750;
+
+            line-height:
+                1.2;
 
             white-space:
                 nowrap;
@@ -1038,51 +1047,12 @@
         }
 
 
-        .time-label {
+
+
+        .resource-block {
 
             margin-top:
-                4px;
-
-            color:
-                var(--muted);
-
-            font-size:
-                9px;
-
-            font-weight:
-                700;
-
-            letter-spacing:
-                0.08em;
-
-            text-transform:
-                uppercase;
-
-        }
-
-
-        /* =========================================================
-           INFO
-        ========================================================= */
-
-        .schedule-info {
-
-            min-width:
-                0;
-
-        }
-
-
-        .schedule-resource-line {
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                8px;
+                12px;
 
             min-width:
                 0;
@@ -1092,28 +1062,37 @@
 
         .resource-type {
 
-            flex:
-                0 0 auto;
+            display:
+                block;
 
             color:
                 var(--muted);
 
             font-size:
-                8px;
+                12px;
 
             font-weight:
                 800;
 
             letter-spacing:
-                0.10em;
+                0.09em;
 
             text-transform:
                 uppercase;
+
+            line-height:
+                1;
 
         }
 
 
         .resource-name {
+
+            display:
+                block;
+
+            margin-top:
+                6px;
 
             min-width:
                 0;
@@ -1132,37 +1111,61 @@
 
             font-size:
                 clamp(
-                    15px,
-                    1.0vw,
-                    20px
+                    20px,
+                    0.19vw,
+                    18px
                 );
 
             font-weight:
                 800;
+
+            line-height:
+                1.15;
+
+        }
+
+
+        /* =========================================================
+           EVENT INFO
+        ========================================================= */
+
+        .schedule-info {
+
+            min-width:
+                0;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            justify-content:
+                center;
 
         }
 
 
         .event-name {
 
-            margin-top:
-                6px;
+            min-width:
+                0;
 
             color:
-                var(--text);
+                var(--navy-dark);
 
             font-size:
                 clamp(
-                    12px,
-                    0.76vw,
-                    16px
+                    17px,
+                    1.18vw,
+                    24px
                 );
 
             font-weight:
-                650;
+                800;
 
             line-height:
-                1.25;
+                1.18;
 
             display:
                 -webkit-box;
@@ -1189,7 +1192,7 @@
                 fit-content;
 
             margin-top:
-                6px;
+                8px;
 
             padding:
                 5px
@@ -1395,10 +1398,23 @@
 
             }
 
+
             .back-button {
 
                 min-width:
                     145px;
+
+            }
+
+
+            .event-name {
+
+                font-size:
+                    clamp(
+                        16px,
+                        1.35vw,
+                        22px
+                    );
 
             }
 
@@ -1446,6 +1462,15 @@
 
         @media (max-width: 650px) {
 
+            html,
+            body {
+
+                overflow:
+                    hidden;
+
+            }
+
+
             .detail-header {
 
                 flex-basis:
@@ -1467,6 +1492,14 @@
 
                 display:
                     none;
+
+            }
+
+
+            .header-right {
+
+                gap:
+                    0;
 
             }
 
@@ -1528,12 +1561,82 @@
             .schedule-card {
 
                 grid-template-columns:
-                    34px
-                    105px
+                    28px
+                    100px
                     minmax(
                         0,
                         1fr
                     );
+
+                gap:
+                    9px;
+
+                min-height:
+                    92px;
+
+                padding:
+                    10px
+                    11px;
+
+            }
+
+
+            .schedule-number {
+
+                font-size:
+                    12px;
+
+            }
+
+
+            .time-main {
+
+                font-size:
+                    11px;
+
+            }
+
+
+            .time-label {
+
+                font-size:
+                    7px;
+
+            }
+
+
+            .resource-block {
+
+                margin-top:
+                    9px;
+
+            }
+
+
+
+
+            .event-name {
+
+                font-size:
+                    15px;
+
+                line-height:
+                    1.2;
+
+            }
+
+
+            .status-badge {
+
+                margin-top:
+                    6px;
+
+                padding:
+                    4px
+                    8px;
+
+                font-size:
+                    7px;
 
             }
 
@@ -1542,6 +1645,81 @@
 
                 display:
                     none;
+
+            }
+
+        }
+
+
+        @media (max-width: 430px) {
+
+            .brand-title {
+
+                font-size:
+                    20px;
+
+            }
+
+
+            .brand-subtitle {
+
+                font-size:
+                    9px;
+
+            }
+
+
+            .page-title {
+
+                font-size:
+                    24px;
+
+            }
+
+
+            .page-subtitle {
+
+                font-size:
+                    10px;
+
+            }
+
+
+            .schedule-card {
+
+                grid-template-columns:
+                    24px
+                    92px
+                    minmax(
+                        0,
+                        1fr
+                    );
+
+                gap:
+                    7px;
+
+            }
+
+
+            .event-name {
+
+                font-size:
+                    14px;
+
+            }
+
+
+            .back-button {
+
+                min-width:
+                    120px;
+
+                padding:
+                    0
+                    12px;
+
+                font-size:
+                    10px;
 
             }
 
@@ -1605,6 +1783,14 @@
             }
 
 
+            .resource-block {
+
+                margin-top:
+                    8px;
+
+            }
+
+
             .detail-footer {
 
                 flex-basis:
@@ -1642,7 +1828,7 @@
                 </div>
 
                 <div class="brand-subtitle">
-                    Garuda Training & Classroom System
+                    Garuda Training System, Media & Business
                 </div>
 
             </div>
@@ -1652,7 +1838,6 @@
 
 
             <div class="building-block">
-
 
                 <div class="building-name">
                     {{ $building->name }}
@@ -1689,14 +1874,12 @@
             <div class="logo-area">
 
                 <img
-                
-                src="{{ asset('assets/icons/logo/logo.png') }}"
-                alt="GITC Logo"
-    
+                    src="{{ asset('assets/icons/logo/logo.png') }}"
                     alt="Garuda Indonesia Training Center"
                 >
 
             </div>
+
 
         </div>
 
@@ -2275,6 +2458,8 @@
                             >
 
 
+                                <!-- NUMBER -->
+
                                 <div
                                     class="
                                         schedule-number
@@ -2290,6 +2475,8 @@
 
                                 </div>
 
+
+                                <!-- TIME + ROOM -->
 
                                 <div
                                     class="
@@ -2316,29 +2503,12 @@
                                     </div>
 
 
-                                    <div
-                                        class="
-                                            time-label
-                                        "
-                                    >
-
-                                        WIB
-
-                                    </div>
-
-                                </div>
-
-
-                                <div
-                                    class="
-                                        schedule-info
-                                    "
-                                >
+                                   
 
 
                                     <div
                                         class="
-                                            schedule-resource-line
+                                            resource-block
                                         "
                                     >
 
@@ -2373,6 +2543,16 @@
 
                                     </div>
 
+                                </div>
+
+
+                                <!-- EVENT -->
+
+                                <div
+                                    class="
+                                        schedule-info
+                                    "
+                                >
 
                                     <div
                                         class="
@@ -2399,7 +2579,6 @@
                                         ${status}
 
                                     </div>
-
 
                                 </div>
 

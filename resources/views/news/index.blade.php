@@ -33,12 +33,12 @@
 
 <div class="content-card">
 
-    <div class="card-header">
+    {{-- <div class="card-header">
         <div>
             <h2>News List</h2>
             <p>Search, filter, and manage news content.</p>
         </div>
-    </div>
+    </div> --}}
 
     <form
         action="{{ route('news.index') }}"

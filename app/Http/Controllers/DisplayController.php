@@ -8,11 +8,9 @@ use App\Models\Reservation;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class DisplayController extends Controller
 {
-
     public function index(string $buildingName): View
     {
         $building = $this->findBuilding($buildingName);
@@ -39,6 +37,7 @@ class DisplayController extends Controller
                 $buildingName,
         ]);
     }
+
     public function data(string $buildingName): JsonResponse
     {
         $building = $this->findBuilding($buildingName);
@@ -56,19 +55,27 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $todayStart = $now->copy()->startOfDay();
+        $todayStart =
+            $now
+                ->copy()
+                ->startOfDay();
 
-        $todayEnd = $now->copy()->endOfDay();
+        $todayEnd =
+            $now
+                ->copy()
+                ->endOfDay();
 
-        $tomorrowStart = $now
-            ->copy()
-            ->addDay()
-            ->startOfDay();
+        $tomorrowStart =
+            $now
+                ->copy()
+                ->addDay()
+                ->startOfDay();
 
-        $tomorrowEnd = $now
-            ->copy()
-            ->addDay()
-            ->endOfDay();
+        $tomorrowEnd =
+            $now
+                ->copy()
+                ->addDay()
+                ->endOfDay();
 
         /*
          * =========================
@@ -76,13 +83,15 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $roomIds = $building
-            ->rooms
-            ->pluck('id');
+        $roomIds =
+            $building
+                ->rooms
+                ->pluck('id');
 
-        $trainingRoomIds = $building
-            ->trainingRooms
-            ->pluck('id');
+        $trainingRoomIds =
+            $building
+                ->trainingRooms
+                ->pluck('id');
 
         /*
          * =========================
@@ -188,6 +197,7 @@ class DisplayController extends Controller
             /*
              * ROOM
              */
+
             if ($reservation->room) {
                 $resourceType = 'ROOM';
 
@@ -200,6 +210,7 @@ class DisplayController extends Controller
             /*
              * TRAINING MEDIA
              */
+
             elseif ($reservation->trainingRoom) {
                 $resourceType =
                     'TRAINING MEDIA';
@@ -213,6 +224,7 @@ class DisplayController extends Controller
             /*
              * FIELD
              */
+
             elseif ($reservation->field) {
                 $resourceType = 'FIELD';
 
@@ -281,9 +293,10 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $todayData = $reservations
-            ->map($formatReservation)
-            ->values();
+        $todayData =
+            $reservations
+                ->map($formatReservation)
+                ->values();
 
         /*
          * =========================
@@ -291,9 +304,10 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $tomorrowData = $tomorrowReservations
-            ->map($formatReservation)
-            ->values();
+        $tomorrowData =
+            $tomorrowReservations
+                ->map($formatReservation)
+                ->values();
 
         /*
          * =========================
@@ -301,11 +315,18 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $currentEvent = $reservations
-            ->first(function ($reservation) use ($now) {
-                return $reservation->starts_at <= $now
-                    && $reservation->ends_at >= $now;
-            });
+        $currentEvent =
+            $reservations
+                ->first(
+                    function (
+                        $reservation
+                    ) use ($now) {
+                        return
+                            $reservation->starts_at <= $now
+                            &&
+                            $reservation->ends_at >= $now;
+                    }
+                );
 
         /*
          * =========================
@@ -313,10 +334,16 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $nextEvent = $reservations
-            ->first(function ($reservation) use ($now) {
-                return $reservation->starts_at > $now;
-            });
+        $nextEvent =
+            $reservations
+                ->first(
+                    function (
+                        $reservation
+                    ) use ($now) {
+                        return
+                            $reservation->starts_at > $now;
+                    }
+                );
 
         /*
          * =========================
@@ -333,7 +360,9 @@ class DisplayController extends Controller
         $news = News::query()
             ->with([
                 'images' => function ($query) {
-                    $query->orderBy('sort_order');
+                    $query->orderBy(
+                        'sort_order'
+                    );
                 },
             ])
             ->where(
@@ -350,7 +379,9 @@ class DisplayController extends Controller
                 '>=',
                 $now
             )
-            ->orderByDesc('created_at')
+            ->orderByDesc(
+                'created_at'
+            )
             ->get();
 
         /*
@@ -359,76 +390,102 @@ class DisplayController extends Controller
          * =========================
          */
 
-        $newsData = $news
-            ->map(function (News $item) {
+        $newsData =
+            $news
+                ->map(
+                    function (
+                        News $item
+                    ) {
+                        $images =
+                            $item
+                                ->images
+                                ->map(
+                                    function (
+                                        $image
+                                    ) {
+                                        /*
+                                         * IMPORTANT
+                                         *
+                                         * Jangan gunakan:
+                                         *
+                                         * Storage::disk('public')->url()
+                                         *
+                                         * karena hasilnya bisa menjadi:
+                                         *
+                                         * http://localhost:8000/storage/...
+                                         *
+                                         * ketika APP_URL masih localhost.
+                                         *
+                                         * Gunakan relative URL agar
+                                         * browser memakai host yang
+                                         * sedang membuka Display.
+                                         */
 
-                $images = $item
-                    ->images
-                    ->map(function ($image) {
+                                        $imageUrl =
+                                            '/storage/' .
+                                            ltrim(
+                                                $image->file,
+                                                '/'
+                                            );
+
+                                        return [
+                                            'id' =>
+                                                $image
+                                                    ->id,
+
+                                            'file' =>
+                                                $image
+                                                    ->file,
+
+                                            'url' =>
+                                                $imageUrl,
+
+                                            'sort_order' =>
+                                                $image
+                                                    ->sort_order,
+                                        ];
+                                    }
+                                )
+                                ->values();
 
                         return [
                             'id' =>
-                                $image
+                                $item
                                     ->id,
 
-                            'file' =>
-                                $image
-                                    ->file,
+                            'title' =>
+                                $item
+                                    ->title,
 
-                            'url' =>
-                                Storage
-                                    ::disk(
-                                        'public'
-                                    )
-                                    ->url(
-                                        $image
-                                            ->file
-                                    ),
+                            'content' =>
+                                $item
+                                    ->content,
 
-                            'sort_order' =>
-                                $image
-                                    ->sort_order,
+                            'starts_at' =>
+                                $item
+                                    ->starts_at
+                                    ?->toIso8601String(),
+
+                            'ends_at' =>
+                                $item
+                                    ->ends_at
+                                    ?->toIso8601String(),
+
+                            'status' =>
+                                $item
+                                    ->status,
+
+                            'images' =>
+                                $images,
+
+                            'image_url' =>
+                                $images
+                                    ->first()['url']
+                                    ?? null,
                         ];
-                    })
-                    ->values();
-
-                return [
-                    'id' =>
-                        $item
-                            ->id,
-
-                    'title' =>
-                        $item
-                            ->title,
-
-                    'content' =>
-                        $item
-                            ->content,
-
-                    'starts_at' =>
-                        $item
-                            ->starts_at
-                            ?->toIso8601String(),
-
-                    'ends_at' =>
-                        $item
-                            ->ends_at
-                            ?->toIso8601String(),
-
-                    'status' =>
-                        $item
-                            ->status,
-
-                    'images' =>
-                        $images,
-
-                    'image_url' =>
-                        $images
-                            ->first()['url']
-                            ?? null,
-                ];
-            })
-            ->values();
+                    }
+                )
+                ->values();
 
         /*
          * =========================
@@ -527,34 +584,37 @@ class DisplayController extends Controller
             'rooms' =>
                 $building
                     ->rooms
-                    ->map(function ($room) {
+                    ->map(
+                        function (
+                            $room
+                        ) {
+                            return [
+                                'id' =>
+                                    $room
+                                        ->id,
 
-                        return [
-                            'id' =>
-                                $room
-                                    ->id,
+                                'name' =>
+                                    $room
+                                        ->name,
 
-                            'name' =>
-                                $room
-                                    ->name,
+                                'capacity' =>
+                                    $room
+                                        ->capacity,
 
-                            'capacity' =>
-                                $room
-                                    ->capacity,
+                                'lcd_count' =>
+                                    $room
+                                        ->lcd_count,
 
-                            'lcd_count' =>
-                                $room
-                                    ->lcd_count,
+                                'whiteboard_count' =>
+                                    $room
+                                        ->whiteboard_count,
 
-                            'whiteboard_count' =>
-                                $room
-                                    ->whiteboard_count,
-
-                            'status' =>
-                                $room
-                                    ->status,
-                        ];
-                    })
+                                'status' =>
+                                    $room
+                                        ->status,
+                            ];
+                        }
+                    )
                     ->values(),
 
             /*
@@ -566,36 +626,37 @@ class DisplayController extends Controller
             'training_media' =>
                 $building
                     ->trainingRooms
-                    ->map(function (
-                        $trainingRoom
-                    ) {
+                    ->map(
+                        function (
+                            $trainingRoom
+                        ) {
+                            return [
+                                'id' =>
+                                    $trainingRoom
+                                        ->id,
 
-                        return [
-                            'id' =>
-                                $trainingRoom
-                                    ->id,
+                                'name' =>
+                                    $trainingRoom
+                                        ->name,
 
-                            'name' =>
-                                $trainingRoom
-                                    ->name,
+                                'capacity' =>
+                                    $trainingRoom
+                                        ->capacity,
 
-                            'capacity' =>
-                                $trainingRoom
-                                    ->capacity,
+                                'simulation_type' =>
+                                    $trainingRoom
+                                        ->simulation_type,
 
-                            'simulation_type' =>
-                                $trainingRoom
-                                    ->simulation_type,
+                                'simulation_facilities' =>
+                                    $trainingRoom
+                                        ->simulation_facilities,
 
-                            'simulation_facilities' =>
-                                $trainingRoom
-                                    ->simulation_facilities,
-
-                            'status' =>
-                                $trainingRoom
-                                    ->status,
-                        ];
-                    })
+                                'status' =>
+                                    $trainingRoom
+                                        ->status,
+                            ];
+                        }
+                    )
                     ->values(),
 
             /*
@@ -613,6 +674,7 @@ class DisplayController extends Controller
      * Display upcoming schedule page.
      *
      * Example:
+     *
      * /display/building_A/upcoming
      */
     public function upcoming(
@@ -623,13 +685,16 @@ class DisplayController extends Controller
                 $buildingName
             );
 
-        return view('display.upcoming', [
-            'building' =>
-                $building,
+        return view(
+            'display.upcoming',
+            [
+                'building' =>
+                    $building,
 
-            'buildingName' =>
-                $buildingName,
-        ]);
+                'buildingName' =>
+                    $buildingName,
+            ]
+        );
     }
 
     /**
@@ -637,20 +702,6 @@ class DisplayController extends Controller
      *
      * Returns the next 7 days
      * starting from tomorrow.
-     *
-     * Example:
-     *
-     * Today:
-     * 30 September
-     *
-     * Result:
-     * 01 October
-     * 02 October
-     * 03 October
-     * 04 October
-     * 05 October
-     * 06 October
-     * 07 October
      */
     public function upcomingData(
         string $buildingName
@@ -672,13 +723,6 @@ class DisplayController extends Controller
          * =========================
          * NEXT 7 DAYS
          * =========================
-         *
-         * Start:
-         * tomorrow 00:00
-         *
-         * End:
-         * seven days from today,
-         * end of day.
          */
 
         $rangeStart =
@@ -765,7 +809,6 @@ class DisplayController extends Controller
             function (
                 Reservation $reservation
             ) {
-
                 $resourceType =
                     null;
 
@@ -779,7 +822,6 @@ class DisplayController extends Controller
                 if (
                     $reservation->room
                 ) {
-
                     $resourceType =
                         'ROOM';
 
@@ -787,7 +829,6 @@ class DisplayController extends Controller
                         $reservation
                             ->room
                             ->name;
-
                 }
 
                 /*
@@ -798,7 +839,6 @@ class DisplayController extends Controller
                     $reservation
                         ->trainingRoom
                 ) {
-
                     $resourceType =
                         'TRAINING MEDIA';
 
@@ -806,7 +846,6 @@ class DisplayController extends Controller
                         $reservation
                             ->trainingRoom
                             ->name;
-
                 }
 
                 /*
@@ -816,7 +855,6 @@ class DisplayController extends Controller
                 elseif (
                     $reservation->field
                 ) {
-
                     $resourceType =
                         'FIELD';
 
@@ -824,7 +862,6 @@ class DisplayController extends Controller
                         $reservation
                             ->field
                             ->name;
-
                 }
 
                 return [
@@ -871,7 +908,6 @@ class DisplayController extends Controller
                             ->status,
 
                     'resource' => [
-
                         'type' =>
                             $resourceType,
 
@@ -896,7 +932,6 @@ class DisplayController extends Controller
                     function (
                         $reservation
                     ) {
-
                         return Carbon::parse(
                             $reservation[
                                 'starts_at'
@@ -915,7 +950,6 @@ class DisplayController extends Controller
                         $items,
                         $date
                     ) {
-
                         $dateCarbon =
                             Carbon::parse(
                                 $date,
@@ -955,7 +989,6 @@ class DisplayController extends Controller
              */
 
             'building' => [
-
                 'id' =>
                     $building
                         ->id,
@@ -1024,12 +1057,6 @@ class DisplayController extends Controller
     ): Building {
         /*
          * Convert underscore to space.
-         *
-         * building_A
-         *
-         * ->   
-         *
-         * building A
          */
 
         $normalizedName =
@@ -1050,14 +1077,6 @@ class DisplayController extends Controller
 
         /*
          * Case-insensitive search.
-         *
-         * building A
-         * BUILDING A
-         * Building A
-         *
-         * will all find:
-         *
-         * Building A
          */
 
         $building = Building::query()
@@ -1076,7 +1095,6 @@ class DisplayController extends Controller
          */
 
         if (!$building) {
-
             abort(
                 404,
                 'Building not found.'

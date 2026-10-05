@@ -18,6 +18,43 @@
     <style>
 
         /* =========================================================
+   GARUDA FONT
+========================================================= */
+
+@font-face {
+    font-family: "Garuda Sans";
+    src: url("/fonts/Garuda Font/Sans/GarudaSans-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Garuda Sans";
+    src: url("/fonts/Garuda Font/Sans/GarudaSans-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Garuda Sans";
+    src: url("/fonts/Garuda Font/Sans/GarudaSans-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Garuda Sans";
+    src: url("/fonts/Garuda Font/Sans/GarudaSans-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+        
+
+        /* =========================================================
            ROOT
         ========================================================= */
 
@@ -1779,7 +1816,7 @@
 
             font-size:
                 clamp(
-                    13px,
+                    15px,
                     0.92vw,
                     18px
                 );
@@ -1801,7 +1838,7 @@
 
             font-size:
                 clamp(
-                    9px,
+                    14px,
                     0.63vw,
                     14px
                 );
@@ -2748,7 +2785,7 @@
             color:
                 var(--muted);
 
-            font-size: 8px;
+            font-size: 9px;
 
             font-weight: 800;
 
@@ -2776,7 +2813,7 @@
 
             font-size:
                 clamp(
-                    13px,
+                    15px,
                     0.92vw,
                     19px
                 );
@@ -2806,7 +2843,7 @@
 
             font-size:
                 clamp(
-                    11px,
+                    16px,
                     0.72vw,
                     15px
                 );
@@ -3928,6 +3965,577 @@
 
         }
 
+
+    /* =========================================================
+    MOBILE DISPLAY OVERRIDE
+    ========================================================= */
+
+    @media (max-width: 760px) {
+
+        html,
+        body {
+            width: 100%;
+            min-width: 0;
+            height: auto;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .display-app {
+            width: 100%;
+            min-width: 0;
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+        }
+
+        /* =========================
+        HEADER
+        ========================= */
+
+        .display-header {
+            flex: 0 0 auto;
+            min-height: 0;
+            height: auto;
+
+            padding:
+                16px
+                18px;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .header-left {
+            width: 100%;
+            min-width: 0;
+            gap: 10px;
+        }
+
+        .header-brand {
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 21px;
+            line-height: 1.15;
+        }
+
+        .header-subtitle {
+            margin-top: 3px;
+            font-size: 10px;
+            line-height: 1.35;
+        }
+
+        .header-divider {
+            height: 42px;
+            margin: 0 2px;
+        }
+
+        .header-building {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .header-building-label {
+            font-size: 8px;
+            margin-bottom: 2px;
+        }
+
+        .header-building-name {
+            max-width: 100%;
+            font-size: 18px;
+            line-height: 1.15;
+        }
+
+        .header-building-code {
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+        .header-right {
+            width: 100%;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .datetime {
+            text-align: left;
+            min-width: 0;
+        }
+
+        .header-date {
+            font-size: 10px;
+        }
+
+        .header-clock {
+            margin-top: 2px;
+            font-size: 23px;
+            line-height: 1;
+        }
+
+        .logo-area {
+            width: auto;
+            height: 42px;
+            padding: 4px 8px;
+            border-left: 0;
+        }
+
+        .logo-area img {
+            max-height: 34px;
+            max-width: 130px;
+        }
+
+        /* =========================
+        MAIN
+        ========================= */
+
+        .display-main {
+            display: flex;
+            flex-direction: column;
+
+            width: 100%;
+            height: auto;
+            min-height: 0;
+
+            gap: 12px;
+
+            padding:
+                12px
+                12px
+                24px;
+
+            overflow: visible;
+        }
+
+        /* =========================
+        LEFT AREA
+        ========================= */
+
+        .left-area {
+            width: 100%;
+            min-width: 0;
+            min-height: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 12px;
+
+            overflow: visible;
+        }
+
+        /* =========================
+        HERO
+        ========================= */
+
+        .hero {
+            width: 100%;
+            min-height: 430px;
+            height: auto;
+
+            border-radius: 16px;
+        }
+
+        .hero-content {
+            height: auto;
+            min-height: 430px;
+
+            padding:
+                24px
+                20px
+                28px;
+
+            overflow: visible;
+        }
+
+        .hero-status {
+            max-width: 100%;
+
+            padding:
+                7px
+                11px;
+
+            font-size: 9px;
+            line-height: 1.2;
+
+            white-space: normal;
+        }
+
+        .hero-carousel {
+            margin-top: 18px;
+        }
+
+        .hero-slide {
+            min-width: 100%;
+        }
+
+        .hero-title {
+            font-size:
+                clamp(
+                    25px,
+                    8vw,
+                    36px
+                );
+
+            line-height: 1.08;
+
+            overflow-wrap: anywhere;
+        }
+
+        .hero-subtitle {
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .hero-time {
+            font-size:
+                clamp(
+                    28px,
+                    9vw,
+                    42px
+                );
+
+            line-height: 1;
+        }
+
+        .hero-meta {
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .hero-meta-item {
+            max-width: 100%;
+        }
+
+        .hero-actions {
+            margin-top: 20px;
+
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 8px;
+        }
+
+        .hero-actions a,
+        .hero-actions button {
+            max-width: 100%;
+        }
+
+        /* =========================
+        LOWER LEFT
+        ========================= */
+
+        .lower-left {
+            width: 100%;
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            gap: 12px;
+
+            min-height: 0;
+            height: auto;
+        }
+
+        /* =========================
+        UPCOMING
+        ========================= */
+
+        .upcoming-card,
+        .upcoming-panel {
+            width: 100%;
+            min-width: 0;
+
+            min-height: 240px;
+            height: auto;
+        }
+
+        .upcoming-content {
+            padding: 18px;
+        }
+
+        .upcoming-title {
+            font-size: 16px;
+        }
+
+        .upcoming-time {
+            font-size: 24px;
+        }
+
+        .upcoming-detail-button {
+            min-height: 38px;
+            padding:
+                8px
+                12px;
+
+            font-size: 11px;
+        }
+
+        /* =========================
+        NEWS
+        ========================= */
+
+        .lower-left .news-card-wrapper {
+            display: block !important;
+
+            width: 100%;
+            min-width: 0;
+
+            min-height: 300px;
+            height: 300px;
+        }
+
+        .news-list {
+            width: 100%;
+            min-width: 0;
+
+            min-height: 300px;
+
+            margin:
+                0;
+
+            overflow: hidden;
+        }
+
+        .news-card {
+            width: 100%;
+            height: 100%;
+        }
+
+        .news-image {
+            width: 100%;
+            height: 100%;
+        }
+
+        .news-image img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+        .news-overlay {
+            padding:
+                18px;
+        }
+
+        .news-title {
+            font-size: 18px;
+            line-height: 1.2;
+        }
+
+        .news-content {
+            font-size: 11px;
+            line-height: 1.45;
+        }
+
+        /* =========================
+        TODAY PANEL
+        ========================= */
+
+        .today-panel {
+            display: flex !important;
+
+            width: 100%;
+            min-width: 0;
+
+            min-height: 420px;
+            height: auto;
+
+            overflow: hidden;
+        }
+
+        .today-header {
+            padding:
+                16px
+                18px;
+        }
+
+        .today-title {
+            font-size: 17px;
+        }
+
+        .today-subtitle {
+            font-size: 10px;
+        }
+
+        .today-list {
+            min-height: 0;
+            max-height: 500px;
+
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .today-item {
+            padding:
+                14px
+                16px;
+        }
+
+        .today-item-title {
+            font-size: 13px;
+            line-height: 1.35;
+        }
+
+        .today-item-time {
+            font-size: 11px;
+        }
+
+        /* =========================
+        NEWS MODAL
+        ========================= */
+
+        .news-modal {
+            padding: 12px;
+        }
+
+        .news-modal-dialog {
+            width: 100%;
+            max-width: 100%;
+
+            max-height: 92vh;
+        }
+
+        .news-modal-image {
+            max-height: 55vh;
+        }
+
+        .news-modal-nav {
+            width: 42px;
+            height: 42px;
+
+            font-size: 27px;
+            line-height: 42px;
+        }
+
+        .news-modal-prev {
+            left: 5px;
+        }
+
+        .news-modal-next {
+            right: 5px;
+        }
+    }
+
+
+    /* =========================================================
+    VERY SMALL PHONES
+    ========================================================= */
+
+    @media (max-width: 420px) {
+
+        .display-header {
+            padding:
+                13px
+                14px;
+        }
+
+        .display-main {
+            padding:
+                10px
+                10px
+                20px;
+        }
+
+        .header-title {
+            font-size: 19px;
+        }
+
+        .header-building-name {
+            font-size: 16px;
+        }
+
+        .header-clock {
+            font-size: 21px;
+        }
+
+        .hero {
+            min-height: 400px;
+        }
+
+        .hero-content {
+            min-height: 400px;
+
+            padding:
+                20px
+                17px
+                24px;
+        }
+
+        .hero-title {
+            font-size: 25px;
+        }
+
+        .hero-time {
+            font-size: 30px;
+        }
+
+        .news-list,
+        .lower-left .news-card-wrapper {
+            min-height: 270px;
+            height: 270px;
+        }
+
+        .today-panel {
+            min-height: 380px;
+        }
+    }
+
+
+    /* =========================================================
+    LANDSCAPE PHONE
+    ========================================================= */
+
+    @media (max-width: 900px) and (orientation: landscape) {
+
+        html,
+        body {
+            overflow-y: auto;
+        }
+
+        .display-header {
+            padding:
+                10px
+                18px;
+        }
+
+        .display-main {
+            padding:
+                10px
+                14px
+                20px;
+        }
+
+        .hero {
+            min-height: 360px;
+        }
+
+        .hero-content {
+            min-height: 360px;
+
+            padding:
+                20px
+                24px;
+                24px;
+        }
+
+        .news-list,
+        .lower-left .news-card-wrapper {
+            min-height: 250px;
+            height: 250px;
+        }
+
+        .today-panel {
+            min-height: 360px;
+        }
+    }
+
     </style>
 
 </head>
@@ -3959,7 +4567,7 @@
                 </div>
 
                 <div class="header-subtitle">
-                    Garuda Training & Classroom System
+                    Garuda Training System, Media & Business
                 </div>
 
             </div>

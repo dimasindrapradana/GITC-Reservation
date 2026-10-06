@@ -62,13 +62,37 @@ class ReservationController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view(
-            'reservations.my-index',
-            [
-                'reservations' => $reservations,
-            ]
-        );
+        $unreadReservationIds = Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->whereNull('read_at')
+            ->pluck('target_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+       return view('reservations.my-index', [
+        'reservations' => $reservations,
+        'unreadReservationIds' => $unreadReservationIds,
+    ]);
     }
+
+
+    public function markAllReservationNotificationsAsRead()
+{
+    Notification::query()
+        ->where('user_id', auth()->id())
+        ->where('type', 'RESERVATION_STATUS_CHANGED')
+        ->where('target_type', 'reservation')
+        ->whereNull('read_at')
+        ->update([
+            'read_at' => now(),
+        ]);
+
+    return redirect()
+        ->route('training-officer.my-reservations.index')
+        ->with('success', 'All reservation updates have been marked as read.');
+}
 
     /*
     |--------------------------------------------------------------------------
@@ -93,6 +117,21 @@ class ReservationController extends Controller
             $reservation->user_id === auth()->id(),
             403
         );
+
+        /*
+        * Mark status-change notifications for this reservation as read.
+        * Only notifications belonging to the logged-in Training Officer
+        * and this exact reservation are affected.
+        */
+        Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->where('target_id', $reservation->id)
+            ->whereNull('read_at')
+            ->update([
+                'read_at' => now(),
+            ]);
 
         /*
          * Load historical relations, including soft-deleted

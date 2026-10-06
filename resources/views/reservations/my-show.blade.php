@@ -431,27 +431,20 @@
     }
 
 
-    .page-header h1 {
-
+     .page-header h1 {
         margin: 0 0 6px;
-
-        color: #17324d;
-
-        font-size: 24px;
-
-        font-weight: 700;
-
+        color: #0f2747;
+        font-size: 25px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
     }
 
 
     .page-header p {
-
         margin: 0;
-
-        color: #71869a;
-
+        color: #64748b;
         font-size: 13px;
-
+        line-height: 1.5;
     }
 
 

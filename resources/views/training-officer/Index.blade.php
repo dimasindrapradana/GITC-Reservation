@@ -6,9 +6,6 @@
 
 @if (session('success'))
     <div class="to-success-message">
-        <div class="to-success-icon">
-            ✓
-        </div>
 
         <div class="to-success-content">
             <strong>Reservation Submitted</strong>
@@ -70,6 +67,36 @@
      HERO
 ========================================================= --}}
 <section class="to-hero">
+
+     <div class="to-hero-background" aria-hidden="true">
+
+        <div
+            class="to-hero-background-slide active"
+            style="background-image: url('{{ asset('assets/images/slider-01.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-02.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-03.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-04.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-05.jpg') }}');"
+        ></div>
+
+    </div>
+
 
     <div class="to-hero-content">
 
@@ -455,7 +482,7 @@
                         >
 
                             <span>
-                                View Rooms
+                                Show Rooms
                             </span>
 
                             <span class="to-building-toggle-arrow">
@@ -681,14 +708,16 @@
 
                                     <button
                                         type="button"
-                                        class="to-add-cart-button"
+                                        class="to-add-cart-button {{ $isInCart ? 'in-cart' : '' }}"
                                         data-add-cart
+                                        data-resource-id="{{ $resource->id }}"
+                                        data-cart-type="{{ $cartType }}"
                                         data-in-cart="{{ $isInCart ? 'true' : 'false' }}"
                                     >
 
                                         <span>
-                                            {{ $isInCart
-                                                ? 'Remove from Cart'
+                                           {{ $isInCart
+                                                ? 'Remove from Booking List'
                                                 : 'Add to Booking List'
                                             }}
                                         </span>
@@ -828,13 +857,15 @@
 
                         <button
                             type="button"
-                            class="to-add-cart-button"
+                            class="to-add-cart-button {{ $isInCart ? 'in-cart' : '' }}"
                             data-add-cart
+                            data-resource-id="{{ $field->id }}"
+                            data-cart-type="field"
                             data-in-cart="{{ $isInCart ? 'true' : 'false' }}"
                         >
 
                             <span>
-                                {{ $isInCart
+                               {{ $isInCart
                                     ? 'Remove from Cart'
                                     : 'Add to Booking List'
                                 }}
@@ -928,11 +959,251 @@
 
 </section>
 
+{{-- =========================================================
+     BOOKING LIST SUCCESS TOAST
+========================================================= --}}
+<div
+    id="cart-toast"
+    class="to-cart-toast"
+    role="status"
+    aria-live="polite"
+>
+    <div class="to-cart-toast-icon">
+        ✓
+    </div>
+
+    <div class="to-cart-toast-content">
+
+        <p
+            id="cart-toast-title"
+            class="to-cart-toast-title"
+        >
+            Resource added to Booking List.
+        </p>
+
+        <p class="to-cart-toast-message">
+            Please check your Booking List to continue.
+        </p>
+
+    </div>
+</div>
+
 
 {{-- =========================================================
      PAGE STYLES
 ========================================================= --}}
 <style>
+
+        /* =========================================================
+       GITC FONT SYSTEM
+       Training Officer
+    ========================================================= */
+
+    /*
+     * DEFAULT PAGE FONT
+     * Semua UI menggunakan Garuda Sans.
+     */
+    .to-success-message,
+    .to-hero,
+    .to-section-intro,
+    .to-resource-filters,
+    .to-filter-result,
+    .to-buildings-list,
+    .to-field-section,
+    .to-resource-empty-state,
+    .to-cart-teaser,
+    #cart-toast {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * SERIF HEADINGS
+     * Digunakan untuk hierarchy / judul utama.
+     */
+    .to-hero-title,
+    .to-hero-title span,
+    .to-section-intro h2,
+    .to-building-card-top h3,
+    .to-building-resources-header h4,
+    .to-resource-name,
+    .to-field-header h2,
+    .to-field-content h3,
+    .to-resource-empty-state h3,
+    .to-cart-teaser-content h2 {
+        font-family: 'Garuda Serif', serif;
+        font-weight: 700;
+    }
+
+
+    /*
+     * HERO — SANS
+     */
+    .to-hero-eyebrow,
+    .to-hero-description,
+    .to-primary-button,
+    .to-secondary-button,
+    .to-summary-label,
+    .to-summary-text,
+    .to-summary-items strong,
+    .to-summary-items span {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * HERO — SERIF NUMBER
+     */
+    .to-summary-number {
+        font-family: 'Garuda Serif', serif;
+        font-weight: 700;
+    }
+
+
+    /*
+     * SECTION INTRO
+     */
+    .to-section-eyebrow,
+    .to-section-intro p,
+    .to-resource-total-number,
+    .to-resource-total-label {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * SEARCH + FILTER
+     */
+    .to-filter-search-icon,
+    .to-search-input,
+    .to-search-input::placeholder,
+    .to-filter-label,
+    .to-filter-select,
+    .to-clear-filter-button,
+    .to-filter-result {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * BUILDING
+     */
+    .to-building-number,
+    .to-building-description,
+    .to-building-summary strong,
+    .to-building-summary span,
+    .to-building-toggle,
+    .to-building-count,
+    .to-building-available,
+    .to-building-placeholder span,
+    .to-building-placeholder small {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * BUILDING RESOURCE HEADER
+     */
+    .to-building-resources-header p,
+    .to-building-resources .to-building-count {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * RESOURCE CARDS
+     */
+    .to-resource-type,
+    .to-resource-detail small,
+    .to-resource-detail strong,
+    .to-add-cart-button,
+    .to-resource-placeholder span,
+    .to-placeholder-icon,
+    .to-availability-badge {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * FIELD
+     */
+    .to-field-header p,
+    .to-field-accent,
+    .to-field-capacity,
+    .to-field-capacity strong,
+    .to-field-placeholder span {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * EMPTY STATE
+     */
+    .to-resource-empty-icon,
+    .to-resource-empty-state p,
+    .to-empty-clear-button {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * BOOKING LIST
+     */
+    .to-cart-teaser-content > span,
+    .to-cart-teaser-content p,
+    .to-cart-teaser-button {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * SUCCESS MESSAGE
+     */
+    .to-success-content strong,
+    .to-success-content span,
+    .to-success-close {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * BOOKING LIST TOAST
+     */
+    .to-cart-toast-icon,
+    .to-cart-toast-title,
+    .to-cart-toast-message {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * FORM / BUTTON SAFETY
+     *
+     * Browser kadang tidak mewariskan font ke
+     * native form controls dan button secara konsisten.
+     */
+    .to-hero button,
+    .to-hero a,
+    .to-resource-filters button,
+    .to-resource-filters input,
+    .to-resource-filters select,
+    .to-building-section button,
+    .to-resource-card button,
+    .to-field-card button,
+    .to-resource-empty-state button,
+    .to-cart-teaser button,
+    #cart-toast {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /*
+     * INPUT / SELECT
+     */
+    .to-search-input,
+    .to-filter-select {
+        font-family: 'Garuda Sans', sans-serif;
+    }
 
     /* =========================================================
        SUCCESS MESSAGE
@@ -1002,7 +1273,7 @@
     }
 
 
-    /* =========================================================
+     /* =========================================================
        HERO
     ========================================================= */
 
@@ -1014,42 +1285,70 @@
         overflow: hidden;
         margin-bottom: 48px;
         border-radius: 20px;
-        background:
-            linear-gradient(
-                120deg,
-                #0a203b 0%,
-                #0f2747 58%,
-                #12375f 100%
-            );
+        background: #0a203b;
         box-shadow:
             0 16px 40px rgba(15, 39, 71, 0.14);
     }
 
-    .to-hero::before {
-        content: "";
+
+    /* =========================================================
+       HERO BACKGROUND SLIDESHOW
+    ========================================================= */
+
+    .to-hero-background {
         position: absolute;
-        width: 420px;
-        height: 420px;
-        right: 170px;
-        bottom: -260px;
-        border: 70px solid rgba(14, 165, 164, 0.12);
-        border-radius: 50%;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
     }
 
-    .to-hero::after {
+    .to-hero-background-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transform: scale(1.02);
+        transition:
+            opacity 1.2s ease,
+            transform 6s ease;
+    }
+
+    .to-hero-background-slide.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+
+    /* =========================================================
+       DARK OVERLAY
+    ========================================================= */
+
+    .to-hero-background::after {
         content: "";
         position: absolute;
-        width: 260px;
-        height: 260px;
-        right: -90px;
-        top: -100px;
-        border: 50px solid rgba(255, 255, 255, 0.035);
-        border-radius: 50%;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(5, 25, 46, 0.94) 0%,
+                rgba(5, 25, 46, 0.82) 34%,
+                rgba(5, 25, 46, 0.55) 58%,
+                rgba(5, 25, 46, 0.28) 78%,
+                rgba(5, 25, 46, 0.35) 100%
+            );
+        pointer-events: none;
+    }
+
+    .to-hero::before,
+    .to-hero::after {
+        content: none;
     }
 
     .to-hero-content {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         padding: 48px 50px;
     }
 
@@ -1145,13 +1444,14 @@
 
     .to-hero-summary {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         display: flex;
         flex-direction: column;
         justify-content: center;
         padding: 42px;
-        background: rgba(255, 255, 255, 0.045);
-        border-left: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(5, 25, 46, 0.34);
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(2px);
     }
 
     .to-summary-label {
@@ -2421,6 +2721,87 @@
 
     }
 
+    /* =========================================================
+   BOOKING LIST TOAST
+========================================================= */
+
+#cart-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-15px);
+
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    width: max-content;
+    min-width: 335px;
+    max-width: 420px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+    padding: 16px 20px;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0.3s ease;
+}
+
+#cart-toast.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.to-cart-toast-icon {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: #e6f7f7;
+
+    color: #16a6a6;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.to-cart-toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.to-cart-toast-title {
+    margin: 0 0 4px;
+
+    color: #19304d;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+.to-cart-toast-message {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
 </style>
 
 
@@ -2573,7 +2954,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             if (label) {
                                 label.textContent =
-                                    'View Rooms';
+                                    'Show Rooms';
                             }
                         }
 
@@ -2603,7 +2984,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (label) {
                         label.textContent =
-                            'View Rooms';
+                            'Show Rooms';
                     }
 
                 } else {
@@ -2626,7 +3007,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     if (label) {
                         label.textContent =
-                            'Hide Rooms';
+                            'Collapse Rooms';
                     }
 
                     /*
@@ -2685,6 +3066,53 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
     }
+
+
+    /* =========================================================
+ * BOOKING LIST TOAST
+========================================================= */
+
+let cartToastTimer = null;
+
+function showCartToast(type) {
+
+    const toast =
+        document.getElementById('cart-toast');
+
+    const title =
+        document.getElementById('cart-toast-title');
+
+    if (!toast) {
+        return;
+    }
+
+    if (title) {
+
+        const messages = {
+            room: 'Room added to Booking List.',
+            training_room:
+                'Training Media added to Booking List.',
+            field: 'Field added to Booking List.'
+        };
+
+        title.textContent =
+            messages[type] ||
+            'Resource added to Booking List.';
+
+    }
+
+    toast.classList.add('show');
+
+    clearTimeout(cartToastTimer);
+
+    cartToastTimer =
+        setTimeout(function () {
+
+            toast.classList.remove('show');
+
+        }, 4000);
+
+}
 
 
     /*
@@ -2984,6 +3412,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         button,
                         card
                     );
+                showCartToast(type);
 
                 }
 
@@ -3361,6 +3790,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
     }
 
+    /* =========================================================
+   HERO BACKGROUND SLIDESHOW
+========================================================= */
+
+const heroBackgroundSlides =
+    document.querySelectorAll(
+        '.to-hero-background-slide'
+    );
+
+let heroBackgroundIndex = 0;
+
+if (heroBackgroundSlides.length > 1) {
+
+    setInterval(() => {
+
+        heroBackgroundSlides[
+            heroBackgroundIndex
+        ].classList.remove('active');
+
+        heroBackgroundIndex =
+            (heroBackgroundIndex + 1)
+            % heroBackgroundSlides.length;
+
+        heroBackgroundSlides[
+            heroBackgroundIndex
+        ].classList.add('active');
+
+    }, 6000);
+
+}
+
 
     /*
      * =========================================================
@@ -3407,6 +3867,8 @@ document.addEventListener('DOMContentLoaded', function () {
     applyResourceFilters();
 
 });
+
+
 </script>
 
 @endsection

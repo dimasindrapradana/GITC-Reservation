@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
 use App\Models\Building;
+use App\Models\Notification;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\TrainingRoom;
@@ -639,6 +640,15 @@ class BuildingCoordinatorReservationController extends Controller
             ]);
         });
 
+        /*
+         * Notify the requester after the status
+         * has been successfully changed.
+         */
+        $this->sendReservationStatusNotification(
+            $reservation,
+            'APPROVED'
+        );
+
         return redirect()
             ->route(
                 'building-coordinator.reservations.show',
@@ -703,6 +713,15 @@ class BuildingCoordinatorReservationController extends Controller
             ]);
         });
 
+        /*
+         * Notify the requester after the status
+         * has been successfully changed.
+         */
+        $this->sendReservationStatusNotification(
+            $reservation,
+            'REJECTED'
+        );
+
         return redirect()
             ->route(
                 'building-coordinator.reservations.show',
@@ -759,6 +778,15 @@ class BuildingCoordinatorReservationController extends Controller
             ]);
         });
 
+        /*
+         * Notify the requester after the status
+         * has been successfully changed.
+         */
+        $this->sendReservationStatusNotification(
+            $reservation,
+            'CANCELLED'
+        );
+
         return redirect()
             ->route(
                 'building-coordinator.reservations.show',
@@ -768,6 +796,67 @@ class BuildingCoordinatorReservationController extends Controller
                 'success',
                 'Reservation cancelled successfully.'
             );
+    }
+
+    /**
+     * Send a status-change notification to the
+     * requester of the reservation.
+     */
+    private function sendReservationStatusNotification(
+        Reservation $reservation,
+        string $status
+    ): void {
+        $messages = [
+            'APPROVED' => [
+                'title' => 'Reservation Approved',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been approved.',
+            ],
+
+            'REJECTED' => [
+                'title' => 'Reservation Rejected',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been rejected.',
+            ],
+
+            'CANCELLED' => [
+                'title' => 'Reservation Cancelled',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been cancelled.',
+            ],
+        ];
+
+        if (!isset($messages[$status])) {
+            return;
+        }
+
+        Notification::create([
+            'user_id' => $reservation->user_id,
+
+            'type' =>
+                'RESERVATION_STATUS_CHANGED',
+
+            'title' =>
+                $messages[$status]['title'],
+
+            'message' =>
+                $messages[$status]['message'],
+
+            'target_type' =>
+                'reservation',
+
+            'target_id' =>
+                $reservation->id,
+
+            'read_at' =>
+                null,
+        ]);
     }
 
     private function authorizeReservation(

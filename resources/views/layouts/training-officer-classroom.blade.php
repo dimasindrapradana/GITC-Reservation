@@ -59,6 +59,7 @@
             color: var(--gitc-text);
 
             font-family:
+                'Garuda Sans',
                 Inter,
                 ui-sans-serif,
                 system-ui,
@@ -92,7 +93,7 @@
             top: 0;
             z-index: 100;
 
-            height: 72px;
+            height: 82px;
 
             background: rgba(255, 255, 255, 0.97);
 
@@ -102,7 +103,7 @@
         }
 
         .toc-navbar-inner {
-            width: min(1440px, calc(100% - 48px));
+            width: min(1440px, calc(100% - 56px));
 
             height: 100%;
 
@@ -112,46 +113,50 @@
             align-items: center;
             justify-content: space-between;
 
-            gap: 24px;
+            gap: 22px;
         }
 
 
         /* =========================================================
-           BRAND
+        BRAND
         ========================================================== */
 
         .toc-brand {
             display: flex;
             align-items: center;
 
-            gap: 12px;
+            gap: 0;
 
             min-width: 0;
         }
 
         .toc-brand-mark {
-            width: 40px;
-            height: 40px;
+            width: 280px;
+            height: 62px;
 
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
 
             flex-shrink: 0;
 
-            border-radius: 10px;
+            overflow: hidden;
 
-            background: var(--gitc-navy);
+            margin: 0;
+            padding: 0;
+        }
 
-            color: white;
+        .toc-brand-mark img {
+            display: block;
 
-            font-size: 15px;
-            font-weight: 800;
+            width: 100%;
+            height: 100%;
 
-            letter-spacing: -0.03em;
+            object-fit: contain;
+            object-position: left center;
 
-            box-shadow:
-                0 5px 12px rgba(15, 39, 71, 0.16);
+            margin: 0;
+            padding: 0;
         }
 
         .toc-brand-text {
@@ -159,15 +164,23 @@
             flex-direction: column;
 
             line-height: 1.15;
+
+            margin: 0 0 0 -145px;
+            padding: 0;
         }
 
         .toc-brand-title {
             color: var(--gitc-navy);
 
-            font-size: 15px;
-            font-weight: 800;
+            font-family:
+                'Garuda Serif',
+                Georgia,
+                serif;
 
-            letter-spacing: -0.01em;
+            font-size: 21px;
+            font-weight: 700;
+
+            letter-spacing: -0.02em;
         }
 
         .toc-brand-subtitle {
@@ -175,39 +188,44 @@
 
             color: var(--gitc-muted);
 
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 600;
         }
 
 
         /* =========================================================
-           NAVIGATION ACTIONS
+        NAVIGATION ACTIONS
         ========================================================== */
 
         .toc-nav-actions {
             display: flex;
             align-items: center;
 
-            gap: 10px;
+            gap: 9px;
         }
 
 
         /* =========================================================
-           USER
+        USER
         ========================================================== */
 
         .toc-user {
             display: flex;
             align-items: center;
 
-            gap: 10px;
+            gap: 9px;
 
-            padding-right: 4px;
+            padding-right: 3px;
         }
 
         .toc-user-avatar {
-            width: 36px;
-            height: 36px;
+            width: 48px;
+            height: 48px;
 
             display: flex;
             align-items: center;
@@ -221,7 +239,12 @@
 
             color: var(--gitc-blue);
 
-            font-size: 13px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 18px;
             font-weight: 800;
         }
 
@@ -235,7 +258,12 @@
         .toc-user-name {
             color: var(--gitc-text);
 
-            font-size: 13px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 14px;
             font-weight: 700;
         }
 
@@ -244,22 +272,30 @@
 
             color: var(--gitc-muted);
 
-            font-size: 11px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 12px;
+            font-weight: 600;
         }
 
 
         /* =========================================================
-           MY RESERVATIONS
+        MY RESERVATIONS
         ========================================================== */
 
         .toc-my-reservations {
-            min-height: 42px;
+            min-height: 50px;
 
             display: inline-flex;
             align-items: center;
             justify-content: center;
 
-            padding: 0 14px;
+            gap: 6px;
+
+            padding: 0 16px;
 
             border: 1px solid #cbd5e1;
             border-radius: 9px;
@@ -268,7 +304,12 @@
 
             color: var(--gitc-navy);
 
-            font-size: 13px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 14px;
             font-weight: 700;
 
             white-space: nowrap;
@@ -291,13 +332,24 @@
                 0 5px 14px rgba(15, 39, 71, 0.08);
         }
 
+        .toc-my-reservations-dot {
+            width: 7px;
+            height: 7px;
+
+            flex: 0 0 7px;
+
+            border-radius: 50%;
+
+            background: #ef4444;
+        }
+
 
         /* =========================================================
-           BOOKING LIST / CART
+        BOOKING LIST / CART
         ========================================================== */
 
         .toc-cart-button {
-            min-height: 42px;
+            min-height: 50px;
 
             display: inline-flex;
             align-items: center;
@@ -305,7 +357,7 @@
 
             gap: 8px;
 
-            padding: 0 14px;
+            padding: 0 16px;
 
             border: 1px solid #cbd5e1;
             border-radius: 9px;
@@ -314,7 +366,12 @@
 
             color: var(--gitc-navy);
 
-            font-size: 13px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 14px;
             font-weight: 700;
 
             white-space: nowrap;
@@ -338,12 +395,23 @@
         }
 
         .toc-cart-icon {
+            width: 18px;
+            height: 18px;
+
             display: inline-flex;
             align-items: center;
             justify-content: center;
 
-            font-size: 16px;
-            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .toc-cart-icon img {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
         }
 
         .toc-cart-count {
@@ -351,18 +419,23 @@
             align-items: center;
             justify-content: center;
 
-            min-width: 20px;
-            min-height: 20px;
+            min-width: auto;
+            min-height: auto;
 
-            padding: 0 5px;
+            padding: 0;
 
-            border-radius: 999px;
+            border-radius: 0;
 
-            background: var(--gitc-blue-light);
+            background: transparent;
 
-            color: var(--gitc-blue);
+            color: var(--gitc-navy);
 
-            font-size: 11px;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 14px;
             font-weight: 800;
 
             line-height: 1;
@@ -370,23 +443,28 @@
 
 
         /* =========================================================
-           LOGOUT
+        LOGOUT
         ========================================================== */
 
         .toc-logout {
-            min-height: 42px;
+            min-height: 50px;
 
-            padding: 0 13px;
+            padding: 0 12px;
 
             border: 0;
             border-radius: 9px;
 
             background: transparent;
 
-            color: #64748b;
+            color: var(--gitc-text);
 
-            font-size: 13px;
-            font-weight: 600;
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
+            font-size: 14px;
+            font-weight: 900;
 
             cursor: pointer;
 
@@ -403,15 +481,15 @@
 
 
         /* =========================================================
-           MAIN
+        MAIN
         ========================================================== */
 
         .toc-main {
-            min-height: calc(100vh - 72px);
+            min-height: calc(100vh - 82px);
         }
 
         .toc-container {
-            width: min(1440px, calc(100% - 48px));
+            width: min(1440px, calc(100% - 64px));
 
             margin: 0 auto;
 
@@ -434,6 +512,11 @@
 
             color: var(--gitc-blue);
 
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
             font-size: 11px;
             font-weight: 800;
 
@@ -447,8 +530,13 @@
 
             color: var(--gitc-navy);
 
+            font-family:
+                'Garuda Serif',
+                Georgia,
+                serif;
+
             font-size: 30px;
-            font-weight: 800;
+            font-weight: 700;
 
             line-height: 1.15;
 
@@ -461,6 +549,11 @@
             margin: 9px 0 0;
 
             color: var(--gitc-muted);
+
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
 
             font-size: 14px;
             line-height: 1.7;
@@ -481,6 +574,11 @@
             border-radius: 10px;
 
             background: white;
+
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
 
             font-size: 13px;
             line-height: 1.6;
@@ -522,7 +620,7 @@
         }
 
         .toc-footer-inner {
-            width: min(1440px, calc(100% - 48px));
+            width: min(1440px, calc(100% - 64px));
 
             min-height: 72px;
 
@@ -538,6 +636,11 @@
         .toc-footer-text {
             color: var(--gitc-muted);
 
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
+
             font-size: 12px;
         }
 
@@ -548,6 +651,11 @@
             gap: 6px;
 
             color: var(--gitc-navy);
+
+            font-family:
+                'Garuda Sans',
+                Inter,
+                sans-serif;
 
             font-size: 12px;
             font-weight: 700;
@@ -567,7 +675,7 @@
            RESPONSIVE
         ========================================================== */
 
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
 
             .toc-user {
                 display: none;
@@ -648,6 +756,10 @@
                 font-size: 14px;
             }
 
+            .toc-brand-text {
+                margin-left: -20px;
+            }
+
             .toc-nav-actions {
                 gap: 6px;
             }
@@ -683,15 +795,6 @@
      * =========================================================
      * CLASSROOM CART
      * =========================================================
-     *
-     * IMPORTANT:
-     * Classroom has its own cart session.
-     *
-     * This is intentionally separated from:
-     *
-     * training_officer_cart
-     *
-     * used by the main Training Officer area.
      */
 
     $trainingOfficerClassroomCart = session(
@@ -706,11 +809,18 @@
             $trainingOfficerClassroomCart['rooms'] ?? []
         );
 
+    $hasUnreadClassroomReservationStatus = auth()->check()
+        && \App\Models\Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->whereNull('read_at')
+            ->exists();
+
 @endphp
 
 
 <body>
-
 
     {{-- =========================================================
          TOP NAVIGATION
@@ -731,7 +841,12 @@
             >
 
                 <div class="toc-brand-mark">
-                    GITC
+
+                    <img
+                        src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                        alt="GITC"
+                    >
+
                 </div>
 
                 <div class="toc-brand-text">
@@ -797,7 +912,18 @@
                     href="{{ route('training-officer.classroom.my-reservations') }}"
                     class="toc-my-reservations"
                 >
+
                     My Reservations
+
+                    @if ($hasUnreadClassroomReservationStatus)
+
+                        <span
+                            class="toc-my-reservations-dot"
+                            aria-hidden="true"
+                        ></span>
+
+                    @endif
+
                 </a>
 
 
@@ -813,7 +939,13 @@
                 >
 
                     <span class="toc-cart-icon">
-                        🛒
+
+                        <img
+                            src="{{ asset('assets/icons/navigation/Booking_list.svg') }}"
+                            alt=""
+                            aria-hidden="true"
+                        >
+
                     </span>
 
                     <span class="toc-cart-label">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AuditLog;
 use App\Models\Building;
 use App\Models\Field;
+use App\Models\Notification;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\TrainingRoom;
@@ -896,6 +897,11 @@ class CoordinatorReservationController extends Controller
                 'rejection_reason' => null,
             ]);
 
+            $this->sendReservationStatusNotification(
+                $reservation,
+                'APPROVED'
+            );
+
             AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'APPROVE',
@@ -960,6 +966,11 @@ class CoordinatorReservationController extends Controller
                 'rejection_reason' => $validated['rejection_reason'],
             ]);
 
+            $this->sendReservationStatusNotification(
+                $reservation,
+                'REJECTED'
+            );
+
             AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'REJECT',
@@ -1014,6 +1025,11 @@ class CoordinatorReservationController extends Controller
                 'status' => 'CANCELLED',
             ]);
 
+            $this->sendReservationStatusNotification(
+                $reservation,
+                'CANCELLED'
+            );
+
             AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'CANCEL',
@@ -1067,6 +1083,11 @@ class CoordinatorReservationController extends Controller
                 'status' => 'CANCELLED',
             ]);
 
+            $this->sendReservationStatusNotification(
+                $reservation,
+                'CANCELLED'
+            );
+
             AuditLog::create([
                 'user_id' => auth()->id(),
                 'action' => 'DELETE',
@@ -1092,6 +1113,55 @@ class CoordinatorReservationController extends Controller
                 'success',
                 'Reservation has been successfully deleted.'
             );
+    }
+
+    /*
+     * Send notification to the reservation requester
+     * whenever the reservation status changes.
+     */
+    private function sendReservationStatusNotification(
+        Reservation $reservation,
+        string $status
+    ): void {
+        $messages = [
+            'APPROVED' => [
+                'title' => 'Reservation Approved',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been approved.',
+            ],
+
+            'REJECTED' => [
+                'title' => 'Reservation Rejected',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been rejected.',
+            ],
+
+            'CANCELLED' => [
+                'title' => 'Reservation Cancelled',
+                'message' =>
+                    'Your reservation '
+                    . $reservation->reservation_number
+                    . ' has been cancelled.',
+            ],
+        ];
+
+        if (!isset($messages[$status])) {
+            return;
+        }
+
+        Notification::create([
+            'user_id' => $reservation->user_id,
+            'type' => 'RESERVATION_STATUS_CHANGED',
+            'title' => $messages[$status]['title'],
+            'message' => $messages[$status]['message'],
+            'target_type' => 'reservation',
+            'target_id' => $reservation->id,
+            'read_at' => null,
+        ]);
     }
 
     private function isFieldCoordinator(): bool

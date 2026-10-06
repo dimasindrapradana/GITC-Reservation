@@ -1,723 +1,944 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-
-        <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1.0"
-        >
-
-        <meta
-            name="csrf-token"
-            content="{{ csrf_token() }}"
-        >
-
-        <title>
-            @yield('title', 'GITC Reservation')
-        </title>
-
-        <style>
-            :root {
-                --gitc-navy: #0f2747;
-                --gitc-navy-dark: #091b33;
-                --gitc-blue: #1e5aa8;
-                --gitc-blue-light: #eaf2fb;
-                --gitc-teal: #0ea5a4;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
 
-                --gitc-bg: #f4f7fa;
-                --gitc-card: #ffffff;
-                --gitc-border: #e2e8f0;
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-                --gitc-text: #172033;
-                --gitc-muted: #64748b;
+    <meta
+        name="csrf-token"
+        content="{{ csrf_token() }}"
+    >
 
-                --gitc-success: #15803d;
-                --gitc-success-bg: #dcfce7;
-            }
+    <title>
+        @yield('title', 'GITC Reservation')
+    </title>
 
-            * {
-                box-sizing: border-box;
-            }
+  <style>
+    :root {
+        --gitc-navy: #0f2747;
+        --gitc-navy-dark: #091b33;
+        --gitc-blue: #1e5aa8;
+        --gitc-blue-light: #eaf2fb;
+        --gitc-teal: #0ea5a4;
 
-            html {
-                scroll-behavior: smooth;
-            }
+        --gitc-bg: #f4f7fa;
+        --gitc-card: #ffffff;
+        --gitc-border: #e2e8f0;
 
-            body {
-                margin: 0;
-                min-height: 100vh;
+        --gitc-text: #172033;
+        --gitc-muted: #64748b;
 
-                background: var(--gitc-bg);
-                color: var(--gitc-text);
+        --gitc-success: #15803d;
+        --gitc-success-bg: #dcfce7;
+    }
 
-                font-family:
-                    Inter,
-                    ui-sans-serif,
-                    system-ui,
-                    -apple-system,
-                    BlinkMacSystemFont,
-                    "Segoe UI",
-                    sans-serif;
+    * {
+        box-sizing: border-box;
+    }
 
-                -webkit-font-smoothing: antialiased;
-            }
+    html {
+        scroll-behavior: smooth;
+    }
 
-            a {
-                color: inherit;
-                text-decoration: none;
-            }
+    body {
+        margin: 0;
+        min-height: 100vh;
 
-            button,
-            input,
-            select,
-            textarea {
-                font: inherit;
-            }
+        background: var(--gitc-bg);
+        color: var(--gitc-text);
 
-            /* =========================================================
-            TOP NAVIGATION
-            ========================================================== */
+        font-family: 'Garuda Sans', sans-serif;
 
-            .to-navbar {
-                position: sticky;
-                top: 0;
-                z-index: 100;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
 
-                height: 72px;
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
 
-                background: rgba(255, 255, 255, 0.96);
+    button,
+    input,
+    select,
+    textarea {
+        font-family: 'Garuda Sans', sans-serif;
+    }
 
-                border-bottom: 1px solid var(--gitc-border);
 
-                backdrop-filter: blur(12px);
-            }
+    /* =========================================================
+       TOP NAVIGATION
+    ========================================================== */
 
-            .to-navbar-inner {
-                width: min(1440px, calc(100% - 48px));
+    .to-navbar {
+        position: sticky;
+        top: 0;
+        z-index: 100;
 
-                height: 100%;
+        height: 82px;
 
-                margin: 0 auto;
+        background: rgba(255, 255, 255, 0.97);
 
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+        border-bottom: 1px solid var(--gitc-border);
 
-                gap: 24px;
-            }
+        backdrop-filter: blur(12px);
+    }
 
-            /* =========================================================
-            BRAND
-            ========================================================== */
+    .to-navbar-inner {
+        width: min(1440px, calc(100% - 56px));
 
-            .to-brand {
-                display: flex;
-                align-items: center;
+        height: 100%;
 
-                gap: 12px;
+        margin: 0 auto;
 
-                min-width: 0;
-            }
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-            .to-brand-mark {
-                width: 40px;
-                height: 40px;
+        gap: 22px;
+    }
 
-                display: flex;
-                align-items: center;
-                justify-content: center;
 
-                flex-shrink: 0;
+    /* =========================================================
+       BRAND / LOGO
+    ========================================================== */
 
-                border-radius: 10px;
+    .to-brand {
+        display: flex;
+        align-items: center;
 
-                background: var(--gitc-navy);
+        gap: 0;
 
-                color: white;
+        min-width: 0;
 
-                font-size: 15px;
-                font-weight: 800;
+        flex-shrink: 0;
+    }
 
-                letter-spacing: -0.03em;
+    .to-brand-mark {
+        width: 280px;
+        height: 62px;
 
-                box-shadow:
-                    0 5px 12px rgba(15, 39, 71, 0.16);
-            }
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
 
-            .to-brand-text {
-                display: flex;
-                flex-direction: column;
+        flex-shrink: 0;
 
-                line-height: 1.15;
-            }
+        overflow: hidden;
 
-            .to-brand-title {
-                color: var(--gitc-navy);
+        margin: 0;
+        padding: 0;
+    }
 
-                font-size: 15px;
-                font-weight: 800;
+    .to-brand-mark img {
+        display: block;
 
-                letter-spacing: -0.01em;
-            }
+        width: 100%;
+        height: 100%;
 
-            .to-brand-subtitle {
-                margin-top: 3px;
+        object-fit: contain;
+        object-position: left center;
 
-                color: var(--gitc-muted);
+        margin: 0;
+        padding: 0;
+    }
 
-                font-size: 11px;
-                font-weight: 500;
-            }
+    .to-brand-text {
+        display: flex;
+        flex-direction: column;
 
-            /* =========================================================
-            NAV RIGHT
-            ========================================================== */
+        line-height: 1.15;
 
-            .to-nav-actions {
-                display: flex;
-                align-items: center;
+        margin: 0 0 0 -145px;
+        padding: 0;
+    }
 
-                gap: 12px;
-            }
+    .to-brand-title {
+        color: var(--gitc-navy);
 
-            .to-user {
-                display: flex;
-                align-items: center;
+        font-family: 'Garuda Serif', serif;
 
-                gap: 10px;
+        font-size: 21px;
+        font-weight: 700;
 
-                padding-right: 4px;
-            }
+        letter-spacing: -0.02em;
 
-            .to-user-avatar {
-                width: 36px;
-                height: 36px;
+        white-space: nowrap;
+    }
 
-                display: flex;
-                align-items: center;
-                justify-content: center;
+    .to-brand-subtitle {
+        margin-top: 3px;
 
-                flex-shrink: 0;
+        color: var(--gitc-muted);
 
-                border-radius: 50%;
+        font-family: 'Garuda Sans', sans-serif;
 
-                background: var(--gitc-blue-light);
+        font-size: 11px;
+        font-weight: 600;
 
-                color: var(--gitc-blue);
+        letter-spacing: -0.005em;
 
-                font-size: 13px;
-                font-weight: 800;
-            }
+        white-space: nowrap;
+    }
 
-            .to-user-info {
-                display: flex;
-                flex-direction: column;
 
-                line-height: 1.2;
-            }
+    /* =========================================================
+       NAV RIGHT
+    ========================================================== */
 
-            .to-user-name {
-                color: var(--gitc-text);
+    .to-nav-actions {
+        display: flex;
+        align-items: center;
 
-                font-size: 13px;
-                font-weight: 700;
-            }
+        gap: 9px;
 
-            .to-user-role {
-                margin-top: 3px;
+        flex-shrink: 0;
+    }
 
-                color: var(--gitc-muted);
 
-                font-size: 11px;
-            }
+    /* =========================================================
+       USER
+    ========================================================== */
 
-            /* =========================================================
-            MY RESERVATIONS
-            ========================================================== */
+    .to-user {
+        display: flex;
+        align-items: center;
 
-            .to-my-reservations {
-                min-height: 42px;
+        gap: 9px;
 
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+        padding-right: 3px;
+    }
 
-                padding: 0 14px;
+    .to-user-avatar {
+        width: 48px;
+        height: 48px;
 
-                border: 1px solid #cbd5e1;
-                border-radius: 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-                background: #ffffff;
+        flex-shrink: 0;
 
-                color: var(--gitc-navy);
+        border-radius: 50%;
 
-                font-size: 13px;
-                font-weight: 700;
+        background: var(--gitc-blue-light);
 
-                white-space: nowrap;
+        color: var(--gitc-blue);
 
-                transition:
-                    background 0.18s ease,
-                    border-color 0.18s ease,
-                    transform 0.18s ease,
-                    box-shadow 0.18s ease;
-            }
+        font-family: 'Garuda Sans', sans-serif;
 
-            .to-my-reservations:hover {
-                background: #f8fafc;
+        font-size: 18px;
+        font-weight: 800;
 
-                border-color: #94a3b8;
+        line-height: 1;
+    }
 
-                transform: translateY(-1px);
+    .to-user-info {
+        display: flex;
+        flex-direction: column;
 
-                box-shadow:
-                    0 5px 14px rgba(15, 39, 71, 0.08);
-            }
+        line-height: 1.2;
+    }
 
-            /* =========================================================
-            CART BUTTON
-            ========================================================== */
+    .to-user-name {
+        color: var(--gitc-text);
 
-            .to-cart-button {
-                min-height: 42px;
+        font-family: 'Garuda Sans', sans-serif;
 
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
 
-                gap: 8px;
+        white-space: nowrap;
+    }
 
-                padding: 0 14px;
+    .to-user-role {
+        margin-top: 3px;
 
-                border: 1px solid #cbd5e1;
-                border-radius: 9px;
+        color: var(--gitc-muted);
 
-                background: #ffffff;
+        font-family: 'Garuda Sans', sans-serif;
 
-                color: var(--gitc-navy);
+        font-size: 12px;
+        font-weight: 600;
 
-                font-size: 13px;
-                font-weight: 700;
+        white-space: nowrap;
+    }
 
-                white-space: nowrap;
 
-                transition:
-                    background 0.18s ease,
-                    border-color 0.18s ease,
-                    transform 0.18s ease,
-                    box-shadow 0.18s ease;
-            }
+    /* =========================================================
+       MY RESERVATIONS
+    ========================================================== */
 
-            .to-cart-button:hover {
-                background: #f8fafc;
+    .to-my-reservations {
+        min-height: 50px;
 
-                border-color: #94a3b8;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-                transform: translateY(-1px);
+        gap: 6px;
 
-                box-shadow:
-                    0 5px 14px rgba(15, 39, 71, 0.08);
-            }
+        padding: 0 16px;
 
-            .to-cart-icon {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
 
-                font-size: 16px;
-                line-height: 1;
-            }
+        background: #ffffff;
 
-            .to-cart-count {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
+        color: var(--gitc-navy);
 
-                color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
 
-                font-size: 13px;
-                font-weight: 800;
+        font-size: 14px;
+        font-weight: 700;
 
-                line-height: 1;
-            }
+        white-space: nowrap;
 
-            /* =========================================================
-            LOGOUT
-            ========================================================== */
+        transition:
+            background 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
+    }
 
-            .to-logout {
-                min-height: 42px;
+    .to-my-reservations:hover {
+        background: #f8fafc;
 
-                padding: 0 13px;
+        border-color: #94a3b8;
 
-                border: 0;
-                border-radius: 9px;
+        transform: translateY(-1px);
 
-                background: transparent;
+        box-shadow:
+            0 5px 14px rgba(15, 39, 71, 0.08);
+    }
 
-                color: #64748b;
+    .to-my-reservations-dot {
+        width: 7px;
+        height: 7px;
 
-                font-size: 13px;
-                font-weight: 600;
+        flex: 0 0 7px;
 
-                cursor: pointer;
+        border-radius: 50%;
 
-                transition:
-                    color 0.18s ease,
-                    background 0.18s ease;
-            }
+        background: #ef4444;
+    }
 
-            .to-logout:hover {
-                background: #f1f5f9;
 
-                color: #334155;
-            }
+    /* =========================================================
+       CART / BOOKING LIST
+    ========================================================== */
 
-            /* =========================================================
-            MAIN
-            ========================================================== */
+    .to-cart-button {
+        min-height: 50px;
 
-            .to-main {
-                min-height: calc(100vh - 72px);
-            }
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-            .to-container {
-                width: min(1440px, calc(100% - 48px));
+        gap: 8px;
 
-                margin: 0 auto;
+        padding: 0 16px;
 
-                padding: 34px 0 64px;
-            }
+        border: 1px solid #cbd5e1;
+        border-radius: 9px;
 
-            /* =========================================================
-            FOOTER
-            ========================================================== */
+        background: #ffffff;
 
-            .to-footer {
-                border-top: 1px solid var(--gitc-border);
+        color: var(--gitc-navy);
 
-                background: white;
-            }
+        font-family: 'Garuda Sans', sans-serif;
 
-            .to-footer-inner {
-                width: min(1440px, calc(100% - 48px));
+        font-size: 14px;
+        font-weight: 700;
 
-                min-height: 72px;
+        white-space: nowrap;
 
-                margin: 0 auto;
+        transition:
+            background 0.18s ease,
+            border-color 0.18s ease,
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
+    }
 
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+    .to-cart-button:hover {
+        background: #f8fafc;
 
-                gap: 20px;
-            }
+        border-color: #94a3b8;
 
-            .to-footer-text {
-                color: var(--gitc-muted);
+        transform: translateY(-1px);
 
-                font-size: 12px;
-            }
+        box-shadow:
+            0 5px 14px rgba(15, 39, 71, 0.08);
+    }
 
-            .to-footer-accent {
-                display: inline-flex;
-                align-items: center;
 
-                gap: 6px;
+    /* =========================================================
+       BOOKING LIST ICON
+    ========================================================== */
 
-                color: var(--gitc-navy);
+    .to-cart-icon {
+        width: 18px;
+        height: 18px;
 
-                font-size: 12px;
-                font-weight: 700;
-            }
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-            .to-footer-dot {
-                width: 7px;
-                height: 7px;
+        flex-shrink: 0;
+    }
 
-                border-radius: 50%;
+    .to-cart-icon img {
+        display: block;
 
-                background: var(--gitc-teal);
-            }
+        width: 100%;
+        height: 100%;
 
-            /* =========================================================
-            RESPONSIVE
-            ========================================================== */
+        object-fit: contain;
+    }
 
-            @media (max-width: 768px) {
 
-                .to-navbar {
-                    height: 64px;
-                }
+    /* =========================================================
+       BOOKING LIST COUNT
+    ========================================================== */
 
-                .to-navbar-inner,
-                .to-container,
-                .to-footer-inner {
-                    width: min(100% - 28px, 1440px);
-                }
+    .to-cart-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
 
-                .to-main {
-                    min-height: calc(100vh - 64px);
-                }
+        min-width: auto;
 
-                .to-container {
-                    padding-top: 24px;
-                    padding-bottom: 48px;
-                }
+        padding: 0;
 
-                .to-user {
-                    display: none;
-                }
+        color: var(--gitc-navy);
 
-                .to-brand-subtitle {
-                    display: none;
-                }
+        font-family: 'Garuda Sans', sans-serif;
 
-                .to-logout {
-                    display: none;
-                }
+        font-size: 14px;
+        font-weight: 800;
 
-                .to-my-reservations {
-                    min-height: 40px;
-                    padding: 0 11px;
-                    font-size: 12px;
-                }
+        line-height: 1;
+    }
 
-                .to-footer-inner {
-                    min-height: 64px;
-                }
 
-                .to-footer-text {
-                    font-size: 11px;
-                }
-            }
+    /* =========================================================
+       LOGOUT
+    ========================================================== */
 
-            @media (max-width: 480px) {
+    .to-logout {
+        min-height: 50px;
 
-                .to-navbar-inner,
-                .to-container,
-                .to-footer-inner {
-                    width: calc(100% - 20px);
-                }
+        padding: 0 12px;
 
-                .to-brand-mark {
-                    width: 36px;
-                    height: 36px;
+        border: 0;
+        border-radius: 9px;
 
-                    border-radius: 9px;
-                }
+        background: transparent;
 
-                .to-brand-title {
-                    font-size: 14px;
-                }
+        color: #111111;
 
-                .to-my-reservations {
-                    padding: 0 10px;
-                    font-size: 11px;
-                }
+        font-family: 'Garuda Sans', sans-serif;
 
-                .to-cart-button {
-                    padding: 0 11px;
-                }
+        font-size: 14px;
+        font-weight: 900;
 
-                .to-cart-label {
-                    display: none;
-                }
-            }
-        </style>
+        cursor: pointer;
 
-        @yield('head')
+        white-space: nowrap;
 
-        @stack('styles')
-    </head>
+        transition:
+            color 0.18s ease,
+            background 0.18s ease;
+    }
 
-    @php
-        $trainingOfficerCart = session('training_officer_cart', [
-            'rooms' => [],
-            'training_rooms' => [],
-            'fields' => [],
-        ]);
+    .to-logout:hover {
+        background: #f1f5f9;
 
-        $trainingOfficerCartCount =
-            count($trainingOfficerCart['rooms'] ?? []) +
-            count($trainingOfficerCart['training_rooms'] ?? []) +
-            count($trainingOfficerCart['fields'] ?? []);
-    @endphp
+        color: #000000;
+    }
 
-    <body>
 
-        {{-- =========================================================
-            TOP NAVIGATION
-        ========================================================== --}}
+    /* =========================================================
+       MAIN
+    ========================================================== */
 
-        <header class="to-navbar">
+    .to-main {
+        min-height: calc(100vh - 82px);
+    }
 
-            <div class="to-navbar-inner">
+    .to-container {
+        width: min(1440px, calc(100% - 56px));
 
-                {{-- Brand --}}
+        margin: 0 auto;
+
+        padding: 34px 0 64px;
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================== */
+
+    .to-footer {
+        border-top: 1px solid var(--gitc-border);
+
+        background: white;
+
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+    .to-footer-inner {
+        width: min(1440px, calc(100% - 56px));
+
+        min-height: 72px;
+
+        margin: 0 auto;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    .to-footer-text {
+        color: var(--gitc-muted);
+
+        font-family: 'Garuda Sans', sans-serif;
+
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .to-footer-accent {
+        display: inline-flex;
+        align-items: center;
+
+        gap: 6px;
+
+        color: var(--gitc-navy);
+
+        font-family: 'Garuda Sans', sans-serif;
+
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .to-footer-dot {
+        width: 7px;
+        height: 7px;
+
+        border-radius: 50%;
+
+        background: var(--gitc-teal);
+    }
+
+
+    /* =========================================================
+       RESPONSIVE — TABLET
+    ========================================================== */
+
+    @media (max-width: 1100px) {
+
+        .to-navbar {
+            height: 82px;
+        }
+
+        .to-navbar-inner,
+        .to-container,
+        .to-footer-inner {
+            width: min(100% - 40px, 1440px);
+        }
+
+        .to-brand-mark {
+            width: 240px;
+            height: 56px;
+        }
+
+        .to-brand-text {
+            margin-left: -125px;
+        }
+
+        .to-brand-title {
+            font-size: 19px;
+        }
+
+        .to-brand-subtitle {
+            font-size: 10px;
+        }
+
+        .to-user-info {
+            display: none;
+        }
+
+        .to-user-avatar {
+            width: 44px;
+            height: 44px;
+
+            font-size: 17px;
+        }
+
+        .to-my-reservations,
+        .to-cart-button,
+        .to-logout {
+            font-size: 13px;
+        }
+
+        .to-main {
+            min-height: calc(100vh - 82px);
+        }
+    }
+
+
+    /* =========================================================
+       RESPONSIVE — MOBILE
+    ========================================================== */
+
+    @media (max-width: 768px) {
+
+        .to-navbar {
+            height: 72px;
+        }
+
+        .to-navbar-inner,
+        .to-container,
+        .to-footer-inner {
+            width: min(100% - 28px, 1440px);
+        }
+
+        .to-main {
+            min-height: calc(100vh - 72px);
+        }
+
+        .to-container {
+            padding-top: 24px;
+            padding-bottom: 48px;
+        }
+
+        .to-brand {
+            gap: 0;
+        }
+
+        .to-brand-mark {
+            width: 190px;
+            height: 48px;
+        }
+
+        .to-brand-text {
+            margin-left: -95px;
+        }
+
+        .to-brand-title {
+            font-size: 16px;
+        }
+
+        .to-brand-subtitle {
+            display: none;
+        }
+
+        .to-user {
+            display: none;
+        }
+
+        .to-logout {
+            display: none;
+        }
+
+        .to-my-reservations {
+            min-height: 42px;
+
+            padding: 0 12px;
+
+            font-size: 12px;
+        }
+
+        .to-cart-button {
+            min-height: 42px;
+
+            padding: 0 12px;
+
+            font-size: 12px;
+        }
+
+        .to-cart-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .to-footer-inner {
+            min-height: 64px;
+        }
+
+        .to-footer-text {
+            font-size: 11px;
+        }
+    }
+
+
+    /* =========================================================
+       RESPONSIVE — SMALL MOBILE
+    ========================================================== */
+
+    @media (max-width: 480px) {
+
+        .to-navbar-inner,
+        .to-container,
+        .to-footer-inner {
+            width: calc(100% - 20px);
+        }
+
+        .to-brand-mark {
+            width: 150px;
+            height: 42px;
+        }
+
+        .to-brand-text {
+            margin-left: -75px;
+        }
+
+        .to-brand-title {
+            font-size: 15px;
+        }
+
+        .to-my-reservations {
+            padding: 0 10px;
+
+            font-size: 11px;
+        }
+
+        .to-cart-button {
+            padding: 0 10px;
+        }
+
+        .to-cart-label {
+            display: none;
+        }
+
+        .to-cart-icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+</style>
+
+    @yield('head')
+
+    @stack('styles')
+</head>
+
+@php
+    $trainingOfficerCart = session('training_officer_cart', [
+        'rooms' => [],
+        'training_rooms' => [],
+        'fields' => [],
+    ]);
+
+    $trainingOfficerCartCount =
+        count($trainingOfficerCart['rooms'] ?? []) +
+        count($trainingOfficerCart['training_rooms'] ?? []) +
+        count($trainingOfficerCart['fields'] ?? []);
+
+    $hasUnreadReservationStatus = auth()->check()
+        && \App\Models\Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->whereNull('read_at')
+            ->exists();
+@endphp
+
+<body>
+
+    {{-- =========================================================
+        TOP NAVIGATION
+    ========================================================== --}}
+
+    <header class="to-navbar">
+
+        <div class="to-navbar-inner">
+
+            {{-- Brand --}}
+            <a
+                href="{{ route('training-officer.home') }}"
+                class="to-brand"
+            >
+
+                <div class="to-brand-mark">
+                <img
+                    src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                    alt="GITC"
+                >
+            </div>
+
+                <div class="to-brand-text">
+
+                    <span class="to-brand-title">
+                        GITC Reservation
+                    </span>
+
+                    <span class="to-brand-subtitle">
+                        Training System, Media & Business
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            {{-- Actions --}}
+            <div class="to-nav-actions">
+
+                {{-- User --}}
+                <div class="to-user">
+
+                    <div class="to-user-avatar">
+                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                    </div>
+
+                    <div class="to-user-info">
+
+                        <span class="to-user-name">
+                            {{ auth()->user()->name }}
+                        </span>
+
+                        <span class="to-user-role">
+                            Training Officer
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                {{-- My Reservations --}}
                 <a
-                    href="{{ route('training-officer.home') }}"
-                    class="to-brand"
+                    href="{{ route('training-officer.my-reservations.index') }}"
+                    class="to-my-reservations"
+                >
+                    My Reservations
+
+                    @if ($hasUnreadReservationStatus)
+                        <span
+                            class="to-my-reservations-dot"
+                            aria-hidden="true"
+                        ></span>
+                    @endif
+                </a>
+
+
+                {{-- Reservation Cart --}}
+                <a
+                    href="{{ route('training-officer.cart') }}"
+                    class="to-cart-button"
+                    aria-label="Open reservation cart"
+                    id="reservation-cart-button"
                 >
 
-                    <div class="to-brand-mark">
-                        GITC
-                    </div>
+                    <span class="to-cart-icon">
+                    <img
+                        src="{{ asset('assets/icons/navigation/Booking_list.svg') }}"
+                        alt=""
+                        aria-hidden="true"
+                    >
+                </span>
 
-                    <div class="to-brand-text">
+                    <span class="to-cart-label">
+                        Booking List
+                    </span>
 
-                        <span class="to-brand-title">
-                            GITC Reservation
-                        </span>
-
-                        <span class="to-brand-subtitle">
-                            Training System, Media & Business
-                        </span>
-
-                    </div>
+                    <span
+                        class="to-cart-count"
+                        id="reservation-cart-count"
+                    >
+                        {{ $trainingOfficerCartCount }}
+                    </span>
 
                 </a>
 
 
-                {{-- Actions --}}
-                <div class="to-nav-actions">
+                {{-- Logout --}}
+                <form
+                    method="POST"
+                    action="{{ route('logout') }}"
+                >
+                    @csrf
 
-                    {{-- User --}}
-                    <div class="to-user">
-
-                        <div class="to-user-avatar">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-
-                        <div class="to-user-info">
-
-                            <span class="to-user-name">
-                                {{ auth()->user()->name }}
-                            </span>
-
-                            <span class="to-user-role">
-                                Training Officer
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    {{-- My Reservations --}}
-                    <a href="{{ route('training-officer.my-reservations.index') }}"
-                    class="to-my-reservations"
+                    <button
+                        type="submit"
+                        class="to-logout"
                     >
-                        My Reservations
-                    </a>
+                        Logout
+                    </button>
 
-
-                    {{-- Reservation Cart --}}
-                    <a
-                        href="{{ route('training-officer.cart') }}"
-                        class="to-cart-button"
-                        aria-label="Open reservation cart"
-                        id="reservation-cart-button"
-                    >
-
-                        <span class="to-cart-icon">
-                            🛒
-                        </span>
-
-                        <span class="to-cart-label">
-                            Booking List
-                        </span>
-
-                        <span
-                            class="to-cart-count"
-                            id="reservation-cart-count"
-                        >
-                            {{ $trainingOfficerCartCount }}
-                        </span>
-
-                    </a>
-
-
-                    {{-- Logout --}}
-                    <form
-                        method="POST"
-                        action="{{ route('logout') }}"
-                    >
-                        @csrf
-
-                        <button
-                            type="submit"
-                            class="to-logout"
-                        >
-                            Logout
-                        </button>
-
-                    </form>
-
-                </div>
+                </form>
 
             </div>
 
-        </header>
+        </div>
+
+    </header>
 
 
-        {{-- =========================================================
-            MAIN CONTENT
-        ========================================================== --}}
+    {{-- =========================================================
+        MAIN CONTENT
+    ========================================================== --}}
 
-        <main class="to-main">
+    <main class="to-main">
 
-            <div class="to-container">
+        <div class="to-container">
 
-                @yield('content')
+            @yield('content')
 
-            </div>
+        </div>
 
-        </main>
-
-
-        {{-- =========================================================
-            FOOTER
-        ========================================================== --}}
-
-        <footer class="to-footer">
-
-            <div class="to-footer-inner">
-
-                <span class="to-footer-text">
-                    © {{ date('Y') }} GITC Reservation System
-                </span>
-
-                <span class="to-footer-accent">
-                    <span class="to-footer-dot"></span>
-                    Training Facility Booking
-                </span>
-
-            </div>
-
-        </footer>
+    </main>
 
 
-        {{-- =========================================================
-            GLOBAL CART SCRIPT
-        ========================================================== --}}
+    {{-- =========================================================
+        FOOTER
+    ========================================================== --}}
 
-        <script>
-            window.updateReservationCartCount = function (count) {
+    <footer class="to-footer">
 
-                const cartCount =
-                    document.getElementById('reservation-cart-count');
+        <div class="to-footer-inner">
 
-                if (!cartCount) {
-                    return;
-                }
+            <span class="to-footer-text">
+                © {{ date('Y') }} GITC Reservation System
+            </span>
 
-                cartCount.textContent = count;
-            };
-        </script>
+            <span class="to-footer-accent">
+                <span class="to-footer-dot"></span>
+                Training Facility Booking
+            </span>
 
-        @yield('scripts')
+        </div>
 
-    </body>
-    </html>
+    </footer>
+
+
+    {{-- =========================================================
+        GLOBAL CART SCRIPT
+    ========================================================== --}}
+
+    <script>
+        window.updateReservationCartCount = function (count) {
+
+            const cartCount =
+                document.getElementById('reservation-cart-count');
+
+            if (!cartCount) {
+                return;
+            }
+
+            cartCount.textContent = count;
+        };
+    </script>
+
+    @yield('scripts')
+
+</body>
+</html>

@@ -86,40 +86,88 @@
 
         .brand {
             height: var(--topbar-height);
+
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 0 20px;
+
+            gap: 0;
+
+            padding: 0 16px;
+
             border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+
+            overflow: hidden;
         }
 
         .brand-mark {
-            width: 38px;
-            height: 38px;
-            flex-shrink: 0;
-            border-radius: 9px;
+            width: 190px;
+            height: 48px;
+
             display: flex;
             align-items: center;
-            justify-content: center;
-            background: var(--cyan);
-            color: var(--white);
-            font-size: 14px;
-            font-weight: 800;
+            justify-content: flex-start;
+
+            flex-shrink: 0;
+
+            overflow: hidden;
+
+            background: transparent;
+
+            border-radius: 0;
+
+            margin: 0;
+            padding: 0;
+        }
+
+        .brand-mark img {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+            object-position: left center;
+
+            margin: 0;
+            padding: 0;
+            filter: brightness(0) invert(1);
         }
 
         .brand-text {
-            line-height: 1.2;
+            display: flex;
+            flex-direction: column;
+
+            line-height: 1.15;
+
+            margin: 0 0 0 -95px;
+            margin-left: -80px;
+            padding: 0;
         }
 
         .brand-name {
-            font-size: 16px;
+            color: var(--white);
+
+            font-family: 'Garuda Serif', Georgia, serif;
+
+            font-size: 19px;
             font-weight: 700;
+
+            letter-spacing: -0.02em;
+
+            white-space: nowrap;
         }
 
         .brand-subtitle {
             margin-top: 3px;
+
             color: rgba(255, 255, 255, 0.60);
+
+            font-family: 'Garuda Sans', sans-serif;
+
             font-size: 10px;
+            font-weight: 600;
+
+            white-space: nowrap;
         }
 
         .sidebar-content {
@@ -593,12 +641,17 @@
     {{-- SIDEBAR --}}
     <aside class="sidebar" id="sidebar">
 
-        <div class="brand">
+       <div class="brand">
+
             <div class="brand-mark">
-                GI
+                <img
+                    src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                    alt="GITC"
+                >
             </div>
 
             <div class="brand-text">
+
                 <div class="brand-name">
                     GITC Info
                 </div>
@@ -606,7 +659,9 @@
                 <div class="brand-subtitle">
                     Management System
                 </div>
+
             </div>
+
         </div>
 
         <div class="sidebar-content">

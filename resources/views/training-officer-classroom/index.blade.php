@@ -4,7 +4,6 @@
 
 @section('content')
 
-
 @php
     /*
      * =========================================================
@@ -20,9 +19,6 @@
         fn ($building) => $building->trainingRooms->count()
     );
 
-    /*
-     * Classroom page does not currently display fields.
-     */
     $totalFields = 0;
 
     $totalResources =
@@ -34,8 +30,6 @@
      * =========================================================
      * CLASSROOM BOOKING CART
      * =========================================================
-     *
-     * Only rooms are stored on the Classroom Booking List.
      */
 
     $trainingOfficerCart = session(
@@ -67,6 +61,36 @@
      HERO
 ========================================================= --}}
 <section class="to-hero">
+
+    <div class="to-hero-background" aria-hidden="true">
+
+        <div
+            class="to-hero-background-slide active"
+            style="background-image: url('{{ asset('assets/images/slider-01.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-02.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-03.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-04.jpg') }}');"
+        ></div>
+
+        <div
+            class="to-hero-background-slide"
+            style="background-image: url('{{ asset('assets/images/slider-05.jpg') }}');"
+        ></div>
+
+    </div>
+
 
     <div class="to-hero-content">
 
@@ -134,16 +158,6 @@
                 <strong>{{ $totalRooms }}</strong>
                 <span>Rooms</span>
             </div>
-
-            {{-- <div>
-                <strong>{{ $totalTrainingRooms }}</strong>
-                <span>Training Media</span>
-            </div>
-
-            <div>
-                <strong>{{ $totalFields }}</strong>
-                <span>Fields</span>
-            </div> --}}
 
         </div>
 
@@ -240,14 +254,6 @@
                 Rooms
             </option>
 
-            {{-- <option value="training_room">
-                Training Media
-            </option>
-
-            <option value="field">
-                Fields
-            </option> --}}
-
         </select>
 
     </div>
@@ -333,9 +339,7 @@
                 data-building-section="building-{{ $building->id }}"
             >
 
-                {{-- =================================================
-                     BUILDING CARD
-                ================================================= --}}
+                {{-- BUILDING CARD --}}
                 <article
                     class="to-building-card"
                     data-building-card
@@ -429,19 +433,6 @@
 
                             </div>
 
-
-                            {{-- <div>
-
-                                <strong>
-                                    {{ $trainingRooms->count() }}
-                                </strong>
-
-                                <span>
-                                    Training Media
-                                </span>
-
-                            </div> --}}
-
                         </div>
 
 
@@ -454,7 +445,7 @@
                         >
 
                             <span>
-                                View Rooms
+                                Show Rooms
                             </span>
 
                             <span class="to-building-toggle-arrow">
@@ -468,9 +459,7 @@
                 </article>
 
 
-                {{-- =================================================
-                     BUILDING RESOURCES
-                ================================================= --}}
+                {{-- BUILDING RESOURCES --}}
                 <div
                     id="building-resources-{{ $building->id }}"
                     class="to-building-resources"
@@ -704,7 +693,6 @@
 
                                     @else
 
-                                        {{-- TRAINING MEDIA IS VIEW ONLY --}}
                                         <div class="to-resource-unavailable-action">
                                             Training Media is currently
                                             view-only.
@@ -803,9 +791,70 @@
 
 
 {{-- =========================================================
+     BOOKING LIST SUCCESS TOAST
+========================================================= --}}
+<div
+    id="cart-toast"
+    class="to-cart-toast"
+    role="status"
+    aria-live="polite"
+>
+
+    <div class="to-cart-toast-icon">
+        ✓
+    </div>
+
+    <div class="to-cart-toast-content">
+
+        <p class="to-cart-toast-title">
+            Room added to Booking List.
+        </p>
+
+        <p class="to-cart-toast-message">
+            Please check your Booking List to continue.
+        </p>
+
+    </div>
+
+</div>
+
+
+{{-- =========================================================
      PAGE STYLES
 ========================================================= --}}
 <style>
+
+    /* =========================================================
+       GITC FONT SYSTEM
+       =========================================================
+       Garuda Sans  = UI, labels, descriptions, buttons
+       Garuda Serif = headings and prominent titles
+    ========================================================= */
+
+    .to-hero,
+    .to-section-intro,
+    .to-resource-filters,
+    .to-filter-result,
+    .to-buildings-list,
+    .to-resource-empty-state,
+    .to-cart-teaser,
+    #cart-toast {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    .to-hero-title,
+    .to-section-intro h2,
+    .to-building-card-top h3,
+    .to-building-resources-header h4,
+    .to-resource-name,
+    .to-field-header h2,
+    .to-field-content h3,
+    .to-resource-empty-state h3,
+    .to-cart-teaser-content h2 {
+        font-family: 'Garuda Serif', serif;
+    }
+
 
     /* =========================================================
        SUCCESS MESSAGE
@@ -821,6 +870,7 @@
         border-radius: 12px;
         background: #f0faf6;
         color: #145c43;
+        font-family: 'Garuda Sans', sans-serif;
     }
 
     .to-success-icon {
@@ -882,47 +932,124 @@
     .to-hero {
         position: relative;
         display: grid;
-        grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.45fr);
+        grid-template-columns:
+            minmax(0, 1.55fr)
+            minmax(280px, 0.45fr);
         min-height: 390px;
         overflow: hidden;
         margin-bottom: 48px;
         border-radius: 20px;
-        background:
-            linear-gradient(
-                120deg,
-                #0a203b 0%,
-                #0f2747 58%,
-                #12375f 100%
-            );
+        background: #0a203b;
         box-shadow:
             0 16px 40px rgba(15, 39, 71, 0.14);
     }
 
-    .to-hero::before {
-        content: "";
-        position: absolute;
-        width: 420px;
-        height: 420px;
-        right: 170px;
-        bottom: -260px;
-        border: 70px solid rgba(14, 165, 164, 0.12);
-        border-radius: 50%;
+
+    /* =========================================================
+       HERO FONT
+    ========================================================= */
+
+    .to-hero-eyebrow {
+        font-family: 'Garuda Sans', sans-serif;
+        font-weight: 700;
     }
 
-    .to-hero::after {
+    .to-hero-title,
+    .to-hero-title span {
+        font-family: 'Garuda Serif', serif;
+        font-weight: 700;
+    }
+
+    .to-hero-description {
+        font-family: 'Garuda Sans', sans-serif;
+        font-weight: 400;
+    }
+
+    .to-primary-button,
+    .to-secondary-button {
+        font-family: 'Garuda Sans', sans-serif;
+        font-weight: 700;
+    }
+
+    .to-summary-label {
+        font-family: 'Garuda Sans', sans-serif;
+        font-weight: 700;
+    }
+
+    .to-summary-number {
+        font-family: 'Garuda Serif', serif;
+        font-weight: 700;
+    }
+
+    .to-summary-text {
+        font-family: 'Garuda Sans', sans-serif;
+        font-weight: 400;
+    }
+
+    .to-summary-items strong,
+    .to-summary-items span {
+        font-family: 'Garuda Sans', sans-serif;
+    }
+
+
+    /* =========================================================
+       HERO BACKGROUND SLIDESHOW
+    ========================================================= */
+
+    .to-hero-background {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .to-hero-background-slide {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transform: scale(1.02);
+        transition:
+            opacity 1.2s ease,
+            transform 6s ease;
+    }
+
+    .to-hero-background-slide.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+
+    /* =========================================================
+       DARK OVERLAY
+    ========================================================= */
+
+    .to-hero-background::after {
         content: "";
         position: absolute;
-        width: 260px;
-        height: 260px;
-        right: -90px;
-        top: -100px;
-        border: 50px solid rgba(255, 255, 255, 0.035);
-        border-radius: 50%;
+        inset: 0;
+        background:
+            linear-gradient(
+                90deg,
+                rgba(5, 25, 46, 0.94) 0%,
+                rgba(5, 25, 46, 0.82) 34%,
+                rgba(5, 25, 46, 0.55) 58%,
+                rgba(5, 25, 46, 0.28) 78%,
+                rgba(5, 25, 46, 0.35) 100%
+            );
+        pointer-events: none;
+    }
+
+    .to-hero::before,
+    .to-hero::after {
+        content: none;
     }
 
     .to-hero-content {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         padding: 48px 50px;
     }
 
@@ -953,7 +1080,7 @@
         font-size: clamp(34px, 4vw, 52px);
         line-height: 1.05;
         letter-spacing: -0.04em;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-hero-title span {
@@ -1018,13 +1145,14 @@
 
     .to-hero-summary {
         position: relative;
-        z-index: 2;
+        z-index: 3;
         display: flex;
         flex-direction: column;
         justify-content: center;
         padding: 42px;
-        background: rgba(255, 255, 255, 0.045);
-        border-left: 1px solid rgba(255, 255, 255, 0.09);
+        background: rgba(5, 25, 46, 0.34);
+        border-left: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(2px);
     }
 
     .to-summary-label {
@@ -1039,7 +1167,7 @@
         color: white;
         font-size: 64px;
         line-height: 1;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.05em;
     }
 
@@ -1077,6 +1205,7 @@
     .to-summary-items span {
         color: #91a7bf;
         font-size: 10px;
+        font-weight: 700;
     }
 
 
@@ -1094,6 +1223,7 @@
 
     .to-section-eyebrow {
         color: var(--gitc-teal);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 800;
         letter-spacing: 0.15em;
@@ -1103,10 +1233,11 @@
     .to-field-header h2 {
         margin: 6px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 28px;
         line-height: 1.2;
         letter-spacing: -0.025em;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-section-intro p,
@@ -1114,8 +1245,10 @@
         max-width: 620px;
         margin: 7px 0 0;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 13px;
         line-height: 1.6;
+        font-weight: 400;
     }
 
     .to-resource-total {
@@ -1130,13 +1263,16 @@
 
     .to-resource-total-number {
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 17px;
         font-weight: 800;
     }
 
     .to-resource-total-label {
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
+        font-weight: 400;
     }
 
 
@@ -1172,6 +1308,7 @@
         top: 50%;
         transform: translateY(-50%);
         color: var(--gitc-blue);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 8px;
         font-weight: 900;
         letter-spacing: 0.04em;
@@ -1186,7 +1323,7 @@
         border-radius: 8px;
         background: #f9fbfd;
         color: var(--gitc-text);
-        font-family: inherit;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 12px;
         outline: none;
         transition:
@@ -1201,6 +1338,7 @@
 
     .to-search-input::placeholder {
         color: #8a98a8;
+        font-family: 'Garuda Sans', sans-serif;
     }
 
     .to-search-input:focus,
@@ -1218,6 +1356,7 @@
         display: block;
         margin: 0 0 6px;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 9px;
         font-weight: 800;
         letter-spacing: 0.08em;
@@ -1236,6 +1375,7 @@
         border-radius: 8px;
         background: white;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
         cursor: pointer;
@@ -1255,7 +1395,9 @@
         min-height: 25px;
         margin-bottom: 19px;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
+        font-weight: 400;
     }
 
 
@@ -1341,12 +1483,14 @@
 
     .to-building-placeholder span {
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 20px;
         font-weight: 900;
         letter-spacing: 0.1em;
     }
 
     .to-building-placeholder small {
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
     }
 
@@ -1361,6 +1505,7 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.94);
         color: #166534;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 800;
         box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
@@ -1389,9 +1534,10 @@
     .to-building-card-top h3 {
         margin: 7px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 27px;
         line-height: 1.2;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.025em;
     }
 
@@ -1405,6 +1551,7 @@
         border-radius: 9px;
         background: var(--gitc-navy);
         color: white;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
     }
@@ -1413,8 +1560,10 @@
         max-width: 520px;
         margin: 14px 0 0;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 13px;
         line-height: 1.65;
+        font-weight: 400;
     }
 
     .to-building-summary {
@@ -1435,13 +1584,16 @@
 
     .to-building-summary strong {
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 20px;
         font-weight: 800;
     }
 
     .to-building-summary span {
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
+        font-weight: 400;
     }
 
     .to-building-toggle {
@@ -1457,6 +1609,7 @@
         border-radius: 8px;
         background: white;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 12px;
         font-weight: 800;
         cursor: pointer;
@@ -1475,6 +1628,7 @@
 
     .to-building-toggle-arrow {
         color: var(--gitc-teal);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 17px;
         transition: transform 0.2s ease;
     }
@@ -1512,14 +1666,17 @@
     .to-building-resources-header h4 {
         margin: 6px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 19px;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-building-resources-header p {
         margin: 5px 0 0;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 12px;
+        font-weight: 400;
     }
 
     .to-building-resources .to-building-count {
@@ -1528,6 +1685,7 @@
         border-radius: 7px;
         background: white;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 800;
     }
@@ -1617,16 +1775,19 @@
                 #f5f8fb
             );
         color: #8a9aab;
+        font-family: 'Garuda Sans', sans-serif;
     }
 
     .to-placeholder-icon {
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 17px;
         font-weight: 900;
         letter-spacing: 0.1em;
     }
 
     .to-resource-placeholder span {
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
     }
 
@@ -1641,6 +1802,7 @@
         border-radius: 999px;
         background: rgba(255, 255, 255, 0.94);
         color: #166534;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 800;
         box-shadow:
@@ -1672,6 +1834,7 @@
         border-radius: 5px;
         background: #edf3f9;
         color: var(--gitc-blue);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 9px;
         font-weight: 800;
         letter-spacing: 0.07em;
@@ -1691,9 +1854,10 @@
     .to-resource-name {
         margin: 10px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 17px;
         line-height: 1.3;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-resource-details {
@@ -1716,13 +1880,17 @@
 
     .to-resource-detail small {
         color: #8290a0;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 8px;
+        font-weight: 400;
     }
 
     .to-resource-detail strong {
         overflow: hidden;
         color: var(--gitc-text);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
+        font-weight: 800;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
@@ -1740,6 +1908,7 @@
         border-radius: 8px;
         background: white;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
         cursor: pointer;
@@ -1776,6 +1945,7 @@
 
     .to-add-cart-arrow {
         color: var(--gitc-teal);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 17px;
         transition: transform 0.18s ease;
     }
@@ -1801,6 +1971,7 @@
         border-radius: 8px;
         background: #f7f9fb;
         color: #7b8998;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 700;
         text-align: center;
@@ -1831,6 +2002,7 @@
         border-radius: 8px;
         background: white;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
     }
@@ -1874,20 +2046,25 @@
     .to-field-content h3 {
         margin: 10px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 18px;
         line-height: 1.3;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-field-capacity {
         margin-top: 14px;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
+        font-weight: 400;
     }
 
     .to-field-capacity strong {
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 13px;
+        font-weight: 800;
     }
 
 
@@ -1906,6 +2083,7 @@
 
     .to-resource-empty-icon {
         color: var(--gitc-blue);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 10px;
         font-weight: 900;
         letter-spacing: 0.12em;
@@ -1914,14 +2092,17 @@
     .to-resource-empty-state h3 {
         margin: 10px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 20px;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-resource-empty-state p {
         margin: 7px 0 20px;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 12px;
+        font-weight: 400;
     }
 
     .to-empty-clear-button {
@@ -1931,6 +2112,7 @@
         border-radius: 8px;
         background: var(--gitc-navy);
         color: white;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
         cursor: pointer;
@@ -1971,6 +2153,7 @@
 
     .to-cart-teaser-content > span {
         color: var(--gitc-teal);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 9px;
         font-weight: 900;
         letter-spacing: 0.14em;
@@ -1979,16 +2162,19 @@
     .to-cart-teaser-content h2 {
         margin: 5px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Serif', serif;
         font-size: 21px;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-cart-teaser-content p {
         max-width: 650px;
         margin: 6px 0 0;
         color: var(--gitc-muted);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         line-height: 1.55;
+        font-weight: 400;
     }
 
     .to-cart-teaser-button {
@@ -2001,6 +2187,7 @@
         border-radius: 8px;
         background: var(--gitc-navy);
         color: white;
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
         cursor: pointer;
@@ -2012,6 +2199,92 @@
     .to-cart-teaser-button:hover {
         background: #183b63;
         transform: translateY(-1px);
+    }
+
+
+    /* =========================================================
+       RESERVATION CART TOAST
+    ========================================================= */
+
+    #cart-toast {
+        position: fixed;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-15px);
+
+        z-index: 9999;
+
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        width: max-content;
+        min-width: 335px;
+        max-width: 420px;
+
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+        padding: 16px 20px;
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            visibility 0.3s ease;
+    }
+
+    #cart-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    .to-cart-toast-icon {
+        flex: 0 0 42px;
+        width: 42px;
+        height: 42px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+        background: #e6f7f7;
+
+        color: #16a6a6;
+        font-family: 'Garuda Sans', sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .to-cart-toast-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .to-cart-toast-title {
+        margin: 0 0 4px;
+
+        color: #19304d;
+        font-family: 'Garuda Sans', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .to-cart-toast-message {
+        margin: 0;
+
+        color: #64748b;
+        font-family: 'Garuda Sans', sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: 400;
     }
 
 
@@ -2126,6 +2399,13 @@
         .to-cart-teaser-icon {
             width: 45px;
             height: 45px;
+        }
+
+        .to-cart-toast {
+            top: 16px;
+            right: 16px;
+            left: 16px;
+            width: auto;
         }
 
     }
@@ -2273,6 +2553,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /*
      * =========================================================
+     * CART TOAST
+     * =========================================================
+     */
+
+    let cartToastTimer = null;
+
+    function showCartToast() {
+
+        const toast =
+            document.getElementById('cart-toast');
+
+        if (!toast) {
+            return;
+        }
+
+        toast.classList.add('show');
+
+        clearTimeout(cartToastTimer);
+
+        cartToastTimer =
+            setTimeout(function () {
+
+                toast.classList.remove('show');
+
+            }, 4000);
+
+    }
+
+
+    /*
+     * =========================================================
      * UPDATE CART BUTTON VISUALS
      * =========================================================
      */
@@ -2338,11 +2649,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             });
 
-
-        /*
-         * Update cart counters in the layout
-         * if the layout contains them.
-         */
 
         document
             .querySelectorAll(
@@ -2410,7 +2716,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
 
-        if (!response.ok) {    
+        if (!response.ok) {
 
             let message =
                 'Unable to update the Booking List.';
@@ -2457,16 +2763,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        const data = await response.json();
+        const data =
+            await response.json();
+
 
         if (
             typeof window.updateClassroomReservationCount === 'function' &&
             Number.isFinite(Number(data?.cart_count))
         ) {
+
             window.updateClassroomReservationCount(
                 Number(data.cart_count)
             );
+
         }
+
 
         return data;
 
@@ -2492,11 +2803,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             button.dataset.resourceId
                         );
 
-
-                    /*
-                     * Classroom Booking List
-                     * currently supports rooms only.
-                     */
 
                     const type =
                         'room';
@@ -2573,11 +2879,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             );
 
 
-                            /*
-                             * Prevent duplicate
-                             * local entries.
-                             */
-
                             if (
                                 !isInCart(
                                     id,
@@ -2595,12 +2896,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             }
 
+
+                            showCartToast();
+
                         }
 
-
-                        /*
-                         * Refresh visual state.
-                         */
 
                         updateCartVisuals();
 
@@ -2698,8 +2998,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         label.textContent =
                             isOpen
-                                ? 'View Rooms'
-                                : 'Hide Rooms';
+                                ? 'Show Rooms'
+                                : 'Collapse Rooms';
 
                     }
 
@@ -2879,7 +3179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ) {
 
                 resultInfo.textContent =
-                    'Showing all available resources.';
+                    '';
 
             } else {
 
@@ -2984,10 +3284,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
 
-        /*
-         * Show all building sections again.
-         */
-
         document
             .querySelectorAll(
                 '[data-building-section]'
@@ -3021,6 +3317,41 @@ document.addEventListener('DOMContentLoaded', function () {
             'click',
             clearFilters
         );
+
+    }
+
+
+    /*
+     * =========================================================
+     * HERO BACKGROUND SLIDESHOW
+     * =========================================================
+     */
+
+    const heroSlides =
+        document.querySelectorAll(
+            '.to-hero-background-slide'
+        );
+
+    let heroSlideIndex = 0;
+
+
+    if (heroSlides.length > 1) {
+
+        setInterval(function () {
+
+            heroSlides[heroSlideIndex]
+                .classList.remove('active');
+
+
+            heroSlideIndex =
+                (heroSlideIndex + 1) %
+                heroSlides.length;
+
+
+            heroSlides[heroSlideIndex]
+                .classList.add('active');
+
+        }, 6000);
 
     }
 

@@ -699,6 +699,11 @@ Route::middleware([
             [ReservationController::class, 'myReservations']
         )->name('my-reservations.index');
 
+        Route::post(
+            '/my-reservations/mark-all-as-read',
+            [ReservationController::class, 'markAllReservationNotificationsAsRead']
+        )->name('my-reservations.mark-all-as-read');
+
         Route::get(
             '/my-reservations/{reservation}',
             [ReservationController::class, 'myShow']
@@ -842,6 +847,11 @@ Route::middleware([
                 'myReservations'
             ]
         )->name('my-reservations');
+
+        Route::post(
+        '/my-reservations/mark-all-as-read',
+        [TrainingOfficerClassroomReservationController::class, 'markAllReservationNotificationsAsRead']
+    )->name('my-reservations.mark-all-as-read');
 
         Route::get(
             '/my-reservations/{reservation}',

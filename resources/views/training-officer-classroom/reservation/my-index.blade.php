@@ -5,14 +5,39 @@
 @section('content')
 
     <div class="page-header">
-        <div>
-            <h1>My Reservations</h1>
-            <p>
-                View and track your classroom reservation requests.
-            </p>
-        </div>
-
+    <div>
+        <h1>My Reservations</h1>
+        <p>
+            View and track your classroom reservation requests.
+        </p>
     </div>
+
+    <div class="page-header-actions">
+
+        @if (!empty($unreadReservationIds))
+            <form
+                action="{{ route('training-officer.classroom.my-reservations.mark-all-as-read') }}"
+                method="POST"
+            >
+                @csrf
+
+                <button
+                    type="submit"
+                    class="mark-all-read-button"
+                >
+                    Mark All as Read
+                </button>
+            </form>
+        @endif
+
+         <a
+                href="{{ route('training-officer.classroom.home') }}"
+                class="back-button"
+            >
+                ← Back
+            </a>
+    </div>
+</div>
 
     @if (session('success'))
         <div class="alert success-alert">
@@ -83,10 +108,13 @@
                             <td>
                                 <div class="reservation-number">
                                     {{ $reservation->reservation_number }}
-                                </div>
 
-                                <div class="secondary-text">
-                                    {{ $reservation->created_at->format('d M Y') }}
+                                    @if (in_array($reservation->id, $unreadReservationIds, true))
+                                        <span class="updated-indicator">
+                                            <span class="updated-dot"></span>
+                                            Updated
+                                        </span>
+                                    @endif
                                 </div>
                             </td>
 
@@ -294,6 +322,47 @@
         margin-bottom: 24px;
     }
 
+    .page-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.page-header-actions form {
+    margin: 0;
+}
+
+.mark-all-read-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid #d5dee7;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #4f6680;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    white-space: nowrap;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .mark-all-read-button:hover {
+        border-color: #b9c9d6;
+        background: #f8fafc;
+        color: #344f67;
+        transform: translateY(-1px);
+    }
+
     .page-header h1 {
         margin: 0 0 6px;
         color: #0f2747;
@@ -397,6 +466,36 @@
         line-height: 1.5;
     }
 
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 1px solid #d5dee7;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #4f6680;
+        font-family: inherit;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none;
+        white-space: nowrap;
+        transition:
+            background 0.15s ease,
+            border-color 0.15s ease,
+            color 0.15s ease,
+            transform 0.15s ease;
+    }
+
+    .back-button:hover {
+        border-color: #b9c9d6;
+        background: #f8fafc;
+        color: #344f67;
+        transform: translateY(-1px);
+    }
+
     /* =========================================================
        TABLE
     ========================================================== */
@@ -456,6 +555,29 @@
         white-space: nowrap;
     }
 
+    .updated-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 7px;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: #fff1f2;
+        color: #dc2626;
+        font-size: 9px;
+        font-weight: 800;
+        line-height: 1;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .updated-dot {
+        width: 6px;
+        height: 6px;
+        flex: 0 0 6px;
+        border-radius: 50%;
+        background: #ef4444;
+    }
     .primary-text {
         color: #405a70;
         font-size: 12px;
@@ -702,6 +824,13 @@
         .page-header {
             flex-direction: column;
             align-items: stretch;
+        }
+        .page-header-actions {
+            align-self: flex-start;
+        }
+
+        .back-button {
+            align-self: flex-start;
         }
 
         .primary-button {

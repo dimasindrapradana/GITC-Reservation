@@ -39,14 +39,43 @@ class TrainingOfficerClassroomReservationController extends Controller
             ->paginate(10)
             ->withQueryString();
 
+        $unreadReservationIds = Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->whereNull('read_at')
+            ->pluck('target_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
         return view(
             'training-officer-classroom.reservation.my-index',
             [
                 'reservations' => $reservations,
+                'unreadReservationIds' => $unreadReservationIds,
             ]
         );
     }
 
+
+    public function markAllReservationNotificationsAsRead(): RedirectResponse
+    {
+        Notification::query()
+            ->where('user_id', auth()->id())
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->whereNull('read_at')
+            ->update([
+                'read_at' => now(),
+            ]);
+
+        return redirect()
+            ->route('training-officer.classroom.my-reservations')
+            ->with(
+                'success',
+                'All reservation updates have been marked as read.'
+            );
+    }
     /**
      * Show one reservation detail.
      */
@@ -61,6 +90,23 @@ class TrainingOfficerClassroomReservationController extends Controller
         if ((int) $reservation->user_id !== (int) $request->user()->id) {
             abort(403);
         }
+
+        /*
+         * Mark status-change notification for this
+         * reservation as read.
+         *
+         * Only notifications belonging to the current user
+         * and this specific reservation are affected.
+         */
+        Notification::query()
+            ->where('user_id', $request->user()->id)
+            ->where('type', 'RESERVATION_STATUS_CHANGED')
+            ->where('target_type', 'reservation')
+            ->where('target_id', $reservation->id)
+            ->whereNull('read_at')
+            ->update([
+                'read_at' => now(),
+            ]);
 
         /*
          * Load related room and building data.

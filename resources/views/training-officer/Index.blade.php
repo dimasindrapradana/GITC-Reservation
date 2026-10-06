@@ -328,16 +328,7 @@
 </section>
 
 
-{{-- =========================================================
-     FILTER RESULT INFO
-========================================================= --}}
-<div
-    id="resource-filter-result"
-    class="to-filter-result"
-    aria-live="polite"
->
-    Showing all available resources.
-</div>
+
 
 
 {{-- =========================================================
@@ -1528,12 +1519,13 @@
 
     .to-section-intro h2,
     .to-field-header h2 {
-        margin: 6px 0 0;
+         margin: 6px 0 0;
         color: var(--gitc-navy);
+        font-family: 'Garuda Sans', sans-serif;
         font-size: 28px;
         line-height: 1.2;
         letter-spacing: -0.025em;
-        font-weight: 800;
+        font-weight: 700;
     }
 
     .to-section-intro p,

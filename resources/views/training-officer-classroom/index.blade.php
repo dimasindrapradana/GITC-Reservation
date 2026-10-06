@@ -301,16 +301,6 @@
 </section>
 
 
-{{-- =========================================================
-     FILTER RESULT INFO
-========================================================= --}}
-<div
-    id="resource-filter-result"
-    class="to-filter-result"
-    aria-live="polite"
->
-    Showing all available resources.
-</div>
 
 
 {{-- =========================================================

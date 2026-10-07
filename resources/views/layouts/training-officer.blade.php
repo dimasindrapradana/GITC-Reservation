@@ -14,10 +14,67 @@
     >
 
     <title>
-        @yield('title', 'GITC Reservation')
+        @yield('title', 'GITC Classrom')
     </title>
 
   <style>
+
+        @font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
     :root {
         --gitc-navy: #0f2747;
         --gitc-navy-dark: #091b33;
@@ -116,11 +173,13 @@
         min-width: 0;
 
         flex-shrink: 0;
+        
     }
 
     .to-brand-mark {
-        width: 280px;
-        height: 62px;
+        width: 170px;
+        height: 32px;
+
 
         display: flex;
         align-items: center;
@@ -132,6 +191,7 @@
 
         margin: 0;
         padding: 0;
+        
     }
 
     .to-brand-mark img {
@@ -154,6 +214,8 @@
         line-height: 1.15;
 
         margin: 0 0 0 -145px;
+        margin-left: -90px;
+        
         padding: 0;
     }
 
@@ -168,6 +230,7 @@
         letter-spacing: -0.02em;
 
         white-space: nowrap;
+        
     }
 
     .to-brand-subtitle {
@@ -538,191 +601,488 @@
     }
 
 
-    /* =========================================================
-       RESPONSIVE — TABLET
-    ========================================================== */
+   /* =========================================================
+   RESPONSIVE
+========================================================= */
 
-    @media (max-width: 1100px) {
+@media (max-width: 1000px) {
 
-        .to-navbar {
-            height: 82px;
-        }
+    .to-user {
+        display: none;
+    }
 
-        .to-navbar-inner,
-        .to-container,
-        .to-footer-inner {
-            width: min(100% - 40px, 1440px);
-        }
+}
 
-        .to-brand-mark {
-            width: 240px;
-            height: 56px;
-        }
 
-        .to-brand-text {
-            margin-left: -125px;
-        }
+@media (max-width: 768px) {
 
-        .to-brand-title {
-            font-size: 19px;
-        }
+    .to-navbar {
+        height: 64px;
+    }
 
-        .to-brand-subtitle {
-            font-size: 10px;
-        }
+    .to-navbar-inner,
+    .to-container,
+    .to-footer-inner {
+        width: min(100% - 28px, 1440px);
+    }
 
-        .to-user-info {
-            display: none;
-        }
+    .to-main {
+        min-height: calc(100vh - 64px);
+    }
 
-        .to-user-avatar {
-            width: 44px;
-            height: 44px;
+    .to-container {
+        padding-top: 24px;
+        padding-bottom: 48px;
+    }
 
-            font-size: 17px;
-        }
+    .to-brand-subtitle {
+        display: none;
+    }
 
-        .to-my-reservations,
-        .to-cart-button,
-        .to-logout {
-            font-size: 13px;
-        }
+    .to-logout {
+        display: none;
+    }
 
-        .to-main {
-            min-height: calc(100vh - 82px);
-        }
+    .to-my-reservations,
+    .to-cart-button {
+        min-height: 40px;
+
+        padding: 0 11px;
+
+        font-size: 12px;
+    }
+
+    .to-footer-inner {
+        min-height: 64px;
+    }
+
+    .to-footer-text {
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .to-navbar-inner,
+    .to-container,
+    .to-footer-inner {
+        width: calc(100% - 20px);
+    }
+
+    .to-brand-mark {
+        width: 36px;
+        height: 36px;
+
+        border-radius: 9px;
+    }
+
+    .to-brand-title {
+        font-size: 14px;
+    }
+
+    .to-brand-text {
+        margin-left: -20px;
+    }
+
+    .to-nav-actions {
+        gap: 6px;
+    }
+
+    .to-my-reservations,
+    .to-cart-button {
+        padding: 0 9px;
+
+        font-size: 11px;
+    }
+
+    .to-cart-label {
+        display: none;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — SMALL TABLET
+========================================================= */
+
+@media (max-width: 850px) {
+
+    .to-navbar {
+        height: auto;
+        min-height: 76px;
+    }
+
+    .to-navbar-inner {
+        width: calc(100% - 32px);
+
+        min-height: 76px;
+
+        gap: 14px;
+
+        padding: 10px 0;
+    }
+
+    .to-brand {
+        min-width: 0;
+        flex: 1 1 auto;
+    }
+
+    .to-brand-mark {
+        width: 135px;
+        height: 38px;
+    }
+
+    .to-brand-text {
+        margin-left: -72px;
+    }
+
+    .to-brand-title {
+        font-size: 17px;
+    }
+
+    .to-brand-subtitle {
+        display: none;
+    }
+
+    .to-nav-actions {
+        gap: 6px;
+        flex-shrink: 0;
+    }
+
+    .to-user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 15px;
+    }
+
+    .to-my-reservations,
+    .to-cart-button {
+        min-height: 42px;
+        padding: 0 11px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .to-cart-icon {
+        width: 17px;
+        height: 17px;
+    }
+
+    .to-cart-count {
+        font-size: 12px;
+    }
+
+    .to-logout {
+        min-height: 42px;
+        padding: 0 9px;
+        font-size: 12px;
+    }
+
+    .to-container,
+    .to-footer-inner {
+        width: calc(100% - 32px);
+    }
+
+    .to-container {
+        padding: 28px 0 48px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+    .to-user {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .to-navbar {
+        height: 64px;
+    }
+
+    .to-navbar-inner,
+    .to-container,
+    .to-footer-inner {
+        width: min(100% - 28px, 1440px);
+    }
+
+    .to-main {
+        min-height: calc(100vh - 64px);
+    }
+
+    .to-container {
+        padding-top: 24px;
+        padding-bottom: 48px;
+    }
+
+    .to-brand-subtitle {
+        display: none;
+    }
+
+    /*
+     * Keep Logout visible on TRO
+     */
+    .to-logout {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        min-height: 40px;
+
+        padding: 0 10px;
+
+        font-size: 12px;
+    }
+
+    .to-my-reservations,
+    .to-cart-button {
+        min-height: 40px;
+
+        padding: 0 11px;
+
+        font-size: 12px;
+    }
+
+    .to-footer-inner {
+        min-height: 64px;
+    }
+
+    .to-footer-text {
+        font-size: 11px;
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .to-navbar-inner,
+    .to-container,
+    .to-footer-inner {
+        width: calc(100% - 20px);
     }
 
 
-    /* =========================================================
-       RESPONSIVE — MOBILE
-    ========================================================== */
+    /* =========================
+       BRAND
+    ========================= */
 
-    @media (max-width: 768px) {
+    .to-brand {
+        display: flex;
 
-        .to-navbar {
-            height: 72px;
-        }
+        align-items: center;
 
-        .to-navbar-inner,
-        .to-container,
-        .to-footer-inner {
-            width: min(100% - 28px, 1440px);
-        }
+        flex: 1 1 auto;
 
-        .to-main {
-            min-height: calc(100vh - 72px);
-        }
+        min-width: 0;
 
-        .to-container {
-            padding-top: 24px;
-            padding-bottom: 48px;
-        }
+        overflow: hidden;
+    }
 
-        .to-brand {
-            gap: 0;
-        }
+    .to-brand-mark {
+        width: 105px;
+        height: 30px;
 
-        .to-brand-mark {
-            width: 190px;
-            height: 48px;
-        }
+        flex: 0 0 105px;
 
-        .to-brand-text {
-            margin-left: -95px;
-        }
+        border-radius: 0;
+    }
 
-        .to-brand-title {
-            font-size: 16px;
-        }
+    .to-brand-text {
+        margin-left: -26px;
 
-        .to-brand-subtitle {
-            display: none;
-        }
+        min-width: 0;
+    }
 
-        .to-user {
-            display: none;
-        }
+    .to-brand-title {
+        font-size: 15px;
 
-        .to-logout {
-            display: none;
-        }
+        white-space: nowrap;
+         margin-left: 20px;
+    }
 
-        .to-my-reservations {
-            min-height: 42px;
-
-            padding: 0 12px;
-
-            font-size: 12px;
-        }
-
-        .to-cart-button {
-            min-height: 42px;
-
-            padding: 0 12px;
-
-            font-size: 12px;
-        }
-
-        .to-cart-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .to-footer-inner {
-            min-height: 64px;
-        }
-
-        .to-footer-text {
-            font-size: 11px;
-        }
+    .to-brand-subtitle {
+        display: none;
     }
 
 
-    /* =========================================================
-       RESPONSIVE — SMALL MOBILE
-    ========================================================== */
+    /* =========================
+       USER
+    ========================= */
 
-    @media (max-width: 480px) {
-
-        .to-navbar-inner,
-        .to-container,
-        .to-footer-inner {
-            width: calc(100% - 20px);
-        }
-
-        .to-brand-mark {
-            width: 150px;
-            height: 42px;
-        }
-
-        .to-brand-text {
-            margin-left: -75px;
-        }
-
-        .to-brand-title {
-            font-size: 15px;
-        }
-
-        .to-my-reservations {
-            padding: 0 10px;
-
-            font-size: 11px;
-        }
-
-        .to-cart-button {
-            padding: 0 10px;
-        }
-
-        .to-cart-label {
-            display: none;
-        }
-
-        .to-cart-icon {
-            width: 20px;
-            height: 20px;
-        }
+    .to-user {
+        display: none !important;
     }
+
+
+    /* =========================
+       NAV ACTIONS
+    ========================= */
+
+    .to-navbar-inner {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        gap: 9px;
+    }
+
+    .to-nav-actions {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: flex-end;
+
+        flex: 0 0 auto;
+
+        width: auto;
+
+        gap: 5px;
+
+        min-width: 0;
+    }
+
+
+    /* =========================
+       MY RESERVATIONS
+    ========================= */
+
+    .to-my-reservations {
+        min-height: 40px;
+
+        padding: 0 8px;
+
+        border-radius: 8px;
+
+        font-size: 10px;
+
+        white-space: nowrap;
+    }
+
+
+    /* =========================
+       BOOKING LIST
+    ========================= */
+
+    .to-cart-button {
+        min-height: 40px;
+
+        width: 40px;
+
+        padding: 0;
+
+        gap: 0;
+
+        border-radius: 8px;
+
+        flex: 0 0 40px;
+    }
+
+    .to-cart-icon {
+        width: 15px;
+        height: 15px;
+    }
+
+    .to-cart-label {
+        display: none;
+    }
+
+    .to-cart-count {
+        font-size: 10px;
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    .to-logout {
+        min-height: 40px;
+
+        padding: 0 7px;
+
+        font-size: 10px;
+
+        white-space: nowrap;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .to-navbar-inner {
+        width: calc(100% - 20px);
+
+        gap: 7px;
+    }
+
+    .to-brand-mark {
+        width: 90px;
+        height: 28px;
+
+        flex-basis: 90px;
+    }
+
+    .to-brand-text {
+        margin-left: -48px;
+    }
+
+    .to-brand-title {
+        font-size: 14px;
+    }
+
+    .to-nav-actions {
+        gap: 4px;
+    }
+
+    .to-my-reservations {
+        min-height: 38px;
+
+        padding: 0 6px;
+
+        font-size: 9px;
+    }
+
+    .to-cart-button {
+        width: 38px;
+        min-height: 38px;
+
+        flex-basis: 38px;
+    }
+
+    .to-cart-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .to-cart-count {
+        font-size: 9px;
+    }
+
+    .to-logout {
+        min-height: 38px;
+
+        padding: 0 6px;
+
+        font-size: 9px;
+    }
+
+}
 </style>
 
     @yield('head')
@@ -777,7 +1137,7 @@
                 <div class="to-brand-text">
 
                     <span class="to-brand-title">
-                        GITC Reservation
+                        GITC Classroom
                     </span>
 
                     <span class="to-brand-subtitle">
@@ -907,13 +1267,13 @@
         <div class="to-footer-inner">
 
             <span class="to-footer-text">
-                © {{ date('Y') }} GITC Reservation System
+                © {{ date('Y') }} Garuda Indonesia Training Center
             </span>
 
-            <span class="to-footer-accent">
+            {{-- <span class="to-footer-accent">
                 <span class="to-footer-dot"></span>
                 Training Facility Booking
-            </span>
+            </span> --}}
 
         </div>
 

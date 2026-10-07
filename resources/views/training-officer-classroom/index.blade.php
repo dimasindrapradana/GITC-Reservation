@@ -176,9 +176,6 @@
 
     <div>
 
-        <span class="to-section-eyebrow">
-            AVAILABLE RESOURCES
-        </span>
 
         <h2>
             Choose a resource
@@ -813,6 +810,62 @@
      PAGE STYLES
 ========================================================= --}}
 <style>
+    @font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
 
     /* =========================================================
        GITC FONT SYSTEM
@@ -2113,71 +2166,86 @@
        CART TEASER
     ========================================================= */
 
-    .to-cart-teaser {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr) auto;
+   .to-cart-teaser {
+        position: relative;
+        display: flex;
         align-items: center;
-        gap: 20px;
-        margin: 60px 0 20px;
-        padding: 25px;
-        border: 1px solid #cbd9e7;
+        gap: 22px;
+        overflow: hidden;
+        margin-top: 12px;
+        padding: 25px 28px;
         border-radius: 15px;
-        background:
-            linear-gradient(
-                135deg,
-                #f5fafc,
-                #edf7f8
-            );
+        background: var(--gitc-navy);
+        box-shadow:
+            0 12px 30px rgba(15, 39, 71, 0.12);
+    }
+
+    .to-cart-teaser::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        right: 80px;
+        top: -120px;
+        border: 40px solid rgba(14, 165, 164, 0.13);
+        border-radius: 50%;
     }
 
     .to-cart-teaser-icon {
-        width: 50px;
-        height: 50px;
+        position: relative;
+        z-index: 2;
+        width: 48px;
+        height: 48px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: 12px;
-        background: var(--gitc-navy);
+        flex: 0 0 48px;
+        border-radius: 11px;
+        background: rgba(255, 255, 255, 0.1);
         font-size: 21px;
     }
 
+    .to-cart-teaser-content {
+        position: relative;
+        z-index: 2;
+        flex: 1;
+    }
+
     .to-cart-teaser-content > span {
-        color: var(--gitc-teal);
-        font-family: 'Garuda Sans', sans-serif;
+        color: #75d9d7;
         font-size: 9px;
-        font-weight: 900;
+        font-weight: 800;
         letter-spacing: 0.14em;
     }
 
     .to-cart-teaser-content h2 {
-        margin: 5px 0 0;
-        color: var(--gitc-navy);
-        font-family: 'Garuda Serif', serif;
-        font-size: 21px;
-        font-weight: 700;
+        margin: 4px 0 0;
+        color: white;
+        font-size: 18px;
+        font-weight: 800;
     }
 
     .to-cart-teaser-content p {
-        max-width: 650px;
-        margin: 6px 0 0;
-        color: var(--gitc-muted);
-        font-family: 'Garuda Sans', sans-serif;
+        max-width: 680px;
+        margin: 5px 0 0;
+        color: #b8c8d8;
         font-size: 11px;
         line-height: 1.55;
-        font-weight: 400;
     }
 
     .to-cart-teaser-button {
-        min-height: 44px;
+        position: relative;
+        z-index: 2;
+        min-height: 42px;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
-        padding: 0 16px;
-        border: 1px solid var(--gitc-navy);
+        padding: 0 15px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 8px;
-        background: var(--gitc-navy);
+        background: rgba(255, 255, 255, 0.09);
         color: white;
-        font-family: 'Garuda Sans', sans-serif;
         font-size: 11px;
         font-weight: 800;
         cursor: pointer;
@@ -2187,9 +2255,10 @@
     }
 
     .to-cart-teaser-button:hover {
-        background: #183b63;
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-1px);
     }
+
 
 
     /* =========================================================

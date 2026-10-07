@@ -19,6 +19,62 @@
     </title>
 
     <style>
+            @font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
         :root {
             --gitc-navy: #0f2747;
             --gitc-navy-dark: #091b33;
@@ -131,8 +187,8 @@
         }
 
         .toc-brand-mark {
-            width: 280px;
-            height: 62px;
+            width: 170px;
+            height: 32px;
 
             display: flex;
             align-items: center;
@@ -144,6 +200,7 @@
 
             margin: 0;
             padding: 0;
+            
         }
 
         .toc-brand-mark img {
@@ -164,9 +221,9 @@
             flex-direction: column;
 
             line-height: 1.15;
-
             margin: 0 0 0 -145px;
             padding: 0;
+            margin-left: -90px;
         }
 
         .toc-brand-title {
@@ -671,115 +728,256 @@
         }
 
 
-        /* =========================================================
-           RESPONSIVE
-        ========================================================== */
+      /* =========================================================
+   RESPONSIVE
+========================================================= */
 
-        @media (max-width: 1000px) {
+@media (max-width: 1000px) {
 
-            .toc-user {
-                display: none;
-            }
+    .toc-user {
+        display: none;
+    }
 
-        }
-
-
-        @media (max-width: 768px) {
-
-            .toc-navbar {
-                height: 64px;
-            }
-
-            .toc-navbar-inner,
-            .toc-container,
-            .toc-footer-inner {
-                width: min(100% - 28px, 1440px);
-            }
-
-            .toc-main {
-                min-height: calc(100vh - 64px);
-            }
-
-            .toc-container {
-                padding-top: 24px;
-                padding-bottom: 48px;
-            }
-
-            .toc-brand-subtitle {
-                display: none;
-            }
-
-            .toc-logout {
-                display: none;
-            }
-
-            .toc-my-reservations,
-            .toc-cart-button {
-                min-height: 40px;
-
-                padding: 0 11px;
-
-                font-size: 12px;
-            }
-
-            .toc-page-title {
-                font-size: 26px;
-            }
-
-            .toc-footer-inner {
-                min-height: 64px;
-            }
-
-            .toc-footer-text {
-                font-size: 11px;
-            }
-
-        }
+}
 
 
-        @media (max-width: 560px) {
+@media (max-width: 768px) {
 
-            .toc-navbar-inner,
-            .toc-container,
-            .toc-footer-inner {
-                width: calc(100% - 20px);
-            }
+    .toc-navbar {
+        height: 64px;
+    }
 
-            .toc-brand-mark {
-                width: 36px;
-                height: 36px;
+    .toc-navbar-inner,
+    .toc-container,
+    .toc-footer-inner {
+        width: min(100% - 28px, 1440px);
+    }
 
-                border-radius: 9px;
-            }
+    .toc-main {
+        min-height: calc(100vh - 64px);
+    }
 
-            .toc-brand-title {
-                font-size: 14px;
-            }
+    .toc-container {
+        padding-top: 24px;
+        padding-bottom: 48px;
+    }
 
-            .toc-brand-text {
-                margin-left: -20px;
-            }
+    .toc-brand-subtitle {
+        display: none;
+    }
 
-            .toc-nav-actions {
-                gap: 6px;
-            }
+    /*
+     * Keep Logout visible
+     */
+    .toc-logout {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 10px;
+        font-size: 12px;
+    }
 
-            .toc-my-reservations,
-            .toc-cart-button {
-                padding: 0 9px;
+    .toc-my-reservations,
+    .toc-cart-button {
+        min-height: 40px;
+        padding: 0 11px;
+        font-size: 12px;
+    }
 
-                font-size: 11px;
-            }
+    .toc-footer-inner {
+        min-height: 64px;
+    }
 
-            .toc-cart-label {
-                display: none;
-            }
+    .toc-footer-text {
+        font-size: 11px;
+    }
 
-            .toc-page-title {
-                font-size: 23px;
-            }
+}
 
-        }
+
+@media (max-width: 560px) {
+
+    .toc-navbar-inner,
+    .toc-container,
+    .toc-footer-inner {
+        width: calc(100% - 20px);
+    }
+
+
+    /* =========================
+       BRAND
+    ========================= */
+
+    .toc-brand {
+        display: flex;
+        align-items: center;
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .toc-brand-mark {
+        width: 105px;
+        height: 30px;
+        flex: 0 0 105px;
+        border-radius: 0;
+    }
+
+    .toc-brand-text {
+        margin-left: -56px;
+        min-width: 0;
+    }
+
+    .toc-brand-title {
+        font-size: 15px;
+        white-space: nowrap;
+        margin-left: 20px;
+    }
+
+    .toc-brand-subtitle {
+        display: none;
+    }
+
+
+    /* =========================
+       USER
+    ========================= */
+
+    .toc-user {
+        display: none !important;
+    }
+
+
+    /* =========================
+       NAV ACTIONS
+    ========================= */
+
+    .toc-navbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 9px;
+    }
+
+    .toc-nav-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex: 0 0 auto;
+        width: auto;
+        gap: 5px;
+        min-width: 0;
+    }
+
+
+    /* =========================
+       MY RESERVATIONS
+    ========================= */
+
+    .toc-my-reservations {
+        min-height: 40px;
+        padding: 0 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+
+    /* =========================
+       BOOKING LIST
+    ========================= */
+
+    .toc-cart-button {
+        min-height: 40px;
+        width: 40px;
+        padding: 0;
+        gap: 0;
+        border-radius: 8px;
+        flex: 0 0 40px;
+    }
+
+    .toc-cart-icon {
+        width: 15px;
+        height: 15px;
+    }
+
+    .toc-cart-label {
+        display: none;
+    }
+
+    .toc-cart-count {
+        font-size: 10px;
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    .toc-logout {
+        min-height: 40px;
+        padding: 0 7px;
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+}
+
+
+@media (max-width: 430px) {
+
+    .toc-navbar-inner {
+        width: calc(100% - 20px);
+        gap: 7px;
+    }
+
+    .toc-brand-mark {
+        width: 90px;
+        height: 28px;
+        flex-basis: 90px;
+    }
+
+    .toc-brand-text {
+        margin-left: -48px;
+    }
+
+    .toc-brand-title {
+        font-size: 14px;
+    }
+
+    .toc-nav-actions {
+        gap: 4px;
+    }
+
+    .toc-my-reservations {
+        min-height: 38px;
+        padding: 0 6px;
+        font-size: 9px;
+    }
+
+    .toc-cart-button {
+        width: 38px;
+        min-height: 38px;
+        flex-basis: 38px;
+    }
+
+    .toc-cart-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .toc-cart-count {
+        font-size: 9px;
+    }
+
+    .toc-logout {
+        min-height: 38px;
+        padding: 0 6px;
+        font-size: 9px;
+    }
+
+}
     </style>
 
     @yield('head')
@@ -1049,16 +1247,10 @@
         <div class="toc-footer-inner">
 
             <span class="toc-footer-text">
-                © {{ date('Y') }} GITC Reservation System
+                © {{ date('Y') }} Garuda Indonesia Training Center
             </span>
 
-            <span class="toc-footer-accent">
-
-                <span class="toc-footer-dot"></span>
-
-                Classroom Facility Booking
-
-            </span>
+            
 
         </div>
 

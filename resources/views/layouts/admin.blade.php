@@ -645,20 +645,20 @@
 
             <div class="brand-mark">
                 <img
-                    src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                    src="{{ asset('assets/icons/logo/GITC.svg') }}"
                     alt="GITC"
                 >
             </div>
 
             <div class="brand-text">
 
-                <div class="brand-name">
+                {{-- <div class="brand-name">
                     GITC Info
                 </div>
 
                 <div class="brand-subtitle">
                     Management System
-                </div>
+                </div> --}}
 
             </div>
 

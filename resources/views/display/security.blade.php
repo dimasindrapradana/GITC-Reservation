@@ -8,6 +8,69 @@
 
     <style>
 
+         /* =========================================================
+        GARUDA FONT
+        ========================================================= */
+
+            
+         @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+       
+
   
         :root {
             --navy-dark: #00294f;
@@ -59,7 +122,7 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: "Garuda Sans", Arial, sans-serif;
             background: var(--background);
             color: var(--text);
         }
@@ -184,7 +247,7 @@
         .header-building-name {
             max-width: 31vw;
             color: var(--white);
-            overflow: hidden;
+            overflow: visible;
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: clamp(19px, 1.55vw, 30px);
@@ -297,7 +360,7 @@
 
         .section-kicker {
             color: var(--blue);
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: "Garuda Sans", Arial, sans-serif;
             font-size: clamp(9px, 0.62vw, 13px);
             font-weight: 700;
             letter-spacing: 0.12em;
@@ -508,7 +571,7 @@
 
         .panel-kicker {
             color: var(--blue);
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: "Garuda Sans", Arial, sans-serif;
             font-size: 9px;
             font-weight: 700;
             letter-spacing: 0.12em;
@@ -984,7 +1047,7 @@
         .visitor-lookup-kicker,
         .reservation-modal-kicker {
             color: rgba(255, 255, 255, 0.62);
-            font-family: "Segoe UI", Arial, sans-serif;
+            font-family: "Garuda Sans", Arial, sans-serif;
             font-size: 9px;
             font-weight: 700;
             letter-spacing: 0.13em;
@@ -3208,7 +3271,7 @@
             font-weight: 900;
             letter-spacing: 0.08em;
         ">
-            Garuda Indonesia Training Center Information
+            Garuda Indonesia Training Center
         </div>
 
         <div style="

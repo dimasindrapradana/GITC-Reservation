@@ -243,9 +243,7 @@
                                 colspan="7"
                                 class="empty-state"
                             >
-                                <div class="empty-icon">
-                                    📋
-                                </div>
+                                
 
                                 <div class="empty-title">
                                     No reservations yet

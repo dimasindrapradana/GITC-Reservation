@@ -24,38 +24,63 @@
         /* =====================================================
            FONT
         ===================================================== */
+    @font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
 
-        @font-face {
-            font-family: 'Garuda Serif';
-            src: url('{{ asset('assets/fonts/GarudaSerif-Regular.woff2') }}') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
 
-        @font-face {
-            font-family: 'Garuda Serif';
-            src: url('{{ asset('assets/fonts/GarudaSerif-Bold.woff2') }}') format('woff2');
-            font-weight: 700 900;
-            font-style: normal;
-            font-display: swap;
-        }
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
 
-        @font-face {
-            font-family: 'Garuda Sans';
-            src: url('{{ asset('assets/fonts/GarudaSans-Regular.woff2') }}') format('woff2');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
 
-        @font-face {
-            font-family: 'Garuda Sans';
-            src: url('{{ asset('assets/fonts/GarudaSans-Bold.woff2') }}') format('woff2');
-            font-weight: 700 900;
-            font-style: normal;
-            font-display: swap;
-        }
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+       
 
 
         /* =====================================================
@@ -183,8 +208,8 @@
         }
 
         .brand-mark {
-            width: 280px;
-            height: 62px;
+            width: 180px;
+            height: 42px;
 
             display: flex;
             align-items: center;
@@ -196,6 +221,7 @@
 
             margin: 0;
             padding: 0;
+            margin-left: 12px;
         }
 
         .brand-mark img {
@@ -206,6 +232,7 @@
 
             object-fit: contain;
             object-position: left center;
+          
 
             margin: 0;
             padding: 0;
@@ -219,6 +246,7 @@
 
             margin: 0 0 0 -145px;
             padding: 0;
+            margin-left: -70px;
         }
 
         .brand-title {
@@ -2135,14 +2163,14 @@
         <div class="brand-mark">
 
             <img
-                src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                src="{{ asset('assets/icons/logo/logo.png') }}"
                 alt="GITC"
             >
 
         </div>
 
 
-        <div class="brand-text">
+        {{-- <div class="brand-text">
 
             <div class="brand-title">
                 GITC INFO
@@ -2152,7 +2180,7 @@
                 Training System, Media & Business
             </div>
 
-        </div>
+        </div> --}}
 
     </a>
 

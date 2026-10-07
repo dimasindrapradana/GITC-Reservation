@@ -7,6 +7,63 @@
     <title>Login - GITC Info</title>
 
     <style>
+   @font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
         :root {
             --navy: #003b6f;
             --navy-dark: #00294f;
@@ -199,6 +256,7 @@
 
         .hero-copy {
             max-width: 470px;
+            transform: translateY(-180px);
         }
 
         .hero-eyebrow {
@@ -292,8 +350,8 @@
         }
 
         .login-brand-logo {
-            width: 150px;
-            height: 58px;
+            width: 180px;
+            height: 78px;
 
             margin-bottom: 28px;
 
@@ -531,6 +589,10 @@
         ========================================================= */
 
         @media (max-width: 900px) {
+
+             .hero-copy {
+            transform: translateY(-24px);
+        }
             body {
                 padding: 20px;
             }
@@ -662,12 +724,12 @@
             <div class="hero-content">
 
                 <div class="hero-brand">
-                    <div class="hero-brand-logo">
+                    {{-- <div class="hero-brand-logo">
                         <img
                             src="{{ asset('assets/icons/logo/Garuda.svg') }}"
                             alt="Garuda Indonesia"
                         >
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="hero-copy">
@@ -688,8 +750,7 @@
                 </div>
 
                 <div class="hero-footer">
-                    GITC Info Management System
-                </div>
+                    Garuda Training System, Media & Business 
 
             </div>
 
@@ -708,7 +769,7 @@
 
                     <div class="login-brand-logo">
                         <img
-                            src="{{ asset('assets/icons/logo/Garuda.svg') }}"
+                            src="{{ asset('assets/icons/logo/GITC.svg') }}"
                             alt="Garuda Indonesia"
                         >
                     </div>
@@ -809,7 +870,7 @@
 
 
                 <div class="login-footer">
-                    © {{ date('Y') }} GITC Info Management System
+                    © {{ date('Y') }} Garuda Indonesia Training Center
                 </div>
 
             </div>

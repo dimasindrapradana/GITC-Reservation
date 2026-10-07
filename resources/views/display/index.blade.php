@@ -18,40 +18,67 @@
     <style>
 
         /* =========================================================
-   GARUDA FONT
-========================================================= */
+        GARUDA FONT
+        ========================================================= */
 
-@font-face {
-    font-family: "Garuda Sans";
-    src: url("/fonts/Garuda Font/Sans/GarudaSans-Regular.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
+            
+         @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
 
-@font-face {
-    font-family: "Garuda Sans";
-    src: url("/fonts/Garuda Font/Sans/GarudaSans-SemiBold.ttf") format("truetype");
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
 
-@font-face {
-    font-family: "Garuda Sans";
-    src: url("/fonts/Garuda Font/Sans/GarudaSans-Bold.ttf") format("truetype");
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
 
-@font-face {
-    font-family: "Garuda Sans";
-    src: url("/fonts/Garuda Font/Sans/GarudaSans-ExtraBold.ttf") format("truetype");
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-}
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+       
         
 
         /* =========================================================
@@ -105,7 +132,7 @@
             overflow: hidden;
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -368,7 +395,7 @@
 
             max-width: 28vw;
 
-            overflow: hidden;
+            overflow: visible;
 
             text-overflow: ellipsis;
 
@@ -570,14 +597,13 @@
             display: grid;
 
             grid-template-rows:
-                minmax(0, 2.15fr)
-                minmax(150px, 0.85fr);
+                minmax(0, 1.35fr)
+             minmax(210px, 1fr);
 
             gap:
                 1.1vw;
 
             overflow: hidden;
-
         }
 
 
@@ -734,30 +760,23 @@
 
 
        .hero-content {
-
             position: relative;
-
             z-index: 3;
 
             height: 100%;
-
             min-height: 0;
 
             padding:
-                clamp(32px, 3.2vw, 56px)
+                42px
                 3vw
-                clamp(88px, 6.5vw, 110px);
+                42px;
 
             display: flex;
-
             flex-direction: column;
-
             justify-content: flex-start;
 
             visibility: hidden;
-
             overflow: hidden;
-
         }
 
 
@@ -1068,7 +1087,7 @@
 
             font-size:
                 clamp(
-                    28px,
+                    26px,
                     2.35vw,
                     50px
                 );
@@ -1076,7 +1095,7 @@
             
 
             font-weight:
-                800;
+                700;
 
             letter-spacing:
                 -0.025em;
@@ -1097,7 +1116,7 @@
                 vertical;
 
             overflow:
-                hidden;
+                visible;
 
         }
 
@@ -1371,7 +1390,7 @@
                 );
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -1446,7 +1465,7 @@
                 none;
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -1756,7 +1775,7 @@
                 var(--navy);
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -1897,7 +1916,7 @@
             #ffffff;
 
         font-family:
-            "Segoe UI",
+            "Garuda Sans",
             Arial,
             sans-serif;
 
@@ -2182,7 +2201,7 @@
         }
 
 
-        .news-label {
+        /* .news-label {
 
             display:
                 inline-flex;
@@ -2224,7 +2243,7 @@
             text-transform:
                 uppercase;
 
-        }
+        } */
 
 
         .news-title {
@@ -2347,7 +2366,7 @@
                 );
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -2762,7 +2781,7 @@
                 var(--muted);
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -3008,7 +3027,7 @@
                 var(--muted);
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -3053,7 +3072,7 @@
             none;
 
         font-family:
-            "Segoe UI",
+            "Garuda Sans",
             Arial,
             sans-serif;
 
@@ -4536,6 +4555,40 @@
         }
     }
 
+    /* =========================================================
+   MOBILE — HERO INFO FIX
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .hero-content {
+        padding-bottom: 28px;
+    }
+
+    .hero-meta,
+    .hero-info,
+    .hero-details {
+        min-height: 0;
+    }
+
+    .hero-meta {
+        margin-top: 18px;
+    }
+
+    .hero-start,
+    .start-time {
+        min-width: 0;
+    }
+
+    .hero-start .time,
+    .start-time .time,
+    .start-time-value {
+        white-space: nowrap;
+        line-height: 1.05;
+    }
+
+}
+
     </style>
 
 </head>
@@ -4906,7 +4959,7 @@
 
 
         <div class="footer-brand">
-            Garuda Indonesia Training Center Information
+            Garuda Indonesia Training Center 
         </div>
 
 
@@ -4985,9 +5038,7 @@
 
             <div class="news-modal-body">
 
-                <div class="news-modal-label">
-                    Announcement
-                </div>
+              
 
 
                 <h2
@@ -7300,11 +7351,6 @@
                                     class="news-content"
                                 >
 
-                                    <div
-                                        class="news-label"
-                                    >
-                                        Announcement
-                                    </div>
 
 
                                     <div

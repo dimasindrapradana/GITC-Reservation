@@ -17,6 +17,69 @@
 
     <style>
 
+         /* =========================================================
+        GARUDA FONT
+        ========================================================= */
+
+            
+         @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Sans';
+            src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Garuda Serif';
+            src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+            font-weight: 800;
+            font-style: normal;
+            font-display: swap;
+        }
+       
+
         /* =========================================================
            ROOT
         ========================================================= */
@@ -80,7 +143,7 @@
             overflow: hidden;
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -338,7 +401,7 @@
                 34vw;
 
             overflow:
-                hidden;
+                visible;
 
             text-overflow:
                 clip;
@@ -421,7 +484,7 @@
                 #69e5f5;
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 
@@ -672,7 +735,7 @@
                 999px;
 
             font-family:
-                "Segoe UI",
+                "Garuda Sans",
                 Arial,
                 sans-serif;
 

@@ -111,7 +111,7 @@
         </h1>
 
         <p class="to-hero-description">
-            Browse available rooms, training media, and fields across GITC.
+            Browse available rooms and fields across GITC.
             Select the resources you need and continue to your reservation.
         </p>
 
@@ -166,7 +166,8 @@
             </div>
 
             <div>
-                <strong>{{ $totalTrainingRooms }}</strong>
+                {{-- <strong>{{ $totalTrainingRooms }}</strong> --}}
+                <strong>26</strong>
                 <span>Training Media</span>
             </div>
 
@@ -192,9 +193,9 @@
 
     <div>
 
-        <span class="to-section-eyebrow">
+        {{-- <span class="to-section-eyebrow">
             AVAILABLE RESOURCES
-        </span>
+        </span> --}}
 
         <h2>
             Choose a resource
@@ -240,7 +241,7 @@
             type="search"
             id="resource-search"
             class="to-search-input"
-            placeholder="Search rooms, training media, or fields..."
+            placeholder="Search rooms, or fields..."
             autocomplete="off"
         >
 
@@ -268,9 +269,9 @@
                 Rooms
             </option>
 
-            <option value="training_room">
+            {{-- <option value="training_room">
                 Training Media
-            </option>
+            </option> --}}
 
             <option value="field">
                 Fields
@@ -454,6 +455,7 @@
                             <div>
                                 <strong>
                                     {{ $trainingRooms->count() }}
+                                 
                                 </strong>
 
                                 <span>
@@ -984,6 +986,63 @@
      PAGE STYLES
 ========================================================= --}}
 <style>
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Sans';
+    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Garuda Serif';
+    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
 
         /* =========================================================
        GITC FONT SYSTEM

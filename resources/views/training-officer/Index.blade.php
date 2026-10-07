@@ -167,7 +167,7 @@
 
             <div>
                 {{-- <strong>{{ $totalTrainingRooms }}</strong> --}}
-                <strong>26</strong>
+                <strong>23</strong>
                 <span>Training Media</span>
             </div>
 
@@ -452,7 +452,7 @@
                                 </span>
                             </div>
 
-                            <div>
+                            {{-- <div>
                                 <strong>
                                     {{ $trainingRooms->count() }}
                                  
@@ -461,7 +461,7 @@
                                 <span>
                                     Training Media
                                 </span>
-                            </div>
+                            </div> --}}
 
                         </div>
 

@@ -3034,11 +3034,11 @@
 
             <div class="header-building">
                 <div class="header-building-name">
-                    Security Monitoring
+                    Gate Information
                 </div>
-                <div class="header-building-code">
+                {{-- <div class="header-building-code">
                     SECURITY POST
-                </div>
+                </div> --}}
             </div>
         </div>
 

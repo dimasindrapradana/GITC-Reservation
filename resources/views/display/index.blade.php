@@ -1506,6 +1506,43 @@
                 translateY(-1px);
 
         }
+        
+        /* Training Media button in hero */
+        .hero-training-media-link {
+            position: absolute;
+            right: 2.2vw;
+            bottom: 4.2vw;
+            z-index: 10;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+            padding: 0 18px;
+
+            border: 1px solid rgba(113, 229, 245, 0.7);
+            border-radius: 999px;
+
+            background: rgba(0, 111, 174, 0.9);
+            color: #ffffff;
+
+            text-decoration: none;
+            font-family: "Garuda Sans", Arial, sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .hero-training-media-link:hover {
+            background: #0088c8;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
 
 
         /* =========================================================
@@ -4724,21 +4761,6 @@
 
 
                 </div>
-
-
-                {{-- <a
-                    href="{{ route('display.detail', [
-                        'buildingName' => Str::slug(
-                            $building->name,
-                            '_'
-                        )
-                    ]) }}"
-                    class="hero-detail-link"
-                >
-                    Detail Schedule
-                </a> --}}
-
-
             </section>
 
 
@@ -4927,6 +4949,20 @@
                 >
                     0 reservations
                 </div>
+
+
+                   
+                @if ($building->trainingRooms()->exists())
+                    <a href="{{ route('display.training-media-schedule', [
+                        'buildingName' => $buildingName
+                    ]) }}" class="today-detail-link"
+                    style="position: relative; left: 50px;"
+                    >
+                    
+                        Training Media
+                    </a>
+                @endif
+
 
 
                 <a

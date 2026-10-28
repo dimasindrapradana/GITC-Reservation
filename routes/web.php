@@ -23,10 +23,13 @@ use App\Http\Controllers\TrainingRoomController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\DisplayController;
+use App\Http\Controllers\DailyTrainingScheduleController;
 use App\Http\Controllers\SecurityDisplayController;
 use App\Http\Controllers\TrainingOfficerClassroomController;
 use App\Http\Controllers\TrainingOfficerClassroomCartController;
 use App\Http\Controllers\TrainingOfficerClassroomReservationController;
+use App\Http\Controllers\TrainingScheduleController;
+use App\Http\Controllers\Admin\TrainingSessionTemplateController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -76,6 +79,11 @@ Route::get(
     '/display/{buildingName}/upcoming/data',
     [DisplayController::class, 'upcomingData']
 )->name('display.upcoming.data');
+
+Route::get(
+    '/display/{buildingName}/training-media-schedule',
+    [DisplayController::class, 'trainingMediaSchedule']
+)->name('display.training-media-schedule');
 
 /*
 |--------------------------------------------------------------------------
@@ -174,7 +182,43 @@ Route::middleware('auth')->group(function () {
             [DashboardController::class, 'index']
         )->name('admin.dashboard');
 
+
     /*
+    |--------------------------------------------------------------------------
+    | Daily Training Schedule
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admin/training-schedule/daily',
+        [\App\Http\Controllers\DailyTrainingScheduleController::class, 'index']
+    )->name('admin.training-schedule.daily');
+
+    Route::post(
+        '/admin/training-schedule/daily',
+        [\App\Http\Controllers\DailyTrainingScheduleController::class, 'store']
+    )->name('admin.training-schedule.daily.store');
+    
+    Route::get(
+        '/admin/training-schedule/daily/export',
+        [\App\Http\Controllers\DailyTrainingScheduleController::class, 'export']
+    )->name('admin.training-schedule.daily.export');
+
+    Route::get(
+        '/admin/training-schedule/monthly/export',
+        [DailyTrainingScheduleController::class, 'exportMonthly']
+    )->name('admin.training-schedule.monthly.export');
+
+    Route::get(
+        '/admin/training-schedule/yearly/export',
+        [DailyTrainingScheduleController::class, 'exportYearly']
+    )->name('admin.training-schedule.yearly.export');
+
+    Route::get(
+        '/admin/training-schedule/reports',
+        [\App\Http\Controllers\TrainingScheduleReportController::class, 'index']
+    )->name('admin.training-schedule.reports');
+        /*
     |--------------------------------------------------------------------------
     | Reports
     |--------------------------------------------------------------------------
@@ -374,6 +418,22 @@ Route::middleware('auth')->group(function () {
         'edit',
     ]);
 
+    /*
+        |--------------------------------------------------------------------------
+        | Training Session Settings
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get(
+            '/training-session-settings',
+            [TrainingSessionTemplateController::class, 'index']
+        )->name('training-session-settings.index');
+
+        Route::post(
+            '/training-session-settings',
+            [TrainingSessionTemplateController::class, 'store']
+        )->name('training-session-settings.store');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -483,7 +543,59 @@ Route::middleware([
             [BuildingCoordinatorReportController::class, 'showReservationReport']
         )->name('reports.reservations.show');
 
-    });
+        
+        Route::get('/training-schedule/daily', [
+            \App\Http\Controllers\DailyTrainingScheduleController::class,
+            'index',
+        ])->name('training-schedule.daily');
+
+        Route::post('/training-schedule/daily', [
+            \App\Http\Controllers\DailyTrainingScheduleController::class,
+            'store',
+        ])->name('training-schedule.daily.store');
+
+
+        // Training Schedule Management
+        Route::get(
+            '/training-schedule',
+            [TrainingScheduleController::class, 'index']
+        )->name('training-schedule.index');
+
+        Route::post(
+            '/training-schedule',
+            [TrainingScheduleController::class, 'store']
+        )->name('training-schedule.store');
+
+       Route::get(
+            '/training-schedule/programs/{program}/edit',
+            [TrainingScheduleController::class, 'edit']
+        )->name('training-schedule.programs.edit');
+
+        Route::put(
+            '/training-schedule/programs/{program}',
+            [TrainingScheduleController::class, 'update']
+        )->name('training-schedule.programs.update');
+        Route::put(
+            '/training-schedule/{session}/training-media',
+            [TrainingScheduleController::class, 'updateMedia']
+        )->name('training-schedule.update-media');
+
+        Route::get(
+            '/training-schedule/monthly/export',
+            [DailyTrainingScheduleController::class, 'exportMonthly']
+        )->name('training-schedule.monthly.export');
+
+        Route::get(
+            '/training-schedule/yearly/export',
+            [DailyTrainingScheduleController::class, 'exportYearly']
+        )->name('training-schedule.yearly.export');
+
+        Route::get(
+            '/training-schedule/reports',
+            [\App\Http\Controllers\TrainingScheduleReportController::class, 'index']
+        )->name('training-schedule.reports');
+
+ });
 
 
 /*
@@ -574,6 +686,60 @@ Route::middleware([
             '/reports/reservations/{reservation}',
             [CoordinatorReportController::class, 'showReservationReport']
         )->name('reports.reservations.show');
+
+
+        // Training Schedule Management
+        Route::get(
+            '/training-schedule',
+            [TrainingScheduleController::class, 'index']
+        )->name('training-schedule.index');
+
+        Route::post(
+            '/training-schedule',
+            [TrainingScheduleController::class, 'store']
+        )->name('training-schedule.store');
+
+        Route::get(
+            '/training-schedule/programs/{program}/edit',
+            [TrainingScheduleController::class, 'edit']
+        )->name('training-schedule.programs.edit');
+
+        Route::put(
+            '/training-schedule/programs/{program}',
+            [TrainingScheduleController::class, 'update']
+        )->name('training-schedule.programs.update');
+
+        Route::put(
+            '/training-schedule/{session}/training-media',
+            [TrainingScheduleController::class, 'updateMedia']
+        )->name('training-schedule.update-media');
+
+        
+        Route::get('/training-schedule/daily', [
+            \App\Http\Controllers\DailyTrainingScheduleController::class,
+            'index',
+        ])->name('training-schedule.daily');
+
+        Route::post('/training-schedule/daily', [
+            \App\Http\Controllers\DailyTrainingScheduleController::class,
+            'store',
+        ])->name('training-schedule.daily.store');
+
+        Route::get(
+            '/training-schedule/monthly/export',
+            [DailyTrainingScheduleController::class, 'exportMonthly']
+        )->name('training-schedule.monthly.export');
+
+        Route::get(
+            '/training-schedule/yearly/export',
+            [DailyTrainingScheduleController::class, 'exportYearly']
+        )->name('training-schedule.yearly.export');
+        
+        Route::get(
+            '/training-schedule/reports',
+            [\App\Http\Controllers\TrainingScheduleReportController::class, 'index']
+        )->name('training-schedule.reports');
+
 
     });
 

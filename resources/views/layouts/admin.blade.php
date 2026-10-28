@@ -837,6 +837,78 @@
 
             @endif
 
+            {{-- Training Schedule Management --}}
+            @if($userRole === 'Admin')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Training Schedule
+                    </div>
+
+                    <a
+                        href="{{ route('admin.training-schedule.daily') }}"
+                        class="menu-link {{ request()->routeIs('admin.training-schedule.daily*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img src="{{ asset('assets/icons/navigation/training-media.svg') }}" alt="">
+                        </span>
+                        <span>Daily Training Media</span>
+                    </a>
+
+                </div>
+
+            @elseif($userRole === 'Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Training Schedule
+                    </div>
+
+                    <a
+                        href="{{ route('coordinator.training-schedule.daily') }}"
+                        class="menu-link {{ request()->routeIs('coordinator.training-schedule.daily*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/training-media.svg') }}"
+                                alt=""
+                            >
+                        </span>
+                        <span>Daily Training Media</span>
+                    </a>
+
+                </div>
+
+            @elseif($userRole === 'Building Coordinator')
+
+                <div class="menu-section">
+
+                    <div class="menu-title">
+                        Training Schedule
+                    </div>
+
+                    <a
+                        href="{{ route('building-coordinator.training-schedule.daily') }}"
+                        class="menu-link {{ request()->routeIs('building-coordinator.training-schedule.daily*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/training-media.svg') }}"
+                                alt=""
+                            >
+                        </span>
+                        <span>Daily Training Media</span>
+                    </a>
+
+                </div>
+
+            @endif
+
+
+            
+
             {{-- Reports --}}
             @if($userRole === 'Admin')
 
@@ -965,6 +1037,19 @@
                             >
                         </span>
                         <span>Media Training</span>
+                    </a>
+
+                    <a
+                        href="{{ route('training-session-settings.index') }}"
+                        class="menu-link {{ request()->routeIs('training-session-settings.*') ? 'active' : '' }}"
+                    >
+                        <span class="menu-icon">
+                            <img
+                                src="{{ asset('assets/icons/navigation/report.svg') }}"
+                                alt=""
+                            >
+                        </span>
+                        <span>Training Session Settings</span>
                     </a>
 
                     <a

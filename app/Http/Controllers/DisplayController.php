@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Building;
 use App\Models\News;
 use App\Models\Reservation;
+use App\Models\TrainingSession;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -35,6 +36,31 @@ class DisplayController extends Controller
 
             'buildingName' =>
                 $buildingName,
+        ]);
+    }
+
+    public function trainingMediaSchedule(string $buildingName): View
+    {
+        $building = $this->findBuilding($buildingName);
+
+        $building->load('trainingRooms');
+
+        $trainingRoomIds = $building->trainingRooms->pluck('id');
+
+        $today = Carbon::today();
+
+        $sessions = TrainingSession::query()
+            ->with(['program', 'trainingRoom'])
+            ->whereIn('training_room_id', $trainingRoomIds)
+            ->whereDate('session_date', $today)
+            ->orderBy('start_time')
+            ->get();
+
+        return view('display.training-media-schedule', [
+            'building' => $building,
+            'buildingName' => $buildingName,
+            'sessions' => $sessions,
+            'scheduleDate' => $today,
         ]);
     }
 
@@ -105,11 +131,7 @@ class DisplayController extends Controller
                 'trainingRoom',
                 'field',
             ])
-            ->where(
-                'status',
-                '!=',
-                'REJECTED'
-            )
+            ->where('status', 'APPROVED')
             ->where(function ($query) use (
                 $roomIds,
                 $trainingRoomIds
@@ -149,11 +171,7 @@ class DisplayController extends Controller
                 'trainingRoom',
                 'field',
             ])
-            ->where(
-                'status',
-                '!=',
-                'REJECTED'
-            )
+            ->where('status', 'APPROVED')
             ->where(function ($query) use (
                 $roomIds,
                 $trainingRoomIds
@@ -765,11 +783,7 @@ class DisplayController extends Controller
                 'trainingRoom',
                 'field',
             ])
-            ->where(
-                'status',
-                '!=',
-                'REJECTED'
-            )
+            ->where('status', 'APPROVED')
             ->where(function ($query) use (
                 $roomIds,
                 $trainingRoomIds

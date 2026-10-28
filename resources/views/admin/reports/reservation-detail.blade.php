@@ -16,7 +16,7 @@
         </div>
 
         <a
-            href="{{ route('coordinator.reports.reservations') }}"
+            href="{{ route('admin.reports.reservations') }}"
             class="button button-secondary"
         >
             Back

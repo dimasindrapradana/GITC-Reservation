@@ -33,6 +33,12 @@ class Building extends Model
     {
         return $this->hasMany(TrainingRoom::class);
     }
+    
+    public function trainingSessionTemplates(): HasMany
+    {
+        return $this->hasMany(TrainingSessionTemplate::class);
+    }
+
 
     public function coordinators(): BelongsToMany
     {

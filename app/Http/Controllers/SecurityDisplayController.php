@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Building;
 use App\Models\News;
 use App\Models\Reservation;
+use App\Models\TrainingSession;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -101,7 +102,6 @@ class SecurityDisplayController extends Controller
                 'user:id,name',
             ])
             ->whereIn('status', [
-                'PENDING',
                 'APPROVED',
             ])
             ->where(
@@ -386,6 +386,43 @@ class SecurityDisplayController extends Controller
             ->map($formatReservation)
             ->values();
 
+
+            /*
+            * =========================================================
+            * DAILY TRAINING MEDIA SCHEDULE
+            * =========================================================
+            */
+
+            $trainingMediaSchedule = TrainingSession::query()
+                ->with([
+                    'program',
+                    'trainingRoom.building',
+                ])
+                ->whereDate('session_date', $todayStart->toDateString())
+                ->whereHas('trainingRoom', function ($query) {
+                    $query
+                        ->whereNull('training_rooms.deleted_at')
+                        ->whereHas('building', function ($query) {
+                            $query->whereNull('buildings.deleted_at');
+                        });
+                })
+                ->orderBy('start_time')
+                ->get()
+                ->map(function (TrainingSession $session) {
+                    return [
+                        'id' => $session->id,
+                        'session_date' => $session->session_date,
+                        'start_time' => $session->start_time,
+                        'end_time' => $session->end_time,
+                        'class_name' => $session->class_name,
+                        'subject' => $session->subject,
+                        'program_name' => $session->program?->name,
+                        'training_media' => $session->trainingRoom?->name,
+                        'building_name' => $session->trainingRoom?->building?->name,
+                    ];
+                })
+                ->values();
+
         /*
          * =========================================================
          * ACTIVE NEWS
@@ -650,6 +687,13 @@ class SecurityDisplayController extends Controller
 
             'buildings' =>
                 $buildingData,
+
+                /*
+             * TRAINING MEDIA SCHEDULE
+             */
+
+            'training_media_schedule' =>
+                $trainingMediaSchedule,
 
             /*
              * NEWS

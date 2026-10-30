@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use App\Models\TrainingSession;
 
 class LandingController extends Controller
 {
@@ -105,6 +106,15 @@ class LandingController extends Controller
          * Only approved reservations whose linked resource
          * and building are still active.
          */
+
+        if (($validated['resource_type'] ?? null) === 'Training Media') {
+            return $this->trainingMediaReservations(
+                $validated,
+                $timezone,
+                $monthStart,
+                $monthEnd
+            );
+        }
 
         $query = Reservation::query()
             ->where(
@@ -796,4 +806,140 @@ class LandingController extends Controller
                 $data->values(),
         ]);
     }
+    private function trainingMediaReservations(
+        array $validated,
+        string $timezone,
+        Carbon $monthStart,
+        Carbon $monthEnd
+    ): JsonResponse {
+        $query = TrainingSession::query()
+            ->whereBetween('session_date', [
+                $monthStart->toDateString(),
+                $monthEnd->toDateString(),
+            ])
+            ->whereHas('schedule', function (Builder $query) {
+                $query->whereHas('building');
+            })
+            ->whereHas('trainingRoom', function (Builder $query) {
+                $query->whereHas('building');
+            });
+
+        /*
+        * Selected date filter.
+        */
+        if (!empty($validated['date'])) {
+            $selectedDate = Carbon::createFromFormat(
+                'Y-m-d',
+                $validated['date'],
+                $timezone
+            );
+
+            if (
+                (int) $selectedDate->year !== (int) $validated['year']
+                || (int) $selectedDate->month !== (int) $validated['month']
+            ) {
+                return response()->json([
+                    'year' => (int) $validated['year'],
+                    'month' => (int) $validated['month'],
+                    'date' => $validated['date'],
+                    'search' => $validated['search'] ?? null,
+                    'resource_type' => 'Training Media',
+                    'building' => $validated['building'] ?? null,
+                    'reservations' => [],
+                ]);
+            }
+
+            $query->whereDate('session_date', $selectedDate->toDateString());
+        }
+
+        /*
+        * Building filter.
+        */
+        if (!empty($validated['building'])) {
+            $building = '%' . mb_strtolower(trim($validated['building'])) . '%';
+
+            $query->whereHas('schedule.building', function (Builder $query) use ($building) {
+                $query->whereRaw('LOWER(name) LIKE ?', [$building]);
+            });
+        }
+
+        /*
+        * Search session details and Training Media name.
+        */
+        if (!empty($validated['search'])) {
+            $search = '%' . trim($validated['search']) . '%';
+
+            $query->where(function (Builder $query) use ($search) {
+                $query
+                    ->where('subject', 'LIKE', $search)
+                    ->orWhere('class_name', 'LIKE', $search)
+                    ->orWhere('instructor_name', 'LIKE', $search)
+                    ->orWhere('notes', 'LIKE', $search)
+                    ->orWhereHas('trainingRoom', function (Builder $query) use ($search) {
+                        $query->where('name', 'LIKE', $search);
+                    })
+                    ->orWhereHas('schedule.building', function (Builder $query) use ($search) {
+                        $query->where('name', 'LIKE', $search);
+                    });
+            });
+        }
+
+        $sessions = $query
+            ->with([
+                'schedule.building',
+                'trainingRoom.building',
+                'creator',
+            ])
+            ->orderBy('session_date')
+            ->orderBy('start_time')
+            ->get();
+
+        $data = $sessions->map(function (TrainingSession $session) use ($timezone) {
+            $date = Carbon::parse($session->session_date)->toDateString();
+
+            $startsAt = Carbon::parse(
+                $date . ' ' . ($session->start_time ?: '00:00:00'),
+                $timezone
+            );
+
+            $endsAt = Carbon::parse(
+                $date . ' ' . ($session->end_time ?: '00:00:00'),
+                $timezone
+            );
+
+            return [
+                'id' => $session->id,
+                'reservation_number' => null,
+                'event_name' => $session->subject
+                    ?: ($session->class_name ?: 'Training Session'),
+                'username' => $session->creator?->username ?? 'Unknown User',
+                'resource_type' => 'Training Media',
+                'resource_name' => $session->trainingRoom?->name
+                    ?? 'Unknown Training Media',
+                'building_name' => $session->schedule?->building?->name
+                    ?? 'Unknown Building',
+                'starts_at' => $startsAt->format('Y-m-d H:i'),
+                'ends_at' => $endsAt->format('Y-m-d H:i'),
+                'start_date' => $startsAt->format('Y-m-d'),
+                'end_date' => $endsAt->format('Y-m-d'),
+                'start_time' => $startsAt->format('H:i'),
+                'end_time' => $endsAt->format('H:i'),
+                'status' => 'SCHEDULED',
+                'class_name' => $session->class_name,
+                'instructor_name' => $session->instructor_name,
+                'participant_count' => $session->participant_count,
+            ];
+        });
+
+        return response()->json([
+            'year' => (int) $validated['year'],
+            'month' => (int) $validated['month'],
+            'date' => $validated['date'] ?? null,
+            'search' => $validated['search'] ?? null,
+            'resource_type' => 'Training Media',
+            'building' => $validated['building'] ?? null,
+            'reservations' => $data->values(),
+        ]);
+    }
+
 }

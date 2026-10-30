@@ -1,3839 +1,1569 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>
-        GITC Info — Reservation Calendar
-    </title>
-
-    <meta
-        name="description"
-        content="GITC Info reservation calendar"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" type="image/svg+xml" href="{{ asset('assets/icons/logo/Garuda.svg') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>GITC Info | Reservation Portal</title>
 
     <style>
 
-        /* =====================================================
-           FONT
-        ===================================================== */
     @font-face {
     font-family: 'Garuda Sans';
     src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Regular.ttf') }}') format('truetype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
-}
+    }
 
-@font-face {
-    font-family: 'Garuda Sans';
-    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
+    @font-face {
+        font-family: 'Garuda Sans';
+        src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-SemiBold.ttf') }}') format('truetype');
+        font-weight: 600;
+        font-style: normal;
+        font-display: swap;
+    }
 
-@font-face {
-    font-family: 'Garuda Sans';
-    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
+    @font-face {
+        font-family: 'Garuda Sans';
+        src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-Bold.ttf') }}') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
 
-@font-face {
-    font-family: 'Garuda Sans';
-    src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-}
-
-
-@font-face {
-    font-family: 'Garuda Serif';
-    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Garuda Serif';
-    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Garuda Serif';
-    src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
-    font-weight: 800;
-    font-style: normal;
-    font-display: swap;
-}
-       
+    @font-face {
+        font-family: 'Garuda Sans';
+        src: url('{{ asset('fonts/Garuda_Font/Sans/GarudaSans-ExtraBold.ttf') }}') format('truetype');
+        font-weight: 800;
+        font-style: normal;
+        font-display: swap;
+    }
 
 
-        /* =====================================================
-           ROOT
-        ===================================================== */
+    @font-face {
+        font-family: 'Garuda Serif';
+        src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Regular.otf') }}') format('opentype');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
 
+    @font-face {
+        font-family: 'Garuda Serif';
+        src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-Bold.otf') }}') format('opentype');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: 'Garuda Serif';
+        src: url('{{ asset('fonts/Garuda_Font/Serif/GarudaSerif-ExtraBold.otf') }}') format('opentype');
+        font-weight: 800;
+        font-style: normal;
+        font-display: swap;
+    }
         :root {
-
-            --navy-950: #071d31;
-            --navy-900: #0b2740;
-            --navy-800: #123b5b;
-            --navy-700: #15506f;
-
-            --teal-700: #087f91;
-            --teal-600: #009eb4;
-            --teal-500: #18afbd;
-            --teal-100: #e6f8fa;
-
-            --gold: #c7a85b;
-            --gold-soft: #f7f0dd;
-
-            --white: #ffffff;
-
-            --surface: #f4f7f9;
-            --surface-2: #f9fbfc;
-
-            --text: #18364e;
-            --muted: #6b8192;
-
-            --border: #dce6ec;
-
-            --green: #237a4b;
-            --green-soft: #eaf7ef;
-
-            --shadow:
-                0 18px 45px rgba(7, 29, 49, .09);
-
-            --radius-lg: 18px;
-            --radius-md: 12px;
+            --navy: #102b46;
+            --navy-dark: #0a1d31;
+            --navy-light: #1c4263;
+            --teal: #168c8c;
+            --teal-light: #e7f5f4;
+            --gold: #d8b46a;
+            --gold-light: #f7efd9;
+            --text: #243447;
+            --muted: #788695;
+            --border: #e3e9ef;
+            --surface: #ffffff;
+            --background: #f4f7fa;
+            --success: #16805d;
+            --success-bg: #e7f6ee;
+            --danger: #b54747;
+            --danger-bg: #fff0f0;
+            --shadow: 0 12px 35px rgba(16, 43, 70, .07);
+            --radius: 18px;
         }
 
+        * { box-sizing: border-box; }
 
-        /* =====================================================
-           RESET
-        ===================================================== */
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        html {
-            min-height: 100%;
-            background: var(--surface);
-        }
-
+        html { scroll-behavior: smooth; }
 
         body {
-
             margin: 0;
-
-            min-height: 100vh;
-
             color: var(--text);
-
-            font-family:
-                'Garuda Sans',
-                Arial,
-                Helvetica,
-                sans-serif;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #f4f8fa 0%,
-                    #eef5f7 55%,
-                    #f8fafb 100%
-                );
+            background: var(--background);
+            font-family: "Garuda Sans", "Segoe UI", Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        a { color: inherit; text-decoration: none; }
 
-        button,
-        input,
-        select,
-        textarea {
-            font: inherit;
-        }
-
-
-        button {
-            cursor: pointer;
-        }
-
-
-        /* =====================================================
-           TOP NAVBAR
-        ===================================================== */
-
-        .site-header {
+        .navbar {
             position: sticky;
+            z-index: 100;
             top: 0;
-            z-index: 50;
-            height: 78px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 28px;
-            background: linear-gradient(
-                105deg,
-                var(--navy-950),
-                var(--navy-900) 65%,
-                #0d3d58
-            );
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            gap: 24px;
+            min-height: 76px;
+            padding: 12px 6%;
+            color: white;
+            background: var(--navy-dark);
+            border-bottom: 3px solid var(--gold);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, .12);
         }
+
         .brand {
             display: flex;
             align-items: center;
-            gap: 0;
+            gap: 13px;
             min-width: 0;
-
-            text-decoration: none !important;
-            color: inherit;
-             filter: brightness(0) invert(1);
         }
 
-        .brand-mark {
-            width: 180px;
-            height: 42px;
-
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-
-            flex-shrink: 0;
-
-            overflow: hidden;
-
-            margin: 0;
-            padding: 0;
-            margin-left: 12px;
-        }
-
-        .brand-mark img {
+        .brand img {
             display: block;
-
-            width: 100%;
-            height: 100%;
-
+            width: 180px;
+            height: 47px;
             object-fit: contain;
-            object-position: left center;
-          
-
-            margin: 0;
-            padding: 0;
+            margin-left: 50px;
         }
 
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-
-            line-height: 1.15;
-
-            margin: 0 0 0 -145px;
-            padding: 0;
-            margin-left: -70px;
-        }
+        .brand-copy { line-height: 1.25; }
 
         .brand-title {
-            color: var(--gitc-navy);
-
-            font-family:
-                'Garuda Serif',
-                Georgia,
-                serif;
-
-            font-size: 21px;
-            font-weight: 700;
-
-            letter-spacing: -0.02em;
-        }
-
-        .brand-subtitle {
-            margin-top: 3px;
-
-            color: var(--gitc-muted);
-
-            font-family:
-                'Garuda Sans',
-                Inter,
-                sans-serif;
-
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .brand-title {
-            color: #fff;
-            font-family: 'Garuda Serif', Georgia, serif;
-            font-size: 21px;
-            font-weight: 700;
-            line-height: 1.05;
-            white-space: nowrap;
-        }
-
-        .brand-subtitle {
-            margin-top: 5px;
-            color: rgba(255, 255, 255, 0.62);
-            font-family: 'Garuda Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            line-height: 1;
-            white-space: normal;
-        }
-
-
-        .login-button {
-
-            min-height: 40px;
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding:
-                0
-                17px;
-
-            border:
-                1px solid
-                rgba(199,168,91,.65);
-
-            border-radius: 8px;
-
-            color: white;
-
-            background:
-                rgba(255,255,255,.05);
-
-            text-decoration: none;
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 12px;
-
-            font-weight: 700;
-
-            transition:
-                background .2s ease,
-                border-color .2s ease,
-                transform .2s ease;
-        }
-
-
-        .login-button:hover {
-
-            background:
-                rgba(199,168,91,.14);
-
-            border-color:
-                var(--gold);
-
-            transform:
-                translateY(-1px);
-        }
-        
-
-
-        /* =====================================================
-           PAGE
-        ===================================================== */
-
-        .page {
-
-            width:
-                min(
-                    calc(100% - 48px),
-                    1600px
-                );
-
-            margin:
-                0 auto;
-
-            padding:
-                32px 0 42px;
-        }
-
-
-        /* =====================================================
-           HERO
-        ===================================================== */
-
-        .hero {
-
-            display: flex;
-
-            align-items: flex-end;
-
-            justify-content: space-between;
-
-            gap: 30px;
-
-            margin-bottom: 22px;
-        }
-
-
-        .hero-copy {
-            min-width: 0;
-        }
-
-
-        .eyebrow {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 8px;
-
-            margin-bottom: 8px;
-
-            color:
-                var(--teal-600);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
+            font-size: 19px;
             font-weight: 800;
+            letter-spacing: .08em;
+        }
 
-            letter-spacing: .13em;
-
+        .brand-subtitle {
+            margin-top: 4px;
+            color: #c7d5e2;
+            font-size: 10px;
+            letter-spacing: .16em;
             text-transform: uppercase;
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-link {
+            color: #e0e8f0;
+            font-size: 13px;
+            transition: color .2s ease;
+        }
+
+        .nav-link:hover { color: var(--gold); }
+
+        .login-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            padding: 0 20px;
+            color: var(--navy-dark);
+            background: var(--gold);
+            border: 1px solid var(--gold);
+            border-radius: 9px;
+            font-weight: 800;
+            transition: .2s ease;
+        }
+
+        .login-btn:hover {
+            background: #edcf8a;
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 58px 6% 62px;
+            color: white;
+            background:
+                radial-gradient(circle at 85% 10%, rgba(22, 140, 140, .25), transparent 28%),
+                linear-gradient(120deg, var(--navy-dark), var(--navy) 66%, #174660);
+        }
+
+        .hero::after {
+            position: absolute;
+            right: -95px;
+            bottom: -210px;
+            width: 430px;
+            height: 430px;
+            border: 1px solid rgba(216, 180, 106, .25);
+            border-radius: 50%;
+            content: "";
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 18px;
+            color: var(--gold);
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: .19em;
+            text-transform: uppercase;
+        }
 
         .eyebrow::before {
-
-            content: "";
-
-            width: 25px;
-
+            width: 28px;
             height: 2px;
-
-            background:
-                var(--gold);
-
-            border-radius: 2px;
+            background: var(--gold);
+            content: "";
         }
-
 
         .hero h1 {
-
-            margin: 0 0 6px;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Serif',
-                Georgia,
-                serif;
-
-            font-size:
-                clamp(
-                    30px,
-                    3.2vw,
-                    43px
-                );
-
-            line-height: 1.05;
-
-            font-weight: 700;
-
-            letter-spacing: -.035em;
-        }
-
-
-        .hero p {
-
-            max-width: 720px;
-
+            max-width: 760px;
             margin: 0;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 13px;
-
-            line-height: 1.6;
-        }
-
-
-        .hero-note {
-
-            flex: 0 0 auto;
-
-            padding:
-                10px 13px;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 9px;
-
-            color:
-                var(--muted);
-
-            background:
-                rgba(255,255,255,.70);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 700;
-
-            white-space: nowrap;
-        }
-
-
-        /* =====================================================
-           CALENDAR SHELL
-        ===================================================== */
-
-        .calendar-shell {
-
-            display: grid;
-
-            grid-template-columns:
-                minmax(0, 1fr)
-                390px;
-
-            /*
-             * Desktop:
-             * fill almost the entire visible browser height.
-             */
-            min-height:
-                calc(100vh - 190px);
-
-            height:
-                calc(100vh - 190px);
-
-            min-width: 0;
-
-            overflow: hidden;
-
-            background:
-                white;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius:
-                var(--radius-lg);
-
-            box-shadow:
-                var(--shadow);
-        }
-
-
-        /* =====================================================
-           CALENDAR AREA
-        ===================================================== */
-
-        .calendar-area {
-
-            min-width: 0;
-
-            min-height: 0;
-
-            display: flex;
-
-            flex-direction: column;
-
-            padding:
-                26px 28px 20px;
-        }
-
-
-        .calendar-toolbar {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            margin-bottom: 20px;
-        }
-
-
-        .month-title {
-
-            margin: 0;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Serif',
-                Georgia,
-                serif;
-
-            font-size: 25px;
-
-            line-height: 1.1;
-
-            font-weight: 700;
-
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 800;
+            line-height: 1.12;
             letter-spacing: -.025em;
         }
 
+        .hero h1 span { color: var(--gold); }
 
-        .month-subtitle {
-
-            margin-top: 5px;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 600;
+        .hero-description {
+            max-width: 650px;
+            margin: 19px 0 26px;
+            color: #d0dce6;
+            font-size: 15px;
+            line-height: 1.8;
         }
 
-
-        .month-navigation {
-
+        .hero-actions {
             display: flex;
-
-            align-items: center;
-
-            gap: 6px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-
-        .month-button,
-        .today-button {
-
-            min-height: 37px;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 8px;
-
-            color:
-                var(--navy-800);
-
-            background:
-                white;
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 11px;
-
-            font-weight: 700;
-
-            transition:
-                background .18s ease,
-                border-color .18s ease,
-                color .18s ease;
-        }
-
-
-        .month-button {
-
-            width: 37px;
-
-            display: flex;
-
+        .hero-action {
+            display: inline-flex;
             align-items: center;
-
             justify-content: center;
-
-            font-size: 18px;
+            min-height: 43px;
+            padding: 0 19px;
+            border: 1px solid rgba(255, 255, 255, .3);
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            transition: .2s ease;
         }
 
-
-        .today-button {
-
-            padding:
-                0
-                12px;
+        .hero-action.primary {
+            color: var(--navy-dark);
+            background: var(--gold);
+            border-color: var(--gold);
         }
 
+        .hero-action:hover { transform: translateY(-2px); }
 
-        .month-button:hover,
-        .today-button:hover {
-
-            border-color:
-                var(--teal-500);
-
-            color:
-                var(--teal-600);
-
-            background:
-                var(--teal-100);
+        .page-content {
+            width: min(1250px, 88%);
+            margin: 0 auto;
+            padding: 40px 0 64px;
         }
 
+        .intro-row {
+            display: flex;
+            align-items: end;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
 
-        /* =====================================================
-           WEEKDAYS
-        ===================================================== */
+        .section-kicker {
+            margin-bottom: 5px;
+            color: var(--teal);
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+        }
 
-        .calendar-weekdays {
+        .intro-row h2 {
+            margin: 0;
+            color: var(--navy);
+            font-size: clamp(24px, 3vw, 31px);
+            font-weight: 800;
+            line-height: 1.25;
+        }
 
+        .intro-row p {
+            max-width: 560px;
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .timezone-note {
+            flex-shrink: 0;
+            padding: 8px 12px;
+            color: var(--navy);
+            background: #e9eef4;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .schedule-section {
+            margin-top: 36px;
+            scroll-margin-top: 100px;
+        }
+
+        .schedule-heading {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 17px;
+            padding: 20px 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--teal);
+            border-radius: 13px;
+            box-shadow: 0 5px 18px rgba(16, 43, 70, .035);
+        }
+
+        .schedule-section.media-section .schedule-heading {
+            border-left-color: var(--gold);
+        }
+
+        .section-icon {
+            display: flex;
+            flex: 0 0 47px;
+            align-items: center;
+            justify-content: center;
+            width: 47px;
+            height: 47px;
+            color: var(--teal);
+            background: var(--teal);
+            border-radius: 12px;
+            font-size: 22px;
+        }
+
+        .media-section .section-icon {
+            color: #8a6829;
+            background: var(--gold);
+        }
+
+        .schedule-heading-copy { flex: 1; min-width: 0; }
+
+        .schedule-heading h3 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .schedule-heading p {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .schedule-label {
+            flex-shrink: 0;
+            padding: 6px 10px;
+            color: var(--teal);
+            background: var(--teal-light);
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+        }
+
+        .media-section .schedule-label {
+            color: #806020;
+            background: var(--gold-light);
+        }
+
+        .schedule-layout {
             display: grid;
-
-            grid-template-columns:
-                repeat(7, minmax(0, 1fr));
-
-            margin-bottom: 7px;
+            grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+            align-items: start;
+            gap: 18px;
         }
 
+        .panel {
+            min-width: 0;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 19px 21px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-header h4 {
+            margin: 0;
+            color: var(--navy);
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .panel-header p {
+            margin: 3px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .month-controls {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .month-title {
+            min-width: 126px;
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            color: var(--navy);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 17px;
+            transition: .2s ease;
+        }
+
+        .icon-btn:hover {
+            color: white;
+            background: var(--navy);
+            border-color: var(--navy);
+        }
+
+        .calendar-wrap { padding: 16px 19px 20px; }
+
+        .calendar-weekdays,
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 5px;
+        }
+
+        .calendar-weekdays { margin-bottom: 8px; }
 
         .weekday {
-
-            padding:
-                6px 4px;
-
-            color:
-                #8295a2;
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 9px;
-
+            padding: 7px 0;
+            color: var(--muted);
+            font-size: 10px;
             font-weight: 800;
-
             text-align: center;
-
-            letter-spacing: .08em;
-
             text-transform: uppercase;
         }
 
+        .weekday:first-child { color: #b45a5a; }
 
-        /* =====================================================
-           CALENDAR GRID
-        ===================================================== */
-
-        .calendar-grid {
-
-            flex: 1 1 auto;
-
-            min-height: 0;
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(7, minmax(0, 1fr));
-
-            grid-auto-rows:
-                minmax(70px, 1fr);
-
-            gap: 6px;
-        }
-
-
-        .calendar-day {
-
+        .day {
             position: relative;
-
-            min-width: 0;
-
-            min-height: 0;
-
-            padding:
-                8px;
-
-            border:
-                1px solid
-                transparent;
-
-            border-radius: 10px;
-
-            background:
-                var(--surface-2);
-
-            cursor: pointer;
-
-            text-align: left;
-
-            transition:
-                border-color .16s ease,
-                background .16s ease,
-                transform .16s ease;
-        }
-
-
-        .calendar-day:hover {
-
-            border-color:
-                #b8dce3;
-
-            background:
-                #f2fbfc;
-
-            transform:
-                translateY(-1px);
-        }
-
-
-        .calendar-day.empty {
-
-            cursor: default;
-
-            background:
-                transparent;
-
-            border-color:
-                transparent;
-        }
-
-
-        .calendar-day.empty:hover {
-
-            transform: none;
-        }
-
-
-        .calendar-day-number {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            width: 28px;
-
-            height: 28px;
-
-            color:
-                var(--text);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 12px;
-
-            font-weight: 800;
-        }
-
-
-        .calendar-day.today .calendar-day-number {
-
-            border-radius: 50%;
-
-            color:
-                white;
-
-            background:
-                var(--teal-600);
-
-            box-shadow:
-                0 5px 13px
-                rgba(0,158,180,.22);
-        }
-
-
-        .calendar-day.selected {
-
-            border-color:
-                var(--navy-700);
-
-            background:
-                #edf5f8;
-        }
-
-
-        .calendar-day.selected .calendar-day-number {
-
-            color:
-                white;
-
-            border-radius: 50%;
-
-            background:
-                var(--navy-800);
-        }
-
-
-        .calendar-day-indicators {
-
-            position: absolute;
-
-            left: 9px;
-
-            right: 9px;
-
-            bottom: 8px;
-
             display: flex;
-
-            align-items: center;
-
-            gap: 4px;
-
-            min-height: 7px;
-        }
-
-
-        .reservation-dot {
-
-            width: 6px;
-
-            height: 6px;
-
-            flex: 0 0 6px;
-
-            border-radius: 50%;
-
-            background:
-                var(--teal-500);
-        }
-
-
-        .reservation-dot:nth-child(2) {
-            background:
-                var(--gold);
-        }
-
-
-        .reservation-dot:nth-child(3) {
-            background:
-                #53799a;
-        }
-
-
-        .more-indicator {
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 8px;
-
-            font-weight: 800;
-        }
-
-
-        /* =====================================================
-           CALENDAR FOOTER
-        ===================================================== */
-
-        .calendar-footer {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            padding-top: 14px;
-
-            margin-top: 14px;
-
-            border-top:
-                1px solid
-                #edf2f5;
-        }
-
-
-        .reservation-summary {
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 600;
-        }
-
-
-        .reservation-summary strong {
-
-            color:
-                var(--navy-800);
-
-            font-size: 12px;
-        }
-
-
-        /* =====================================================
-           DETAILS PANEL
-        ===================================================== */
-
-        .details-panel {
-
-            display: flex;
-
             flex-direction: column;
-
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
             min-width: 0;
-
-            min-height: 0;
-
-            overflow: hidden;
-
-            border-left:
-                1px solid
-                var(--border);
-
-            background:
-                linear-gradient(
-                    180deg,
-                    #f8fbfc,
-                    #f1f6f8
-                );
+            min-height: 48px;
+            padding: 5px 2px;
+            color: var(--text);
+            background: white;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            transition: .16s ease;
         }
 
-
-        .details-header {
-
-            flex: 0 0 auto;
-
-            padding:
-                25px 24px 20px;
-
-            border-bottom:
-                1px solid
-                var(--border);
-
-            background:
-                rgba(248,251,252,.97);
+        .day:not(.empty):hover {
+            background: #f1f6fa;
+            border-color: #cbd8e4;
         }
 
+        .day.empty { pointer-events: none; }
+        .day-number { font-size: 12px; font-weight: 700; }
 
-        .details-label {
+        .day.today {
+            background: #f1f6fb;
+            border-color: #9bb4ca;
+        }
 
-            margin-bottom: 6px;
+        .day.today .day-number {
+            color: var(--navy);
+            font-weight: 900;
+        }
 
-            color:
-                var(--teal-600);
+        .day.selected {
+            color: white;
+            background: var(--navy);
+            border-color: var(--navy);
+            box-shadow: 0 4px 10px rgba(16, 43, 70, .18);
+        }
 
-            font-family:
-                'Garuda Sans',
-                sans-serif;
+        .day.selected .day-number { color: white; }
+        .day.has-events:not(.selected) { background: var(--teal-light); }
 
-            font-size: 9px;
+        .media-section .day.has-events:not(.selected) {
+            background: var(--gold-light);
+        }
 
+        .day-dots {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            min-height: 5px;
+        }
+
+        .day-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--teal);
+            border-radius: 50%;
+        }
+
+        .media-section .day-dot { background: #b18a3e; }
+        .day.selected .day-dot { background: var(--gold); }
+
+        .today-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .calendar-legend {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .legend-item { display: inline-flex; align-items: center; gap: 5px; }
+
+        .legend-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--teal);
+            border-radius: 50%;
+        }
+
+        .media-section .legend-dot { background: #b18a3e; }
+
+        .today-btn {
+            padding: 6px 11px;
+            color: var(--navy);
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: 10px;
             font-weight: 800;
+        }
 
+        .today-btn:hover { background: #f1f6fa; }
+
+        /* Keep the schedule list compact and scroll it independently. */
+        .detail-panel {
+            position: sticky;
+            top: 96px;
+            display: flex;
+            flex-direction: column;
+            max-height: 410px;
+            min-height: 0;
+        }
+
+        .detail-top {
+            flex: 0 0 auto;
+            padding: 16px 18px;
+            color: white;
+            background: linear-gradient(120deg, var(--navy-dark), var(--navy-light));
+        }
+
+        .media-section .detail-top {
+            background: linear-gradient(120deg, #3f3829, #7c6335);
+        }
+
+        .detail-top .small-label {
+            color: #c9d7e3;
+            font-size: 10px;
+            font-weight: 800;
             letter-spacing: .12em;
-
             text-transform: uppercase;
         }
 
-
-        .details-date {
-
-            margin: 0;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Serif',
-                Georgia,
-                serif;
-
-            font-size: 21px;
-
-            line-height: 1.15;
-
-            font-weight: 700;
-
-            letter-spacing: -.02em;
-        }
-
-
-        .details-count {
-
+        .detail-date {
             margin-top: 5px;
+            font-size: 19px;
+            font-weight: 800;
+            line-height: 1.25;
+        }
 
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
+        .detail-count {
+            display: inline-flex;
+            margin-top: 8px;
+            padding: 5px 9px;
+            color: var(--navy-dark);
+            background: var(--gold);
+            border-radius: 6px;
             font-size: 10px;
-
-            font-weight: 600;
+            font-weight: 800;
         }
 
-
-        /* =====================================================
-           IMPORTANT:
-           ONLY THIS AREA SCROLLS
-        ===================================================== */
-
-        .details-list {
-
+        .detail-body {
             flex: 1 1 auto;
-
             min-height: 0;
-
+            padding: 10px;
             overflow-y: auto;
-
-            overflow-x: hidden;
-
-            padding:
-                17px;
-
+            overscroll-behavior: contain;
             scrollbar-width: thin;
-
-            scrollbar-color:
-                #b9cdd6
-                transparent;
+            scrollbar-color: #c7d2dd transparent;
         }
 
-
-        .details-list::-webkit-scrollbar {
-            width: 7px;
+        .detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
         }
-
-
-        .details-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-
-        .details-list::-webkit-scrollbar-thumb {
-
-            border-radius: 10px;
-
-            background:
-                #b9cdd6;
-        }
-
-
-        .details-list::-webkit-scrollbar-thumb:hover {
-
-            background:
-                #91abb8;
-        }
-
-
-        /* =====================================================
-           RESERVATION CARD
-        ===================================================== */
 
         .reservation-card {
-
-            margin-bottom: 11px;
-
-            padding:
-                15px;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 12px;
-
-            background:
-                white;
-
+            display: block;
+            width: 100%;
+            padding: 11px 12px;
+            color: inherit;
+            text-align: left;
+            background: #fbfcfd;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             cursor: pointer;
-
-            transition:
-                border-color .18s ease,
-                box-shadow .18s ease,
-                transform .18s ease;
+            transition: border-color .18s ease, background .18s ease, transform .18s ease;
         }
 
-
-        .reservation-card:last-child {
-            margin-bottom: 0;
+        .reservation-card:hover,
+        .reservation-card:focus-visible {
+            background: #fff;
+            border-color: #9fb5c8;
+            outline: none;
+            transform: translateY(-1px);
         }
 
-
-        .reservation-card:hover {
-
-            border-color:
-                #b8dce3;
-
-            box-shadow:
-                0 8px 20px
-                rgba(7,29,49,.07);
-
-            transform:
-                translateY(-1px);
+        .media-section .reservation-card:hover,
+        .media-section .reservation-card:focus-visible {
+            border-color: #c9ad72;
         }
 
-
-        /* =====================================================
-           TIME
-        ===================================================== */
-
-        .reservation-time {
-
+        .reservation-card-top {
             display: flex;
-
-            align-items: center;
-
-            gap: 7px;
-
-            margin-bottom: 10px;
-
-            color:
-                var(--teal-600);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 800;
-        }
-
-
-        .time-line {
-
-            width: 5px;
-
-            height: 5px;
-
-            border-radius: 50%;
-
-            background:
-                var(--gold);
-        }
-
-
-        /* =====================================================
-           EVENT
-        ===================================================== */
-
-        .reservation-event {
-
-            margin:
-                0 0 13px;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 15px;
-
-            line-height: 1.35;
-
-            font-weight: 800;
-        }
-
-
-        /* =====================================================
-           RESOURCE / ROOM
-        ===================================================== */
-
-        .reservation-resource {
-
-            padding:
-                12px;
-
-            margin-bottom: 12px;
-
-            border:
-                1px solid
-                #e1ebef;
-
-            border-radius: 9px;
-
-            background:
-                #f8fbfc;
-        }
-
-
-        .resource-label {
-
-            margin-bottom: 5px;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 8px;
-
-            font-weight: 800;
-
-            letter-spacing: .09em;
-
-            text-transform: uppercase;
-        }
-
-
-        .resource-name {
-
-            display: block;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 16px;
-
-            line-height: 1.25;
-
-            font-weight: 800;
-        }
-
-
-        .resource-building {
-
-            display: block;
-
-            margin-top: 4px;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 600;
-        }
-
-
-        .resource-type {
-
-            display: inline-flex;
-
-            align-items: center;
-
-            margin-top: 8px;
-
-            padding:
-                4px 7px;
-
-            border-radius: 5px;
-
-            color:
-                var(--teal-700);
-
-            background:
-                var(--teal-100);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 8px;
-
-            font-weight: 800;
-
-            letter-spacing: .05em;
-
-            text-transform: uppercase;
-        }
-
-
-        /* =====================================================
-           DATE RANGE
-        ===================================================== */
-
-        .reservation-date-range {
-
-            padding-top: 10px;
-
-            border-top:
-                1px solid
-                #edf2f5;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 9px;
-
-            line-height: 1.5;
-
-            font-weight: 600;
-        }
-
-
-        /* =====================================================
-           EMPTY DETAILS
-        ===================================================== */
-
-        .details-empty {
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-
-            justify-content: center;
-
-            min-height: 260px;
-
-            padding: 30px;
-
-            text-align: center;
-        }
-
-
-        .empty-icon {
-
-            width: 46px;
-
-            height: 46px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            margin-bottom: 13px;
-
-            border:
-                1px solid
-                #c8dce4;
-
-            border-radius: 12px;
-
-            color:
-                var(--teal-600);
-
-            background:
-                white;
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 18px;
-
-            font-weight: 800;
-        }
-
-
-        .details-empty h3 {
-
-            margin:
-                0 0 5px;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 14px;
-
-            font-weight: 800;
-        }
-
-
-        .details-empty p {
-
-            max-width: 230px;
-
-            margin: 0;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            line-height: 1.6;
-        }
-
-
-        /* =====================================================
-           LOADING
-        ===================================================== */
-
-        .loading-state {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            min-height: 180px;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-
-            font-weight: 600;
-        }
-
-
-        .loading-dot {
-
-            width: 6px;
-
-            height: 6px;
-
-            margin-right: 7px;
-
-            border-radius: 50%;
-
-            background:
-                var(--teal-500);
-
-            animation:
-                pulse 1s infinite ease-in-out;
-        }
-
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: .35;
-            }
-
-            50% {
-                opacity: 1;
-            }
-        }
-
-
-        /* =====================================================
-           MODAL
-        ===================================================== */
-
-        .reservation-modal {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 100;
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 24px;
-
-            background:
-                rgba(7,29,49,.55);
-
-            backdrop-filter:
-                blur(5px);
-        }
-
-
-        .reservation-modal.show {
-            display: flex;
-        }
-
-
-        .modal-card {
-
-            width:
-                min(
-                    100%,
-                    540px
-                );
-
-            max-height:
-                calc(100vh - 48px);
-
-            overflow-y: auto;
-
-            border-radius:
-                16px;
-
-            background:
-                white;
-
-            box-shadow:
-                0 25px 70px
-                rgba(7,29,49,.25);
-        }
-
-
-        .modal-header {
-
-            display: flex;
-
             align-items: flex-start;
-
             justify-content: space-between;
-
-            gap: 15px;
-
-            padding:
-                22px 23px;
-
-            border-bottom:
-                1px solid
-                var(--border);
-        }
-
-
-        .modal-header h2 {
-
-            margin:
-                0 0 5px;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Serif',
-                Georgia,
-                serif;
-
-            font-size: 19px;
-
-            font-weight: 700;
-        }
-
-
-        .modal-header p {
-
-            margin: 0;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 10px;
-        }
-
-
-        .modal-close {
-
-            width: 34px;
-
-            height: 34px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            flex: 0 0 34px;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 8px;
-
-            color:
-                var(--muted);
-
-            background:
-                white;
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 17px;
-        }
-
-
-        .modal-close:hover {
-
-            color:
-                var(--navy-950);
-
-            background:
-                var(--surface);
-        }
-
-
-        .modal-body {
-            padding: 23px;
-        }
-
-
-        .modal-event {
-
-            margin-bottom: 20px;
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 20px;
-
-            line-height: 1.3;
-
-            font-weight: 800;
-        }
-
-
-        .modal-grid {
-
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, minmax(0,1fr));
-
             gap: 10px;
         }
 
-
-        .modal-field {
-
-            padding: 12px;
-
-            border:
-                1px solid
-                var(--border);
-
-            border-radius: 9px;
-
-            background:
-                var(--surface-2);
-        }
-
-
-        .modal-field-label {
-
-            margin-bottom: 5px;
-
-            color:
-                var(--muted);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 8px;
-
-            font-weight: 800;
-
-            text-transform: uppercase;
-
-            letter-spacing: .06em;
-        }
-
-
-        .modal-field-value {
-
-            color:
-                var(--navy-950);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
+        .reservation-title {
+            margin: 0;
+            color: var(--navy);
             font-size: 12px;
-
-            line-height: 1.4;
-
-            font-weight: 700;
-
-            word-break: break-word;
+            font-weight: 800;
+            overflow-wrap: anywhere;
         }
 
-
-        .modal-status {
-
-            display: inline-flex;
-
-            padding:
-                5px 8px;
-
-            border-radius: 5px;
-
-            color:
-                var(--green);
-
-            background:
-                var(--green-soft);
-
-            font-family:
-                'Garuda Sans',
-                sans-serif;
-
-            font-size: 8px;
-
+        .reservation-time {
+            flex-shrink: 0;
+            padding: 4px 6px;
+            color: var(--teal);
+            background: var(--teal-light);
+            border-radius: 6px;
+            font-size: 9px;
             font-weight: 800;
+            white-space: nowrap;
+        }
 
+        .media-section .reservation-time {
+            color: #806020;
+            background: var(--gold-light);
+        }
+
+        .reservation-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+            color: #637284;
+            font-size: 11px;
+        }
+
+        .meta-line {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .meta-icon { flex: 0 0 15px; color: var(--teal); text-align: center; }
+        .media-section .meta-icon { color: #96732e; }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 4px 8px;
+            color: var(--success);
+            background: var(--success-bg);
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 900;
             letter-spacing: .04em;
         }
 
-
-        /* =====================================================
-           RESPONSIVE
-        ===================================================== */
-
-        @media (max-width: 1150px) {
-
-            .calendar-shell {
-
-                grid-template-columns:
-                    minmax(0, 1fr)
-                    350px;
-            }
-
+        .view-details-btn {
+            width: 100%;
+            margin-top: 12px;
+            padding: 8px 10px;
+            color: var(--navy);
+            background: white;
+            border: 1px solid #ccd7e1;
+            border-radius: 7px;
+            font-size: 10px;
+            font-weight: 800;
+            transition: .2s ease;
         }
 
-
-        @media (max-width: 1000px) {
-
-            .calendar-shell {
-
-                grid-template-columns:
-                    1fr;
-
-                height: auto;
-
-                min-height: 0;
-            }
-
-
-            .calendar-area {
-
-                min-height: 650px;
-            }
-
-
-            .details-panel {
-
-                height: 430px;
-
-                min-height: 430px;
-
-                border-top:
-                    1px solid
-                    var(--border);
-
-                border-left: 0;
-            }
-
+        .view-details-btn:hover {
+            color: white;
+            background: var(--navy);
+            border-color: var(--navy);
         }
 
-
-        @media (max-width: 700px) {
-
-            .site-header {
-
-                height: 70px;
-
-                padding:
-                    0 18px;
-            }
-
-
-            
-
-            .brand-title {
-                font-size: 16px;
-            }
-
-
-            .brand-subtitle {
-                display: none;
-            }
-
-
-            .login-button {
-
-                min-height: 36px;
-
-                padding:
-                    0 12px;
-
-                font-size: 10px;
-            }
-
-
-            .page {
-
-                width:
-                    calc(100% - 24px);
-
-                padding:
-                    24px 0 30px;
-            }
-
-
-            .hero {
-
-                display: block;
-
-                margin-bottom: 18px;
-            }
-
-
-            .hero h1 {
-
-                font-size: 30px;
-            }
-
-
-            .hero p {
-
-                font-size: 12px;
-            }
-
-
-            .hero-note {
-
-                display: inline-flex;
-
-                margin-top: 14px;
-            }
-
-
-            .calendar-area {
-
-                min-height: 590px;
-
-                padding:
-                    18px;
-            }
-
-
-            .calendar-toolbar {
-
-                align-items: flex-start;
-            }
-
-
-            .month-title {
-                font-size: 21px;
-            }
-
-
-            .calendar-grid {
-
-                gap: 4px;
-
-                grid-auto-rows:
-                    minmax(57px, 1fr);
-            }
-
-
-            .calendar-day {
-
-                padding: 5px;
-
-                border-radius: 8px;
-            }
-
-
-            .calendar-day-number {
-
-                width: 24px;
-
-                height: 24px;
-
-                font-size: 10px;
-            }
-
-
-            .calendar-day-indicators {
-
-                left: 6px;
-
-                right: 6px;
-
-                bottom: 6px;
-            }
-
-
-            .weekday {
-
-                font-size: 8px;
-            }
-
-
-            .calendar-footer {
-
-                align-items: flex-start;
-
-                flex-direction: column;
-            }
-
-
-            .details-panel {
-
-                height: 430px;
-
-                min-height: 430px;
-            }
-
-
-            .modal-grid {
-
-                grid-template-columns:
-                    1fr;
-            }
-
+        .empty-state { padding: 28px 15px; color: var(--muted); text-align: center; }
+        .empty-state-icon { margin-bottom: 8px; font-size: 26px; opacity: .65; }
+
+        .empty-state h5 {
+            margin: 0 0 5px;
+            color: var(--navy);
+            font-size: 13px;
         }
 
+        .empty-state p { margin: 0; font-size: 11px; }
+        .loading-state { padding: 24px 12px; color: var(--muted); font-size: 12px; text-align: center; }
 
-        @media (max-width: 430px) {
-
-            .today-button {
-                display: none;
-            }
-
-
-            .month-navigation {
-                gap: 4px;
-            }
-
-
-            .month-button {
-
-                width: 34px;
-
-                min-height: 34px;
-
-                height: 34px;
-            }
-
-
-            .calendar-grid {
-
-                gap: 3px;
-
-                grid-auto-rows:
-                    minmax(50px, 1fr);
-            }
-
-
-            .calendar-day {
-
-                min-height: 50px;
-
-                padding: 3px;
-            }
-
-
-            .calendar-day-indicators {
-                display: none;
-            }
-
-
-            .weekday {
-                font-size: 7px;
-            }
-
-
-            .details-panel {
-
-                height: 400px;
-
-                min-height: 400px;
-            }
-
+        .error-state {
+            padding: 15px;
+            color: var(--danger);
+            background: var(--danger-bg);
+            border-radius: 9px;
+            font-size: 11px;
+            text-align: center;
         }
 
-        @media (max-width: 700px) {
+        .separator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 42px 0 12px;
+            color: #9aa6b2;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
 
-    .site-header {
-        min-height: 78px;
-        padding: 0 18px;
-        gap: 12px;
-    }
+        .separator::before,
+        .separator::after {
+            flex: 1;
+            height: 1px;
+            background: #dce4eb;
+            content: "";
+        }
 
-    .brand-logo {
-        width: 68px;
-        height: 56px;
-        flex-basis: 68px;
-    }
+        .footer { padding: 25px 6%; color: #c9d6e2; background: var(--navy-dark); }
 
-    .brand-logo img {
-        width: 116px;
-        height: 68px;
-    }
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-    
+        .footer strong { color: white; letter-spacing: .06em; }
+        .footer p { margin: 3px 0 0; font-size: 10px; }
+        .footer-copy { color: #9fb0c0; font-size: 10px; text-align: right; }
 
-    .brand-title {
-        font-size: 19px;
-    }
+        .modal-overlay {
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(5, 20, 35, .72);
+            backdrop-filter: blur(4px);
+        }
 
-    .brand-subtitle {
-        font-size: 9px;
-        letter-spacing: 0.035em;
-        white-space: normal;
-        max-width: 220px;
-    }
+        .modal-overlay.open { display: flex; }
 
-    .login-button {
-        padding: 9px 13px;
-        font-size: 12px;
-    }
-}
-
-    </style>
-
-</head>
-
-
-<body>
-
-
-<header class="site-header">
-
-    <a
-        href="{{ url('/') }}"
-        class="brand"
-    >
-
-        <div class="brand-mark">
-
-            <img
-                src="{{ asset('assets/icons/logo/logo.png') }}"
-                alt="GITC"
-            >
-
-        </div>
-
-
-        {{-- <div class="brand-text">
-
-            <div class="brand-title">
-                GITC INFO
-            </div>
-
-            <div class="brand-subtitle">
-                Training System, Media & Business
-            </div>
-
-        </div> --}}
-
-    </a>
-
-
-    <a
-        href="{{ route('login') }}"
-        class="login-button"
-    >
-        Login
-    </a>
-
-</header>
-
-
-<main class="page">
-
-
-    <section class="hero">
-
-        <div class="hero-copy">
-
-            <div class="eyebrow">
-                Reservation Portal
-            </div>
-
-            <h1>
-                GITC INFO
-            </h1>
-
-            <p>
-                Explore approved reservations and facility schedules.
-                Select a date to view the reservation details.
-            </p>
-
-        </div>
-
+        .modal {
+            width: min(540px, 100%);
+            max-height: 88vh;
+            overflow-y: auto;
+            background: white;
+            border-radius: 17px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .25);
+            animation: modalIn .18s ease-out;
+        }
 
         
 
-    </section>
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(8px) scale(.99); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
 
+        .modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 21px 23px;
+            color: white;
+            background: var(--navy);
+            border-bottom: 3px solid var(--gold);
+        }
 
-    <section class="calendar-shell">
+        .modal-header h3 { margin: 0; font-size: 18px; line-height: 1.35; }
+        .modal-header p { margin: 5px 0 0; color: #c9d6e2; font-size: 11px; }
 
+        .modal-close {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 31px;
+            width: 31px;
+            height: 31px;
+            color: white;
+            background: rgba(255, 255, 255, .12);
+            border: 1px solid rgba(255, 255, 255, .2);
+            border-radius: 8px;
+            font-size: 19px;
+        }
 
-        {{-- =================================================
-             CALENDAR
-        ================================================== --}}
+        .modal-content { padding: 22px 23px; }
 
-        <div class="calendar-area">
+        .modal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
 
+        .modal-info {
+            min-width: 0;
+            padding: 12px;
+            background: #f6f8fa;
+            border: 1px solid #e8edf2;
+            border-radius: 9px;
+        }
 
-            <div class="calendar-toolbar">
+        .modal-info.full { grid-column: 1 / -1; }
 
+        .modal-info-label {
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
 
-                <div>
+        .modal-info-value {
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
 
-                    <h2
-                        class="month-title"
-                        id="month-title"
-                    >
-                        Loading...
-                    </h2>
+        .modal-footer { display: flex; justify-content: flex-end; padding: 0 23px 22px; }
 
+        .modal-done {
+            min-height: 38px;
+            padding: 0 17px;
+            color: white;
+            background: var(--navy);
+            border: 1px solid var(--navy);
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
 
-                    <div
-                        class="month-subtitle"
-                        id="month-subtitle"
-                    >
-                        Reservation schedule
-                    </div>
+        @media (max-width: 900px) {
+            .page-content { width: 92%; }
+            .schedule-layout { grid-template-columns: minmax(0, 1fr); }
+            .detail-panel { position: static; max-height: 390px; }
+            .detail-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .intro-row { align-items: flex-start; flex-direction: column; }
+            .timezone-note { align-self: flex-start; }
+        }
 
-                </div>
+        @media (max-width: 600px) {
+            .navbar { min-height: 66px; padding: 10px 4%; }
+            .brand img { width: 120px; height: 39px; margin-left: 0px }
+            .brand-title { font-size: 16px; }
+            .brand-subtitle { font-size: 8px; }
+            .nav-right { gap: 10px; }
+            .nav-link { display: none; }
+            .login-btn { min-height: 36px; padding: 0 13px; font-size: 11px; }
+            .hero { padding: 43px 5% 48px; }
+            .hero-description { font-size: 13px; }
+            .page-content { width: 92%; padding-top: 28px; }
+            .schedule-section { margin-top: 27px; }
+            .schedule-heading { align-items: flex-start; gap: 11px; padding: 15px; }
+            .section-icon { flex-basis: 35px; width: 35%; height: 35px; font-size: 18px; }
+            .schedule-heading h3 { font-size: 16px; }
+            .schedule-heading p { font-size: 11px; }
+            .schedule-label { display: none; }
+            .panel-header { align-items: flex-start; flex-direction: column; padding: 15px; }
+            .month-controls { width: 100%; justify-content: space-between; }
+            .month-title { flex: 1; }
+            .calendar-wrap { padding: 12px 10px 15px; }
+            .calendar-weekdays, .calendar-grid { gap: 3px; }
+            .day { min-height: 42px; border-radius: 7px; }
+            .day-number { font-size: 11px; }
+            .detail-panel { max-height: 360px; }
+            .detail-list { grid-template-columns: minmax(0, 1fr); }
+            .modal-info-grid { grid-template-columns: minmax(0, 1fr); }
+            .modal-info.full { grid-column: auto; }
+            .footer-inner { align-items: flex-start; flex-direction: column; }
+            .footer-copy { text-align: left; }
+        }
 
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                animation-duration: .01ms !important;
+                transition-duration: .01ms !important;
+            }
+        }
+        .navbar {
+            min-height: 76px;
+            padding: 10px 6%;
+        }
 
-                <div class="month-navigation">
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex: 0 0 auto;
+            min-width: 0;
+        }
 
+        .brand-logo {
+            display: block;
+            width: 180px;
+            height: 48px;
+            object-fit: contain;
+            object-position: left center;
+        }
 
-                    <button
-                        type="button"
-                        class="today-button"
-                        id="today-button"
-                    >
-                        Today
-                    </button>
+        /* ===== HIDE SCROLLBAR, KEEP SCROLLING ===== */
+        html {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* Internet Explorer lama */
+        }
 
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+            width: 0;
+            height: 0;
+        }
 
-                    <button
-                        type="button"
-                        class="month-button"
-                        id="previous-month"
-                        aria-label="Previous month"
-                    >
-                        ‹
-                    </button>
+        /* ===== RESPONSIVE LOGO ===== */
+        @media (max-width: 600px) {
+            .navbar {
+                min-height: 66px;
+                padding: 8px 4%;
+            }
 
-
-                    <button
-                        type="button"
-                        class="month-button"
-                        id="next-month"
-                        aria-label="Next month"
-                    >
-                        ›
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div class="calendar-weekdays">
-
-                <div class="weekday">Sun</div>
-                <div class="weekday">Mon</div>
-                <div class="weekday">Tue</div>
-                <div class="weekday">Wed</div>
-                <div class="weekday">Thu</div>
-                <div class="weekday">Fri</div>
-                <div class="weekday">Sat</div>
-
-            </div>
-
-
-            <div
-                class="calendar-grid"
-                id="calendar-grid"
+            .brand-logo {
+                width: 115px;
+                height: 42px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url('/') }}" class="brand" aria-label="GITC Info home">
+            <img
+                src="{{ asset('assets/icons/logo/logo.png') }}"
+                alt="GITC Logo"
+                onerror="this.style.display='none'"
             >
-            </div>
+            {{-- <div class="brand-copy">
+                <div class="brand-title">GITC INFO</div>
+                <div class="brand-subtitle">Reservation Portal</div>
+            </div> --}}
+        </a>
 
-
-            <div class="calendar-footer">
-
-                <div
-                    class="reservation-summary"
-                    id="reservation-summary"
-                >
-                    <strong>0</strong>
-                    reservations this month
-                </div>
-
-            </div>
-
+        <div class="nav-right">
+            <a href="#room-reservations" class="nav-link">Room Reservations</a>
+            <a href="#training-media" class="nav-link">Training Media</a>
+            <a href="{{ route('login') }}" class="login-btn">Login to Portal ↗</a>
         </div>
+    </nav>
 
-
-        {{-- =================================================
-             DETAILS SIDEBAR
-        ================================================== --}}
-
-        <aside class="details-panel">
-
-
-            <div class="details-header">
-
-                <div class="details-label">
-                    Selected Date
-                </div>
-
-
-                <h2
-                    class="details-date"
-                    id="details-date"
-                >
-                    Select a date
-                </h2>
-
-
-                <div
-                    class="details-count"
-                    id="details-count"
-                >
-                    Click a calendar date to view reservations.
-                </div>
-
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="eyebrow">Reservation Portal</div>
+            <h1>Welcome to <span>GITC INFO</span></h1>
+            <p class="hero-description">
+                Access reservation schedules in one place. Explore room
+                availability and training media schedules using their
+                separate calendars below.
+            </p>
+            <div class="hero-actions">
+                <a href="#room-reservations" class="hero-action primary">View Room Reservations ↓</a>
+                <a href="#training-media" class="hero-action">View Training Media Schedule ↓</a>
             </div>
+        </div>
+    </header>
 
-
-            {{--
-
-                IMPORTANT:
-
-                This container is the ONLY
-                scrolling area in the details sidebar.
-
-            --}}
-
-            <div
-                class="details-list"
-                id="details-list"
-            >
-
-
-                <div class="details-empty">
-
-
-                    <div class="empty-icon">
-                        ▦
-                    </div>
-
-
-                    <h3>
-                        No Date Selected
-                    </h3>
-
-
-                    <p>
-                        Select a date from the calendar
-                        to see its reservation schedule.
-                    </p>
-
-                </div>
-
-            </div>
-
-        </aside>
-
-    </section>
-
-</main>
-
-
-{{-- =====================================================
-     RESERVATION DETAIL MODAL
-====================================================== --}}
-
-<div
-    class="reservation-modal"
-    id="reservation-modal"
-    aria-hidden="true"
->
-
-
-    <div
-        class="modal-card"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-event"
-    >
-
-
-        <div class="modal-header">
-
+    <main class="page-content">
+        <div class="intro-row">
             <div>
-
-                <h2>
-                    Reservation Details
-                </h2>
-
-
-                <p>
-                    Approved reservation information
-                </p>
-
+                <div class="section-kicker">Schedule Overview</div>
+                <h2>Reservation Schedules</h2>
+                <p>Select a date on either calendar to view its scheduled activities. Each calendar is independent.</p>
             </div>
-
-
-            <button
-                type="button"
-                class="modal-close"
-                id="modal-close"
-                aria-label="Close"
-            >
-                ×
-            </button>
-
+            {{-- <div class="timezone-note">All times follow the application's configured timezone.</div> --}}
         </div>
 
-
-        <div class="modal-body">
-
-
-            <div
-                class="modal-event"
-                id="modal-event"
-            >
-                Reservation
+        <section class="schedule-section room-section" id="room-reservations" data-schedule="room">
+            <div class="schedule-heading">
+                <div class="section-icon" aria-hidden="true">
+                     <img
+                                src="{{ asset('assets/icons/navigation/reservation.svg') }}"
+                                alt=""
+                            >
+                </div>
+                <div class="schedule-heading-copy">
+                    <h3>Room Reservations</h3>
+                    <p>Approved bookings for meeting rooms and other rooms.</p>
+                </div>
+                <span class="schedule-label">Room Schedule</span>
             </div>
 
-
-            <div class="modal-grid">
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Booker Username
+            <div class="schedule-layout">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h4>Room Reservation Calendar</h4>
+                            <p>Select a date to view the room schedule.</p>
+                        </div>
+                        <div class="month-controls">
+                            <button type="button" class="icon-btn" data-action="prev" aria-label="Previous month for room reservations">‹</button>
+                            <div class="month-title" data-month-title>Loading...</div>
+                            <button type="button" class="icon-btn" data-action="next" aria-label="Next month for room reservations">›</button>
+                        </div>
                     </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-username"
-                    >
-                        —
+                    <div class="calendar-wrap">
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+                        </div>
+                        <div class="calendar-grid" data-calendar-grid><div class="loading-state">Loading calendar...</div></div>
+                        <div class="today-row">
+                            <div class="calendar-legend">
+                                <span class="legend-item"><span class="legend-dot"></span>Has reservations</span>
+                                <span class="legend-item">Select a date for details</span>
+                            </div>
+                            <button type="button" class="today-btn" data-action="today">Today</button>
+                        </div>
                     </div>
-
                 </div>
 
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Location
+                <aside class="panel detail-panel">
+                    <div class="detail-top">
+                        <div class="small-label">Room Schedule Details</div>
+                        <div class="detail-date" data-detail-date>Loading date...</div>
+                        <div class="detail-count" data-detail-count>Loading...</div>
                     </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-resource"
-                    >
-                        —
+                    <div class="detail-body">
+                        <div class="detail-list" data-detail-list><div class="loading-state">Loading reservations...</div></div>
                     </div>
+                </aside>
+            </div>
+        </section>
 
+        <div class="separator">Separate schedule categories</div>
+
+        <section class="schedule-section media-section" id="training-media" data-schedule="media">
+            <div class="schedule-heading">
+                <div class="section-icon" aria-hidden="true">
+                    <img src="{{ asset('assets/icons/navigation/training-media.svg') }}" alt="">
                 </div>
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Building
-                    </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-building"
-                    >
-                        —
-                    </div>
-
+                <div class="schedule-heading-copy">
+                    <h3>Training Media Schedule</h3>
+                    <p>Scheduled sessions for training media resources.</p>
                 </div>
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Reservation Number
-                    </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-number"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Start
-                    </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-start"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        End
-                    </div>
-
-                    <div
-                        class="modal-field-value"
-                        id="modal-end"
-                    >
-                        —
-                    </div>
-
-                </div>
-
-
-                <div class="modal-field">
-
-                    <div class="modal-field-label">
-                        Status
-                    </div>
-
-                    <div>
-
-                        <span
-                            class="modal-status"
-                            id="modal-status"
-                        >
-                            APPROVED
-                        </span>
-
-                    </div>
-
-                </div>
-
-
+                <span class="schedule-label">Training Media</span>
             </div>
 
+            <div class="schedule-layout">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h4>Training Media Calendar</h4>
+                            <p>This calendar displays scheduled Training Media sessions.</p>
+                        </div>
+                        <div class="month-controls">
+                            <button type="button" class="icon-btn" data-action="prev" aria-label="Previous month for training media">‹</button>
+                            <div class="month-title" data-month-title>Loading...</div>
+                            <button type="button" class="icon-btn" data-action="next" aria-label="Next month for training media">›</button>
+                        </div>
+                    </div>
+                    <div class="calendar-wrap">
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+                        </div>
+                        <div class="calendar-grid" data-calendar-grid><div class="loading-state">Loading calendar...</div></div>
+                        <div class="today-row">
+                            <div class="calendar-legend">
+                                <span class="legend-item"><span class="legend-dot"></span>Has sessions</span>
+                                <span class="legend-item">Select a date for details</span>
+                            </div>
+                            <button type="button" class="today-btn" data-action="today">Today</button>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="panel detail-panel">
+                    <div class="detail-top">
+                        <div class="small-label">Training Media Details</div>
+                        <div class="detail-date" data-detail-date>Loading date...</div>
+                        <div class="detail-count" data-detail-count>Loading...</div>
+                    </div>
+                    <div class="detail-body">
+                        <div class="detail-list" data-detail-list><div class="loading-state">Loading sessions...</div></div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <div><strong>GITC INFO</strong><p>Reservation Portal</p></div>
+            <div class="footer-copy">
+                Internal reservation schedule<br>
+                &copy; {{ date('Y') }} GITC Info
+            </div>
         </div>
+    </footer>
 
+    <div class="modal-overlay" id="reservation-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <div>
+                    <h3 id="modal-title">Schedule Details</h3>
+                    <p id="modal-subtitle">Schedule information</p>
+                </div>
+                <button type="button" class="modal-close" id="modal-close" aria-label="Close details">&times;</button>
+            </div>
+            <div class="modal-content"><div class="modal-info-grid" id="modal-info-grid"></div></div>
+            <div class="modal-footer"><button type="button" class="modal-done" id="modal-done">Close Details</button></div>
+        </div>
     </div>
 
-</div>
-
-
-<script>
-
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
-
-
-        /* =====================================================
-           ELEMENTS
-        ===================================================== */
-
-        const calendarGrid =
-            document.getElementById(
-                'calendar-grid'
-            );
-
-
-        const monthTitle =
-            document.getElementById(
-                'month-title'
-            );
-
-
-        const monthSubtitle =
-            document.getElementById(
-                'month-subtitle'
-            );
-
-
-        const reservationSummary =
-            document.getElementById(
-                'reservation-summary'
-            );
-
-
-        const detailsDate =
-            document.getElementById(
-                'details-date'
-            );
-
-
-        const detailsCount =
-            document.getElementById(
-                'details-count'
-            );
-
-
-        const detailsList =
-            document.getElementById(
-                'details-list'
-            );
-
-
-        const previousButton =
-            document.getElementById(
-                'previous-month'
-            );
-
-
-        const nextButton =
-            document.getElementById(
-                'next-month'
-            );
-
-
-        const todayButton =
-            document.getElementById(
-                'today-button'
-            );
-
-
-        const modal =
-            document.getElementById(
-                'reservation-modal'
-            );
-
-
-        const modalClose =
-            document.getElementById(
-                'modal-close'
-            );
-
-
-        const modalEvent =
-            document.getElementById(
-                'modal-event'
-            );
-
-
-        const modalUsername =
-            document.getElementById(
-                'modal-username'
-            );
-
-
-        const modalResource =
-            document.getElementById(
-                'modal-resource'
-            );
-
-
-        const modalBuilding =
-            document.getElementById(
-                'modal-building'
-            );
-
-
-        const modalStart =
-            document.getElementById(
-                'modal-start'
-            );
-
-
-        const modalEnd =
-            document.getElementById(
-                'modal-end'
-            );
-
-
-        const modalNumber =
-            document.getElementById(
-                'modal-number'
-            );
-
-
-        const modalStatus =
-            document.getElementById(
-                'modal-status'
-            );
-
-
-        /* =====================================================
-           MONTHS
-        ===================================================== */
-
-        const monthNames = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ];
-
-
-        /* =====================================================
-           STATE
-        ===================================================== */
-
-        let currentDate =
-            new Date();
-
-
-        currentDate.setDate(1);
-
-
-        let reservations = [];
-
-
-        let selectedDateKey =
-            formatDateKey(
-                new Date()
-            );
-
-
-        /* =====================================================
-           INITIAL LOAD
-        ===================================================== */
-
-        loadReservations();
-
-
-        /* =====================================================
-           MONTH NAVIGATION
-        ===================================================== */
-
-        previousButton.addEventListener(
-            'click',
-            function () {
-
-                currentDate.setMonth(
-                    currentDate.getMonth() - 1
-                );
-
-
-                selectedDateKey = null;
-
-
-                loadReservations();
-
+    <script>
+        (() => {
+            'use strict';
+
+            const endpoint = @json(route('landing.reservations'));
+
+            const monthFormatter = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' });
+            const dateFormatter = new Intl.DateTimeFormat('en-US', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+            });
+            const shortDateFormatter = new Intl.DateTimeFormat('en-US', {
+                day: 'numeric', month: 'short', year: 'numeric'
+            });
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const sections = Array.from(document.querySelectorAll('[data-schedule]'));
+            const states = {};
+
+            sections.forEach(section => {
+                const key = section.dataset.schedule;
+                states[key] = {
+                    section,
+                    year: today.getFullYear(),
+                    month: today.getMonth() + 1,
+                    selectedDate: formatDate(today),
+                    reservations: [],
+                    loading: false,
+                    error: null,
+                    requestId: 0
+                };
+
+                section.querySelectorAll('[data-action]').forEach(button => {
+                    button.addEventListener('click', () => handleCalendarAction(key, button.dataset.action));
+                });
+            });
+
+            function formatDate(date) {
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             }
-        );
 
-
-        nextButton.addEventListener(
-            'click',
-            function () {
-
-                currentDate.setMonth(
-                    currentDate.getMonth() + 1
-                );
-
-
-                selectedDateKey = null;
-
-
-                loadReservations();
-
+            function parseDate(value) {
+                if (!value) return null;
+                const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+                if (!match) return null;
+                const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+                date.setHours(0, 0, 0, 0);
+                return date;
             }
-        );
 
-
-        todayButton.addEventListener(
-            'click',
-            function () {
-
-                const today =
-                    new Date();
-
-
-                currentDate =
-                    new Date(
-                        today.getFullYear(),
-                        today.getMonth(),
-                        1
-                    );
-
-
-                selectedDateKey =
-                    formatDateKey(
-                        today
-                    );
-
-
-                loadReservations();
-
+            function escapeHtml(value) {
+                return String(value ?? '').replace(/[&<>"']/g, character => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+                })[character]);
             }
-        );
 
+            function getResourceType(key) {
+                return key === 'media' ? 'Training Media' : 'Room';
+            }
 
-        /* =====================================================
-           LOAD RESERVATIONS
-        ===================================================== */
+            function getStatusLabel(key) {
+                return key === 'media' ? 'scheduled sessions' : 'approved reservations';
+            }
 
-        async function loadReservations() {
+            function getReservationDateRange(reservation) {
+                const start = reservation.start_date || (reservation.starts_at || '').slice(0, 10);
+                const end = reservation.end_date || (reservation.ends_at || '').slice(0, 10) || start;
+                return { start, end };
+            }
 
-            renderLoading();
+            function getReservationsForDate(state, dateString) {
+                return state.reservations.filter(reservation => {
+                    const range = getReservationDateRange(reservation);
+                    return range.start && range.end && range.start <= dateString && range.end >= dateString;
+                }).sort((a, b) => (a.start_time || '').localeCompare(b.start_time || ''));
+            }
 
+            function handleCalendarAction(key, action) {
+                const state = states[key];
 
-            const year =
-                currentDate.getFullYear();
+                if (action === 'prev') {
+                    const date = new Date(state.year, state.month - 2, 1);
+                    state.year = date.getFullYear();
+                    state.month = date.getMonth() + 1;
+                } else if (action === 'next') {
+                    const date = new Date(state.year, state.month, 1);
+                    state.year = date.getFullYear();
+                    state.month = date.getMonth() + 1;
+                } else if (action === 'today') {
+                    state.year = today.getFullYear();
+                    state.month = today.getMonth() + 1;
+                    state.selectedDate = formatDate(today);
+                }
 
+                loadSchedule(key);
+            }
 
-            const month =
-                currentDate.getMonth() + 1;
+            async function loadSchedule(key) {
+                const state = states[key];
+                const requestId = ++state.requestId;
+                state.loading = true;
+                state.error = null;
 
+                renderCalendar(key);
+                renderDetails(key);
 
-            try {
+                const params = new URLSearchParams({
+                    year: String(state.year),
+                    month: String(state.month),
+                    resource_type: getResourceType(key)
+                });
 
-                const response =
-                    await fetch(
-                        '{{ route('landing.reservations') }}'
-                        + '?year='
-                        + encodeURIComponent(year)
-                        + '&month='
-                        + encodeURIComponent(month),
-                        {
-                            headers: {
-                                'Accept':
-                                    'application/json'
-                            }
+                try {
+                    const response = await fetch(`${endpoint}?${params.toString()}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        credentials: 'same-origin'
+                    });
+
+                    if (!response.ok) throw new Error(`Request failed (${response.status})`);
+
+                    const data = await response.json();
+                    if (requestId !== state.requestId) return;
+                    if (!Array.isArray(data.reservations)) throw new Error('Unexpected schedule response.');
+
+                    state.reservations = data.reservations.filter(reservation => {
+                        const status = String(reservation.status || '').toUpperCase();
+
+                        if (key === 'media') {
+                            return status === 'SCHEDULED';
                         }
-                    );
 
+                        return status === 'APPROVED';
+                    });
 
-                if (!response.ok) {
-
-                    throw new Error(
-                        'Failed to load reservations.'
-                    );
-
+                    state.loading = false;
+                    state.error = null;
+                    renderCalendar(key);
+                    renderDetails(key);
+                } catch (error) {
+                    if (requestId !== state.requestId) return;
+                    state.loading = false;
+                    state.error = error.message || 'Unable to load schedule.';
+                    state.reservations = [];
+                    renderCalendar(key);
+                    renderDetails(key);
+                    console.error(`Unable to load ${getResourceType(key)} schedule:`, error);
                 }
-
-
-                const data =
-                    await response.json();
-
-
-                reservations =
-                    Array.isArray(
-                        data.reservations
-                    )
-                        ? data.reservations
-                        : [];
-
-
-                renderCalendar();
-
-
-                if (!selectedDateKey) {
-
-                    const today =
-                        new Date();
-
-
-                    if (
-                        today.getFullYear() === year
-                        &&
-                        today.getMonth() + 1 === month
-                    ) {
-
-                        selectedDateKey =
-                            formatDateKey(
-                                today
-                            );
-
-                    } else {
-
-                        selectedDateKey =
-                            formatDateKey(
-                                new Date(
-                                    year,
-                                    month - 1,
-                                    1
-                                )
-                            );
-
-                    }
-
-                }
-
-
-                renderSelectedDate();
-
-
-            } catch (error) {
-
-                console.error(error);
-
-
-                calendarGrid.innerHTML = '';
-
-
-                const message =
-                    document.createElement(
-                        'div'
-                    );
-
-
-                message.style.gridColumn =
-                    '1 / -1';
-
-
-                message.style.display =
-                    'flex';
-
-
-                message.style.alignItems =
-                    'center';
-
-
-                message.style.justifyContent =
-                    'center';
-
-
-                message.style.padding =
-                    '40px';
-
-
-                message.style.textAlign =
-                    'center';
-
-
-                message.style.color =
-                    '#6b8192';
-
-
-                message.style.fontFamily =
-                    "'Garuda Sans', sans-serif";
-
-
-                message.style.fontSize =
-                    '11px';
-
-
-                message.textContent =
-                    'Unable to load reservation data.';
-
-
-                calendarGrid.appendChild(
-                    message
-                );
-
             }
 
-        }
+            function renderCalendar(key) {
+                const state = states[key];
+                const section = state.section;
+                const title = section.querySelector('[data-month-title]');
+                const grid = section.querySelector('[data-calendar-grid]');
 
+                title.textContent = monthFormatter.format(new Date(state.year, state.month - 1, 1));
 
-        /* =====================================================
-           RENDER CALENDAR
-        ===================================================== */
-
-        function renderCalendar() {
-
-            const year =
-                currentDate.getFullYear();
-
-
-            const month =
-                currentDate.getMonth();
-
-
-            monthTitle.textContent =
-                monthNames[month]
-                + ' '
-                + year;
-
-
-            monthSubtitle.textContent =
-                'Approved reservation schedule';
-
-
-            calendarGrid.innerHTML =
-                '';
-
-
-            const firstDay =
-                new Date(
-                    year,
-                    month,
-                    1
-                ).getDay();
-
-
-            const daysInMonth =
-                new Date(
-                    year,
-                    month + 1,
-                    0
-                ).getDate();
-
-
-            const today =
-                new Date();
-
-
-            /* Empty cells */
-
-            for (
-                let i = 0;
-                i < firstDay;
-                i++
-            ) {
-
-                const empty =
-                    document.createElement(
-                        'div'
-                    );
-
-
-                empty.className =
-                    'calendar-day empty';
-
-
-                calendarGrid.appendChild(
-                    empty
-                );
-
-            }
-
-
-            /* Calendar days */
-
-            for (
-                let day = 1;
-                day <= daysInMonth;
-                day++
-            ) {
-
-                const date =
-                    new Date(
-                        year,
-                        month,
-                        day
-                    );
-
-
-                const dateKey =
-                    formatDateKey(
-                        date
-                    );
-
-
-                const dayReservations =
-                    getReservationsForDate(
-                        date
-                    );
-
-
-                const dayElement =
-                    document.createElement(
-                        'button'
-                    );
-
-
-                dayElement.type =
-                    'button';
-
-
-                dayElement.className =
-                    'calendar-day';
-
-
-                if (
-                    today.getFullYear() === year
-                    &&
-                    today.getMonth() === month
-                    &&
-                    today.getDate() === day
-                ) {
-
-                    dayElement.classList.add(
-                        'today'
-                    );
-
+                if (state.loading && state.reservations.length === 0) {
+                    grid.innerHTML = '<div class="loading-state">Loading calendar...</div>';
+                    return;
                 }
 
-
-                if (
-                    selectedDateKey === dateKey
-                ) {
-
-                    dayElement.classList.add(
-                        'selected'
-                    );
-
+                if (state.error) {
+                    grid.innerHTML = '<div class="error-state" style="grid-column:1/-1">Unable to load this calendar. Please try again.</div>';
+                    return;
                 }
 
+                const firstDay = new Date(state.year, state.month - 1, 1).getDay();
+                const daysInMonth = new Date(state.year, state.month, 0).getDate();
+                let html = '';
 
-                const number =
-                    document.createElement(
-                        'span'
-                    );
-
-
-                number.className =
-                    'calendar-day-number';
-
-
-                number.textContent =
-                    day;
-
-
-                dayElement.appendChild(
-                    number
-                );
-
-
-                if (
-                    dayReservations.length
-                ) {
-
-                    const indicators =
-                        document.createElement(
-                            'span'
-                        );
-
-
-                    indicators.className =
-                        'calendar-day-indicators';
-
-
-                    const visibleCount =
-                        Math.min(
-                            dayReservations.length,
-                            3
-                        );
-
-
-                    for (
-                        let i = 0;
-                        i < visibleCount;
-                        i++
-                    ) {
-
-                        const dot =
-                            document.createElement(
-                                'span'
-                            );
-
-
-                        dot.className =
-                            'reservation-dot';
-
-
-                        indicators.appendChild(
-                            dot
-                        );
-
-                    }
-
-
-                    if (
-                        dayReservations.length > 3
-                    ) {
-
-                        const more =
-                            document.createElement(
-                                'span'
-                            );
-
-
-                        more.className =
-                            'more-indicator';
-
-
-                        more.textContent =
-                            '+'
-                            + (
-                                dayReservations.length - 3
-                            );
-
-
-                        indicators.appendChild(
-                            more
-                        );
-
-                    }
-
-
-                    dayElement.appendChild(
-                        indicators
-                    );
-
+                for (let i = 0; i < firstDay; i++) {
+                    html += '<div class="day empty" aria-hidden="true"></div>';
                 }
 
-
-                dayElement.addEventListener(
-                    'click',
-                    function () {
-
-                        selectedDateKey =
-                            dateKey;
-
-
-                        renderCalendar();
-
-
-                        renderSelectedDate();
-
-                    }
-                );
-
-
-                calendarGrid.appendChild(
-                    dayElement
-                );
-
-            }
-
-
-            reservationSummary.innerHTML =
-                '<strong>'
-                + reservations.length
-                + '</strong>'
-                + (
-                    reservations.length === 1
-                        ? ' reservation this month'
-                        : ' reservations this month'
-                );
-
-        }
-
-
-        /* =====================================================
-           RESERVATIONS FOR DATE
-        ===================================================== */
-
-        function getReservationsForDate(
-            date
-        ) {
-
-            const dateKey =
-                formatDateKey(
-                    date
-                );
-
-
-            return reservations.filter(
-                function (reservation) {
-
-                    return (
-                        dateKey >=
-                            reservation.start_date
-                        &&
-                        dateKey <=
-                            reservation.end_date
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =====================================================
-           SELECTED DATE
-        ===================================================== */
-
-        function renderSelectedDate() {
-
-            if (!selectedDateKey) {
-                return;
-            }
-
-
-            const selectedDate =
-                parseDateKey(
-                    selectedDateKey
-                );
-
-
-            const dateReservations =
-                getReservationsForDate(
-                    selectedDate
-                );
-
-
-            detailsDate.textContent =
-                selectedDate.toLocaleDateString(
-                    'en-US',
-                    {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                        year: 'numeric'
-                    }
-                );
-
-
-            detailsCount.textContent =
-                dateReservations.length === 0
-                    ? 'No approved reservations on this date.'
-                    : (
-                        dateReservations.length
-                        + (
-                            dateReservations.length === 1
-                                ? ' approved reservation'
-                                : ' approved reservations'
-                        )
-                    );
-
-
-            if (
-                dateReservations.length === 0
-            ) {
-
-                detailsList.innerHTML = `
-
-                    <div class="details-empty">
-
-                        
-
-                        <h3>
-                            No Reservations
-                        </h3>
-
-                        <p>
-                            There are no approved reservations
-                            scheduled for this date.
-                        </p>
-
-                    </div>
-
-                `;
-
-                return;
-
-            }
-
-
-            detailsList.innerHTML =
-                '';
-
-
-            dateReservations.forEach(
-                function (reservation) {
-
-                    const card =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    card.className =
-                        'reservation-card';
-
-
-                    /* TIME */
-
-                    const time =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    time.className =
-                        'reservation-time';
-
-
-                    time.innerHTML =
-                        '<span class="time-line"></span>'
-                        + escapeHtml(
-                            reservation.start_time
-                        )
-                        + ' — '
-                        + escapeHtml(
-                            reservation.end_time
-                        );
-
-
-                    /* EVENT */
-
-                    const event =
-                        document.createElement(
-                            'h3'
-                        );
-
-
-                    event.className =
-                        'reservation-event';
-
-
-                    event.textContent =
-                        reservation.event_name
-                        || 'Reservation';
-
-
-                    /* RESOURCE */
-
-                    const resource =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    resource.className =
-                        'reservation-resource';
-
-
-                    resource.innerHTML = `
-
-                        <div class="resource-label">
-                            Room / Resource
-                        </div>
-
-                        <span class="resource-name">
-                            ${escapeHtml(
-                                reservation.resource_name
-                            )}
-                        </span>
-
-                        <span class="resource-building">
-                            ${escapeHtml(
-                                reservation.building_name
-                            )}
-                        </span>
-
-                        <span class="resource-type">
-                            ${escapeHtml(
-                                reservation.resource_type
-                            )}
-                        </span>
-
+                for (let dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
+                    const date = new Date(state.year, state.month - 1, dayNumber);
+                    const dateString = formatDate(date);
+                    const isToday = dateString === formatDate(today);
+                    const isSelected = dateString === state.selectedDate;
+                    const reservations = getReservationsForDate(state, dateString);
+                    const hasEvents = reservations.length > 0;
+                    const classes = ['day'];
+
+                    if (isToday) classes.push('today');
+                    if (isSelected) classes.push('selected');
+                    if (hasEvents) classes.push('has-events');
+
+                    html += `
+                        <button type="button" class="${classes.join(' ')}"
+                            data-select-date="${dateString}"
+                            aria-label="${escapeHtml(dateFormatter.format(date))}${hasEvents ? ', ' + reservations.length + ' events' : ''}"
+                            aria-pressed="${isSelected ? 'true' : 'false'}">
+                            <span class="day-number">${dayNumber}</span>
+                            <span class="day-dots">${hasEvents ? '<span class="day-dot"></span>' : ''}</span>
+                        </button>
                     `;
-
-
-                    /* DATE RANGE */
-
-                    const range =
-                        document.createElement(
-                            'div'
-                        );
-
-
-                    range.className =
-                        'reservation-date-range';
-
-
-                    range.textContent =
-                        formatDateRange(
-                            reservation
-                        );
-
-
-                    card.appendChild(
-                        time
-                    );
-
-
-                    card.appendChild(
-                        event
-                    );
-
-
-                    card.appendChild(
-                        resource
-                    );
-
-
-                    card.appendChild(
-                        range
-                    );
-
-
-                    card.addEventListener(
-                        'click',
-                        function () {
-
-                            openReservationModal(
-                                reservation
-                            );
-
-                        }
-                    );
-
-
-                    detailsList.appendChild(
-                        card
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* =====================================================
-           MODAL
-        ===================================================== */
-
-        function openReservationModal(
-            reservation
-        ) {
-
-            modalEvent.textContent =
-                reservation.event_name
-                || 'Reservation';
-
-
-            modalUsername.textContent =
-                reservation.username
-                || '—';
-
-
-            modalResource.textContent =
-                reservation.resource_name
-                + ' · '
-                + reservation.resource_type;
-
-
-            modalBuilding.textContent =
-                reservation.building_name;
-
-
-            modalStart.textContent =
-                formatLongDate(
-                    reservation.start_date
-                )
-                + ' · '
-                + reservation.start_time;
-
-
-            modalEnd.textContent =
-                formatLongDate(
-                    reservation.end_date
-                )
-                + ' · '
-                + reservation.end_time;
-
-
-            modalNumber.textContent =
-                reservation.reservation_number;
-
-
-            modalStatus.textContent =
-                reservation.status;
-
-
-            modal.classList.add(
-                'show'
-            );
-
-
-            modal.setAttribute(
-                'aria-hidden',
-                'false'
-            );
-
-        }
-
-
-        function closeReservationModal() {
-
-            modal.classList.remove(
-                'show'
-            );
-
-
-            modal.setAttribute(
-                'aria-hidden',
-                'true'
-            );
-
-        }
-
-
-        modalClose.addEventListener(
-            'click',
-            closeReservationModal
-        );
-
-
-        modal.addEventListener(
-            'click',
-            function (event) {
-
-                if (
-                    event.target === modal
-                ) {
-
-                    closeReservationModal();
-
                 }
 
-            }
-        );
+                grid.innerHTML = html;
 
-
-        document.addEventListener(
-            'keydown',
-            function (event) {
-
-                if (
-                    event.key === 'Escape'
-                ) {
-
-                    closeReservationModal();
-
-                }
-
-            }
-        );
-
-
-        /* =====================================================
-           HELPERS
-        ===================================================== */
-
-        function formatDateKey(
-            date
-        ) {
-
-            const year =
-                date.getFullYear();
-
-
-            const month =
-                String(
-                    date.getMonth() + 1
-                ).padStart(
-                    2,
-                    '0'
-                );
-
-
-            const day =
-                String(
-                    date.getDate()
-                ).padStart(
-                    2,
-                    '0'
-                );
-
-
-            return (
-                year
-                + '-'
-                + month
-                + '-'
-                + day
-            );
-
-        }
-
-
-        function parseDateKey(
-            key
-        ) {
-
-            const parts =
-                key.split('-');
-
-
-            return new Date(
-                Number(parts[0]),
-                Number(parts[1]) - 1,
-                Number(parts[2])
-            );
-
-        }
-
-
-        function formatLongDate(
-            value
-        ) {
-
-            return parseDateKey(
-                value
-            ).toLocaleDateString(
-                'en-US',
-                {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                }
-            );
-
-        }
-
-
-        function formatDateRange(
-            reservation
-        ) {
-
-            if (
-                reservation.start_date ===
-                reservation.end_date
-            ) {
-
-                return (
-                    formatLongDate(
-                        reservation.start_date
-                    )
-                    + ' · '
-                    + reservation.start_time
-                    + ' — '
-                    + reservation.end_time
-                );
-
+                grid.querySelectorAll('[data-select-date]').forEach(button => {
+                    button.addEventListener('click', () => {
+                        state.selectedDate = button.dataset.selectDate;
+                        renderCalendar(key);
+                        renderDetails(key);
+                    });
+                });
             }
 
+            function renderDetails(key) {
+                const state = states[key];
+                const section = state.section;
+                const dateElement = section.querySelector('[data-detail-date]');
+                const countElement = section.querySelector('[data-detail-count]');
+                const listElement = section.querySelector('[data-detail-list]');
+                const selectedDate = parseDate(state.selectedDate);
+                const statusLabel = getStatusLabel(key);
 
-            return (
-                formatLongDate(
-                    reservation.start_date
-                )
-                + ' '
-                + reservation.start_time
-                + ' — '
-                + formatLongDate(
-                    reservation.end_date
-                )
-                + ' '
-                + reservation.end_time
-            );
+                dateElement.textContent = selectedDate ? dateFormatter.format(selectedDate) : state.selectedDate;
 
-        }
+                if (state.loading) {
+                    countElement.textContent = 'Loading schedule';
+                    listElement.innerHTML = '<div class="loading-state">Loading schedule...</div>';
+                    return;
+                }
 
+                if (state.error) {
+                    countElement.textContent = 'Schedule unavailable';
+                    listElement.innerHTML = `
+                        <div class="error-state">
+                            Could not load schedule. Please try again.
+                            <button type="button" class="view-details-btn" data-retry="${key}">Try Again</button>
+                        </div>`;
+                    listElement.querySelector('[data-retry]')?.addEventListener('click', () => loadSchedule(key));
+                    return;
+                }
 
-        function escapeHtml(
-            value
-        ) {
+                const reservations = getReservationsForDate(state, state.selectedDate);
+                countElement.textContent = `${reservations.length} ${statusLabel}`;
 
-            return String(
-                value ?? ''
-            )
-                .replace(
-                    /&/g,
-                    '&amp;'
-                )
-                .replace(
-                    /</g,
-                    '&lt;'
-                )
-                .replace(
-                    />/g,
-                    '&gt;'
-                )
-                .replace(
-                    /"/g,
-                    '&quot;'
-                )
-                .replace(
-                    /'/g,
-                    '&#039;'
-                );
+                if (reservations.length === 0) {
+                    listElement.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon"></div>
+                            <h5>No Schedule Found</h5>
+                            <p>There are no ${key === 'media' ? 'scheduled sessions' : 'approved reservations'} for this date.</p>
+                        </div>`;
+                    return;
+                }
 
-        }
+                listElement.innerHTML = reservations.map((reservation, index) => {
+                    const startTime = reservation.start_time || '—';
+                    const endTime = reservation.end_time || '—';
+                    const title = reservation.event_name || 'Untitled Schedule';
+                    const resource = reservation.resource_name || title;
+                    const displayName = key === 'room' ? resource : (reservation.resource_name || title);
 
+                    return `
+                        <button type="button" class="reservation-card" data-open-reservation="${key}-${index}"
+                            aria-label="View details for ${escapeHtml(displayName)} at ${escapeHtml(startTime)}">
+                            <div class="reservation-card-top">
+                                <h5 class="reservation-title">${escapeHtml(displayName)}</h5>
+                                <span class="reservation-time">${escapeHtml(startTime)}–${escapeHtml(endTime)}</span>
+                            </div>
+                        </button>`;
+                }).join('');
 
-        function renderLoading() {
+                listElement.querySelectorAll('[data-open-reservation]').forEach((button, index) => {
+                    button.addEventListener('click', () => openReservationModal(key, reservations[index]));
+                });
+            }
 
-            calendarGrid.innerHTML = `
+            function openReservationModal(key, reservation) {
+                const modal = document.getElementById('reservation-modal');
+                const titleElement = document.getElementById('modal-title');
+                const subtitleElement = document.getElementById('modal-subtitle');
+                const grid = document.getElementById('modal-info-grid');
 
-                <div
-                    class="loading-state"
-                    style="grid-column:1 / -1;"
-                >
+                const resourceType = reservation.resource_type || getResourceType(key);
+                const isMedia = key === 'media';
+                const title = reservation.event_name || 'Untitled Schedule';
+                const status = reservation.status || (isMedia ? 'SCHEDULED' : 'APPROVED');
 
-                    <span class="loading-dot"></span>
+                titleElement.textContent = title;
+                subtitleElement.textContent = `${resourceType} · Schedule details`;
 
-                    Loading reservations...
+                const startDateFormatted = parseDate(reservation.start_date);
+                const endDateFormatted = parseDate(reservation.end_date || reservation.start_date);
+                const dateText = startDateFormatted ? shortDateFormatter.format(startDateFormatted) : 'Not specified';
+                const endDateText = endDateFormatted ? shortDateFormatter.format(endDateFormatted) : dateText;
 
-                </div>
+                const fields = [
+                    { label: 'Resource Type', value: resourceType },
+                    { label: 'Resource', value: reservation.resource_name || 'Not specified' },
+                    { label: 'Building', value: reservation.building_name || 'Not specified', full: true },
+                    { label: 'Schedule Status', value: status },
+                    { label: 'Start Date', value: dateText },
+                    { label: 'End Date', value: endDateText },
+                    { label: 'Start Time', value: reservation.start_time || '—' },
+                    { label: 'End Time', value: reservation.end_time || '—' },
+                    { label: 'Scheduled By', value: reservation.username || 'Not specified' }
+                ];
 
-            `;
+                if (!isMedia) {
+                    fields.unshift({ label: 'Reservation Number', value: reservation.reservation_number || '—', full: true });
+                } else {
+                    fields.push(
+                        { label: 'Group', value: reservation.class_name || 'Not specified' },
+                        { label: 'Instructor', value: reservation.instructor_name || 'Not specified' },
+                        { label: 'Participants', value: String(reservation.participant_count ?? 0) },
+                        { label: 'Notes', value: reservation.notes || 'Not specified', full: true }
+                    );
+                }
 
+                grid.innerHTML = fields.map(field => `
+                    <div class="modal-info ${field.full ? 'full' : ''}">
+                        <div class="modal-info-label">${escapeHtml(field.label)}</div>
+                        <div class="modal-info-value">${escapeHtml(field.value)}</div>
+                    </div>
+                `).join('');
 
-            detailsList.innerHTML = `
+                modal.classList.add('open');
+                document.body.style.overflow = 'hidden';
+                document.getElementById('modal-close').focus();
+            }
 
-                <div class="loading-state">
+            function closeModal() {
+                document.getElementById('reservation-modal').classList.remove('open');
+                document.body.style.overflow = '';
+            }
 
-                    <span class="loading-dot"></span>
+            document.getElementById('modal-close').addEventListener('click', closeModal);
+            document.getElementById('modal-done').addEventListener('click', closeModal);
 
-                    Loading...
+            document.getElementById('reservation-modal').addEventListener('click', event => {
+                if (event.target.id === 'reservation-modal') closeModal();
+            });
 
-                </div>
+            document.addEventListener('keydown', event => {
+                if (event.key === 'Escape') closeModal();
+            });
 
-            `;
-
-        }
-
-    }
-
-);
-
-</script>
-
+            Object.keys(states).forEach(loadSchedule);
+        })();
+    </script>
 </body>
-
 </html>
+

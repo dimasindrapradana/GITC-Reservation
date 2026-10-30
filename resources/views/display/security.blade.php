@@ -3727,11 +3727,25 @@
  
     function getBuildingLabel(name) {
         if (!name) return 'FIELD';
- 
-        return String(name)
-            .replace(/^Building\s+/i, '')
-            .trim()
-            .toUpperCase();
+
+        const buildingName = String(name)
+            .replace(/^Building\s+/i, '')   
+            .trim();
+
+        if (/^Auditorium\s*&\s*Leadership$/i.test(buildingName)) {
+            return 'A&L';
+        }
+
+        return buildingName.toUpperCase();
+    }
+        function isFieldReservation(reservation) {
+        return (
+            reservation.resource?.type === 'FIELD' ||
+            (
+                reservation.building?.id == null &&
+                String(reservation.building?.name || '').trim().toUpperCase() === 'FD'
+            )
+        );
     }
  
     function getLocationLabel(location = selectedLocation) {
@@ -3790,21 +3804,21 @@
         if (location === 'ALL') {
             return reservations;
         }
- 
+
         if (location === 'FIELD') {
             return reservations.filter(reservation => {
-                return reservation.resource?.type === 'FIELD';
+                return isFieldReservation(reservation);
             });
         }
- 
+
         const match = String(location).match(/^building-(\d+)$/);
- 
+
         if (!match) {
             return reservations;
         }
- 
+
         const buildingId = String(match[1]);
- 
+
         return reservations.filter(reservation => {
             return String(reservation.building?.id ?? '') === buildingId;
         });
@@ -4014,37 +4028,69 @@
             .join('');
     }
  
-    /*
-     * Training Media temporarily uses the same schedule panel.
-     * Selecting ALL, a building, or FIELD switches back to reservations.
-     */
+
     function renderTrainingMediaSchedule() {
         const rawItems = Array.isArray(securityData.training_media_schedule)
             ? securityData.training_media_schedule
             : [];
- 
-        const todayKey = new Date().toLocaleDateString('en-CA');
+
+        
+        const getLocalDateKey = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+
+            return `${year}-${month}-${day}`;
+        };
+
+        const todayDate = new Date();
+        const todayKey = getLocalDateKey(todayDate);
+
         const tomorrowDate = new Date();
         tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-        const tomorrowKey = tomorrowDate.toLocaleDateString('en-CA');
-        const selectedDateKey = selectedDay === 'today' ? todayKey : tomorrowKey;
- 
+
+        const tomorrowKey = getLocalDateKey(tomorrowDate);
+
+        const selectedDateKey =
+            selectedDay === 'today' ? todayKey : tomorrowKey;
+
         const items = rawItems
             .filter(item => {
-                const dateValue = item.session_date || item.date || item.starts_at || null;
-                if (!dateValue) return selectedDay === 'today';
-                const itemDate = new Date(dateValue);
-                if (Number.isNaN(itemDate.getTime())) {
-                    return String(dateValue).slice(0, 10) === selectedDateKey;
+                const dateValue =
+                    item.session_date ||
+                    item.date ||
+                    item.starts_at ||
+                    null;
+
+                if (!dateValue) {
+                    return false;
                 }
-                return itemDate.toLocaleDateString('en-CA') === selectedDateKey;
+
+               
+                const parsedDate = new Date(dateValue);
+
+                if (Number.isNaN(parsedDate.getTime())) {
+                    return false;
+                }
+
+                const itemDateKey = new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Asia/Jakarta',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                }).format(parsedDate);
+
+                return itemDateKey === selectedDateKey;
+
             })
             .slice()
             .sort((a, b) => {
                 const aTime = a.start_time || a.starts_at || '';
                 const bTime = b.start_time || b.starts_at || '';
+
                 return String(aTime).localeCompare(String(bTime));
             });
+
  
         const dayLabel = selectedDay === 'today' ? "Today's Training Media Schedule" : "Tomorrow's Training Media Schedule";
         mainScheduleTitle.textContent = dayLabel;
@@ -4116,11 +4162,15 @@
         .filter(Boolean)
         .join(' ');
  
-    const isField = reservation.resource?.type === 'FIELD';
- 
-    const buildingLabel = reservation.building?.name
-        ? getBuildingLabel(reservation.building.name)
-        : 'FIELD';
+    const isField = isFieldReservation(reservation);
+
+    const buildingLabel = isField
+        ? 'FD'
+        : (
+            reservation.building?.name
+                ? getBuildingLabel(reservation.building.name)
+                : 'FIELD'
+        );
  
     const locationName = reservation.location_name
         || reservation.resource?.name
@@ -4318,6 +4368,11 @@
         ${createDetailItem(
             'Building',
             buildingName
+        )}
+
+        ${createDetailItem(
+            'Booker',
+            reservation.booker_name || '—'
         )}
  
         ${createDetailItem(

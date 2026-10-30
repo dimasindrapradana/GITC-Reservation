@@ -398,7 +398,8 @@ class SecurityDisplayController extends Controller
                     'program',
                     'trainingRoom.building',
                 ])
-                ->whereDate('session_date', $todayStart->toDateString())
+                ->whereDate('session_date', '>=', $todayStart->toDateString())
+                ->whereDate('session_date', '<=', $tomorrowStart->toDateString())
                 ->whereHas('trainingRoom', function ($query) {
                     $query
                         ->whereNull('training_rooms.deleted_at')

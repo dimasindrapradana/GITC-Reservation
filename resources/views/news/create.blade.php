@@ -314,10 +314,30 @@
                 <textarea
                     id="content"
                     name="content"
-                    class="form-control textarea-control"
-                    rows="8"
-                    required
+                    hidden
                 >{{ old('content') }}</textarea>
+
+                <div class="news-editor-wrapper">
+                    <div id="news-editor-toolbar" class="news-editor-toolbar">
+                        <select class="ql-header" aria-label="Text heading">
+                            <option selected></option>
+                            <option value="1">Heading 1</option>
+                            <option value="2">Heading 2</option>
+                            <option value="3">Heading 3</option>
+                            <option value="4">Heading 4</option>
+                        </select>
+                        <button type="button" class="ql-bold" aria-label="Bold"></button>
+                        <button type="button" class="ql-italic" aria-label="Italic"></button>
+                        <button type="button" class="ql-underline" aria-label="Underline"></button>
+                        <button type="button" class="ql-list" value="bullet" aria-label="Bulleted list"></button>
+                        <button type="button" class="ql-list" value="ordered" aria-label="Numbered list"></button>
+                        <button type="button" class="ql-link" aria-label="Insert link"></button>
+                        <button type="button" class="ql-blockquote" aria-label="Quote"></button>
+                        <button type="button" class="ql-hr" aria-label="Insert horizontal line">HR</button>
+                        <button type="button" class="ql-clean" aria-label="Clear formatting"></button>
+                    </div>
+                    <div id="news-editor" class="news-editor"></div>
+                </div>
 
             </div>
 
@@ -417,7 +437,17 @@
 
 @push('styles')
 
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+
 <style>
+    .news-editor-wrapper { width: 100%; }
+    .news-editor-toolbar { border: 1px solid #d0dce5 !important; border-radius: 7px 7px 0 0; background: #f8fafb; }
+    .news-editor-toolbar .ql-hr { width: auto; padding: 0 8px; font-size: 11px; font-weight: 700; }
+    .news-editor { min-height: 190px; border: 1px solid #d0dce5 !important; border-top: 0 !important; border-radius: 0 0 7px 7px; color: #4f6680; font-family: inherit; font-size: 13px; }
+    .news-editor .ql-editor { min-height: 190px; line-height: 1.6; }
+    .news-editor .ql-editor.ql-blank::before { color: #9aaab6; font-style: normal; }
+    .news-editor .ql-editor h1, .news-editor .ql-editor h2, .news-editor .ql-editor h3, .news-editor .ql-editor h4 { color: #12304a; }
+
 
     .page-header {
         display: flex;
@@ -860,6 +890,69 @@
 
 
 @push('scripts')
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+<script>
+    (() => {
+        const form = document.getElementById('news-form');
+        const hiddenContent = document.getElementById('content');
+        const editorElement = document.getElementById('news-editor');
+        const toolbarElement = document.getElementById('news-editor-toolbar');
+
+        if (!form || !hiddenContent || !editorElement || !toolbarElement || typeof Quill === 'undefined') {
+            return;
+        }
+
+        const BlockEmbed = Quill.import('blots/block/embed');
+        class HorizontalRule extends BlockEmbed {
+            static blotName = 'hr';
+            static tagName = 'HR';
+        }
+        Quill.register(HorizontalRule);
+
+        const quill = new Quill(editorElement, {
+            theme: 'snow',
+            placeholder: 'Write your news content here...',
+            modules: {
+                toolbar: {
+                    container: toolbarElement,
+                    handlers: {
+                        hr: function () {
+                            const range = this.quill.getSelection(true);
+                            this.quill.insertEmbed(range.index, 'hr', true, Quill.sources.USER);
+                            this.quill.insertText(range.index + 1, '\n', Quill.sources.SILENT);
+                            this.quill.setSelection(range.index + 2, Quill.sources.SILENT);
+                        }
+                    }
+                }
+            }
+        });
+
+        const initialContent = @json(\Mews\Purifier\Facades\Purifier::clean(old('content', ''), 'news'));
+        if (initialContent) {
+            quill.root.innerHTML = initialContent;
+        }
+
+        const syncContent = () => {
+            hiddenContent.value = quill.root.innerHTML;
+        };
+
+        quill.on('text-change', syncContent);
+        syncContent();
+
+        form.addEventListener('submit', (event) => {
+            syncContent();
+            const hasText = quill.getText().trim().length > 0;
+            const hasRule = quill.root.querySelector('hr') !== null;
+
+            if (!hasText && !hasRule) {
+                event.preventDefault();
+                alert('Please enter the news content.');
+                quill.focus();
+            }
+        });
+    })();
+</script>
 
 <script>
 

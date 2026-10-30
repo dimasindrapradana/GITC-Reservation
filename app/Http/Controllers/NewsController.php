@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
+use Mews\Purifier\Facades\Purifier;
 
 class NewsController extends Controller
 {
@@ -134,7 +135,10 @@ class NewsController extends Controller
 
         $news = News::create([
             'title' => $validated['title'],
-            'content' => $validated['content'],
+            'content' => Purifier::clean(
+                $validated['content'],
+                'news'
+            ),
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
             'status' => $validated['status'],
@@ -247,7 +251,10 @@ class NewsController extends Controller
 
         $news->update([
             'title' => $validated['title'],
-            'content' => $validated['content'],
+            'content' => Purifier::clean(
+                $validated['content'],
+                'news'
+            ),
             'starts_at' => $startsAt,
             'ends_at' => $endsAt,
             'status' => $validated['status'],
